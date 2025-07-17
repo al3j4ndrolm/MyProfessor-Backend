@@ -6,7 +6,7 @@ from bs4 import BeautifulSoup, Tag
 # Local imports
 import helpers.soup_getter
 import logging
-from data_fetchers.schools.configs.school_config import SAN_JOSE_STATE_UNIVERSITY_BASE_URL
+from data_fetchers.schools.san_jose_state_university.school_config import SAN_JOSE_STATE_UNIVERSITY_BASE_URL
 from data_fetchers.api.terms.configs import TERM_NAME_KEY, TERM_CODE_KEY
 from data_fetchers.api.terms.response import create_response_data
 
