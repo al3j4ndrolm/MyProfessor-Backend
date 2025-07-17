@@ -50,8 +50,8 @@ class TestTermsFetcher:
         """Test when fieldset is not found."""
         html = "<div>No fieldset here</div>"
         soup = BeautifulSoup(html, 'html.parser')
-        fieldset = locate_terms_fieldset_in_soup(soup)
-        assert fieldset is None
+        with pytest.raises(ValueError, match="Terms fieldset not found in soup"):
+            locate_terms_fieldset_in_soup(soup)
 
     def test_locate_terms_options_in_fieldset_no_buttons(self):
         """Test when no buttons are found in fieldset."""
