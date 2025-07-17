@@ -1,7 +1,7 @@
 from data_fetchers.api.terms.configs import TERM_NAME_KEY, TERM_CODE_KEY
+import json
 
-
-def create_response_data(term_name, term_code) -> dict:
+def create_term_response_data(term_name: str, term_code: str) -> dict:
     """
     Example of return value: {
         "term_name": "Fall 2025",
@@ -9,11 +9,10 @@ def create_response_data(term_name, term_code) -> dict:
     }
     """
 
-    return {
+    return {    
         TERM_NAME_KEY: term_name,
         TERM_CODE_KEY: term_code,
     }
 
-
 if __name__ == "__main__":
-    print(create_response_data("Fall 2025", "F2025"))
+    print(json.dumps(create_term_response_data("Fall 2025", "F2025"), indent=2))
