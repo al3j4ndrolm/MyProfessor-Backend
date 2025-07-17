@@ -6,11 +6,7 @@ from bs4 import BeautifulSoup, Tag
 # Local imports
 import helpers.soup_getter
 import logging
-<<<<<<< Updated upstream
-from data_fetchers.schools.san_jose_state_university.school_config import SAN_JOSE_STATE_UNIVERSITY_BASE_URL
-=======
 from data_fetchers.schools.san_jose_state_university.school_config import TERMS_BASE_URL
->>>>>>> Stashed changes
 from data_fetchers.api.terms.configs import TERM_NAME_KEY, TERM_CODE_KEY
 from data_fetchers.api.terms.response import create_terms_response_data
 
@@ -25,11 +21,8 @@ def fetch_terms() -> list[dict]:
 
     try:
         logger.info("Fetching terms for San Jose State University")
-<<<<<<< Updated upstream
-        soup = helpers.soup_getter.html_url_to_soup(SAN_JOSE_STATE_UNIVERSITY_BASE_URL)
-=======
+
         soup = helpers.soup_getter.html_url_to_soup(TERMS_BASE_URL)
->>>>>>> Stashed changes
 
         terms_fieldset = locate_terms_fieldset_in_soup(soup)
         terms_options = locate_terms_options_in_fieldset(terms_fieldset)
