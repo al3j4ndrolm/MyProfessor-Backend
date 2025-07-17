@@ -18,7 +18,7 @@ def fetch_terms() -> list[dict]:
     """
     try:
         logger.info("Fetching terms for De Anza College")
-        soup = helpers.soup_getter.html_url_to_soup(DE_ANZA_COLLEGE_BASE_URL)
+        soup = helpers.soup_getter.html_url_to_soup(BASE_URL)
 
         terms_fieldset = locate_terms_fieldset_in_soup(soup)
         terms_options = locate_terms_options_in_fieldset(terms_fieldset)
