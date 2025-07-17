@@ -10,8 +10,8 @@ from pprint import pprint
 import helpers.soup_getter
 import logging
 from data_fetchers.schools.de_anza_college.school_config import SCHEDULES_BASE_URL
-from data_fetchers.api.terms.response import create_classes_response_data, create_meeting_data
-from data_fetchers.api.terms.configs import HAS_EMAIL_KEY, CLASSES_KEY, MEETINGS_KEY
+from data_fetchers.api.schedules.response import create_class_response_data, create_meeting_data, create_professor_response_data, add_class_to_professor, add_meeting_to_professor
+from data_fetchers.api.schedules.configs import HAS_EMAIL_KEY, CLASSES_KEY, MEETINGS_KEY
 
 logger = logging.getLogger(__name__)
 
@@ -21,7 +21,6 @@ def fetch_schedules(term_code: str, department: str):
 
     Returns [] if the schedules are not found in the soup.
     """
-
     try:
         logger.info(f"Fetching schedules for {term_code} and {department}")
         soup = helpers.soup_getter.html_url_to_soup(SCHEDULES_BASE_URL + f"dept={department}&t={term_code}")
@@ -37,15 +36,23 @@ def locate_schedules_fieldset_in_soup(soup) -> Tag:
     """
     Locate the schedules fieldset in the soup.
 
-    Example of Tag:
-    <table class="table table-schedule table-hover mix-container">
+    Example of soup:
+    <html>
+        <table class="table table-schedule table-hover mix-container">
+            <tbody>
+                <tr>
+                    <td>Schedule 1</td>
+                    <td>Schedule 2</td>
+                </tr>
+            </tbody>
+        </table>
+    </html>
 
     Raises:
         ValueError: If the schedules fieldset is not found in the soup.
     """
     schedules_fieldset = soup.find("table", class_="table table-schedule table-hover mix-container").find("tbody")
     if schedules_fieldset is None:
-        logger.error("Schedules fieldset not found in soup")
         raise ValueError("Schedules fieldset not found in soup")
 
     return schedules_fieldset
@@ -69,14 +76,24 @@ def locate_schedules_options_in_fieldset(schedules_fieldset) -> list[Tag]:
     schedules_options = schedules_fieldset.find_all("tr")
 
     if schedules_options is None:
-        logger.error("Schedules options not found in fieldset")
         raise ValueError("Schedules options not found in fieldset")
 
     return schedules_options
 
-def build_schedule_data_list(schedules_options):
+def build_schedule_data_list(schedule_rows) -> dict:
     """
     Build the schedule data list.
+
+    Example of schedules_option:
+    <tr>
+        <td>PHYS 4A</td>
+        <td>John Doe</td>
+        <td>Open</td>
+        <td>MTWR···</td>
+        <td>09:30 AM-10:20 AM</td>
+        <td>S35</td>
+        <td>CLAS</td>
+    </tr>
 
     Example of return value:
     {
@@ -91,7 +108,7 @@ def build_schedule_data_list(schedules_options):
                                 "tag": "CLAS",
                                 "days": "MTWR···",
                                 "time": "09:30 AM-10:20 AM",
-                                "location": "S35"
+                                "location": "S35"  
                             }
                         ]
                     }
@@ -101,15 +118,13 @@ def build_schedule_data_list(schedules_options):
     }
     """
 
-    schedule_data_list = {}
-    last_visited_course_name = ""
-    last_visited_professor_name = ""
+    courses_data_table = {}
 
-    for schedule in schedules_options:
+    for schedule_row in schedule_rows:
 
-        schedule_data = schedule.find_all("td")
+        schedule_data = schedule_row.find_all("td")
+
         if len(schedule_data) > 5:
-
             class_crn = schedule_data[0].text
             course_name = schedule_data[1].text
             availability = schedule_data[3].text
@@ -119,44 +134,32 @@ def build_schedule_data_list(schedules_options):
             location = schedule_data[8].text
             tag = "CLAS"
 
-            # If the course name is different from the last visited course name, update the last visited course name and professor name
-            if course_name != last_visited_course_name:
-                last_visited_course_name = course_name
-                last_visited_professor_name = professor_name
-            else:
-                professor_name = last_visited_professor_name
-
             # If the course name is not in the schedule data list, add it
-            if course_name not in schedule_data_list:
-                schedule_data_list[course_name] = {
-                    professor_name: {
-                        HAS_EMAIL_KEY: False,
-                        CLASSES_KEY: [
-                            create_classes_response_data(class_crn, availability, days, time, location, tag)
-                        ]
-                    }
-                }
-            # If the course name is in the schedule data list, add the professor name to the course name
-            elif course_name in schedule_data_list:
-                if professor_name not in schedule_data_list[course_name]:
-                    schedule_data_list[course_name][professor_name] = {
-                        HAS_EMAIL_KEY: False,
-                        CLASSES_KEY: [
-                            create_classes_response_data(class_crn, availability, days, time, location, tag)
-                        ]
-                    }
-                # If the professor name is in the schedule data list, add the class to the professor name
-                else:
-                    schedule_data_list[course_name][professor_name][CLASSES_KEY].append(create_classes_response_data(class_crn, availability, days, time, location, tag))
+            if course_name not in courses_data_table:
+                courses_data_table[course_name] = {}
+
+            # If the professor name is not in the course name, add the professor name to the course name
+            if professor_name not in courses_data_table[course_name]:
+                courses_data_table[course_name][professor_name] = create_professor_response_data(professor_name, False)
+                
+            professor_data = courses_data_table[course_name][professor_name]
+            class_data = create_class_response_data(class_crn, availability)
+            add_class_to_professor(professor_data, class_data)
+            meeting_data = create_meeting_data(tag, days, time, location)
+            add_meeting_to_professor(professor_data, meeting_data)
+        
         # If the schedule data is not 9 elements long, add the meeting to the last visited course name and professor name
         else:
-            tag = schedule_data[0].text
-            days = schedule_data[1].text
-            time = schedule_data[2].text
-            location = schedule_data[4].text
-            schedule_data_list[last_visited_course_name][last_visited_professor_name][CLASSES_KEY][-1][MEETINGS_KEY].append(create_meeting_data(tag, days, time, location))
+            professor_data = courses_data_table[course_name][professor_name]
+            meeting_data = create_meeting_data(
+                tag = schedule_data[0].text,
+                days = schedule_data[1].text,
+                time = schedule_data[2].text,
+                location = schedule_data[4].text
+            )
+            add_meeting_to_professor(professor_data, meeting_data)
 
-    return schedule_data_list
+    return courses_data_table
 
 if __name__ == "__main__":
-    fetch_schedules("F2025", "PHYS")
+    print(json.dumps(fetch_schedules("F2025", "PHYS"), indent=2))

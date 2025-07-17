@@ -1,0 +1,505 @@
+{
+    "PHYS 2A": {
+      "Ronald Francis": {
+        "has_email": false,
+        "classes": [
+          {
+            "class_crn": "25051",
+            "meetings": [
+              {
+                "tag": "CLAS",
+                "days": "MTWR\u00b7\u00b7\u00b7",
+                "time": "09:30 AM-10:20 AM",
+                "location": "S35"
+              },
+              {
+                "tag": "LAB",
+                "days": "M\u00b7\u00b7\u00b7\u00b7\u00b7\u00b7",
+                "time": "10:30 AM-01:20 PM",
+                "location": "S17"
+              }
+            ],
+            "availability": "Open"
+          },
+          {
+            "class_crn": "02071",
+            "meetings": [
+              {
+                "tag": "CLAS",
+                "days": "MTWR\u00b7\u00b7\u00b7",
+                "time": "09:30 AM-10:20 AM",
+                "location": "S35"
+              },
+              {
+                "tag": "LAB",
+                "days": "\u00b7\u00b7W\u00b7\u00b7\u00b7\u00b7",
+                "time": "10:30 AM-01:20 PM",
+                "location": "S17"
+              }
+            ],
+            "availability": "Open"
+          }
+        ]
+      }
+    },
+    "PHYS 4A": {
+      "Eduardo Luna": {
+        "has_email": false,
+        "classes": [
+          {
+            "class_crn": "02076",
+            "meetings": [
+              {
+                "tag": "CLAS",
+                "days": "MTWR\u00b7\u00b7\u00b7",
+                "time": "09:30 AM-10:20 AM",
+                "location": "S34"
+              },
+              {
+                "tag": "LAB",
+                "days": "\u00b7\u00b7\u00b7R\u00b7\u00b7\u00b7",
+                "time": "10:30 AM-01:20 PM",
+                "location": "S11"
+              },
+              {
+                "tag": "CLAS",
+                "days": "\u00b7\u00b7\u00b7\u00b7F\u00b7\u00b7",
+                "time": "09:30 AM-10:20 AM",
+                "location": "ONLINE"
+              }
+            ],
+            "availability": "Open"
+          },
+          {
+            "class_crn": "02075",
+            "meetings": [
+              {
+                "tag": "CLAS",
+                "days": "MTWR\u00b7\u00b7\u00b7",
+                "time": "09:30 AM-10:20 AM",
+                "location": "S34"
+              },
+              {
+                "tag": "LAB",
+                "days": "\u00b7T\u00b7\u00b7\u00b7\u00b7\u00b7",
+                "time": "10:30 AM-01:20 PM",
+                "location": "S11"
+              },
+              {
+                "tag": "CLAS",
+                "days": "\u00b7\u00b7\u00b7\u00b7F\u00b7\u00b7",
+                "time": "09:30 AM-10:20 AM",
+                "location": "ONLINE"
+              }
+            ],
+            "availability": "Open"
+          }
+        ]
+      },
+      "Kasra Khazeni": {
+        "has_email": false,
+        "classes": [
+          {
+            "class_crn": "25893",
+            "meetings": [
+              {
+                "tag": "CLAS",
+                "days": "MTWR\u00b7\u00b7\u00b7",
+                "time": "12:30 PM-01:20 PM",
+                "location": "S34"
+              },
+              {
+                "tag": "LAB",
+                "days": "\u00b7T\u00b7\u00b7\u00b7\u00b7\u00b7",
+                "time": "01:30 PM-04:20 PM",
+                "location": "S11"
+              },
+              {
+                "tag": "CLAS",
+                "days": "\u00b7\u00b7\u00b7\u00b7F\u00b7\u00b7",
+                "time": "12:30 PM-01:20 PM",
+                "location": "ONLINE"
+              }
+            ],
+            "availability": "Open"
+          },
+          {
+            "class_crn": "25898",
+            "meetings": [
+              {
+                "tag": "CLAS",
+                "days": "MTWR\u00b7\u00b7\u00b7",
+                "time": "12:30 PM-01:20 PM",
+                "location": "S34"
+              },
+              {
+                "tag": "LAB",
+                "days": "\u00b7\u00b7\u00b7R\u00b7\u00b7\u00b7",
+                "time": "01:30 PM-04:20 PM",
+                "location": "S11"
+              },
+              {
+                "tag": "CLAS",
+                "days": "\u00b7\u00b7\u00b7\u00b7F\u00b7\u00b7",
+                "time": "12:30 PM-01:20 PM",
+                "location": "ONLINE"
+              }
+            ],
+            "availability": "Open"
+          }
+        ]
+      },
+      "STAFF, M": {
+        "has_email": false,
+        "classes": [
+          {
+            "class_crn": "25354",
+            "meetings": [
+              {
+                "tag": "CLAS",
+                "days": "MTWR\u00b7\u00b7\u00b7",
+                "time": "01:30 PM-02:20 PM",
+                "location": "MLC105"
+              },
+              {
+                "tag": "LAB",
+                "days": "M\u00b7\u00b7\u00b7\u00b7\u00b7\u00b7",
+                "time": "10:30 AM-01:20 PM",
+                "location": "S11"
+              },
+              {
+                "tag": "CLAS",
+                "days": "\u00b7\u00b7\u00b7\u00b7F\u00b7\u00b7",
+                "time": "01:30 PM-02:20 PM",
+                "location": "ONLINE"
+              }
+            ],
+            "availability": "Open"
+          },
+          {
+            "class_crn": "25975",
+            "meetings": [
+              {
+                "tag": "CLAS",
+                "days": "MTWR\u00b7\u00b7\u00b7",
+                "time": "01:30 PM-02:20 PM",
+                "location": "MLC105"
+              },
+              {
+                "tag": "LAB",
+                "days": "\u00b7\u00b7W\u00b7\u00b7\u00b7\u00b7",
+                "time": "10:30 AM-01:20 PM",
+                "location": "S11"
+              },
+              {
+                "tag": "CLAS",
+                "days": "\u00b7\u00b7\u00b7\u00b7F\u00b7\u00b7",
+                "time": "01:30 PM-02:20 PM",
+                "location": "ONLINE"
+              }
+            ],
+            "availability": "Open"
+          }
+        ]
+      },
+      "Ramin Alizadeh": {
+        "has_email": false,
+        "classes": [
+          {
+            "class_crn": "02078",
+            "meetings": [
+              {
+                "tag": "CLAS",
+                "days": "M\u00b7W\u00b7\u00b7\u00b7\u00b7",
+                "time": "05:30 PM-07:45 PM",
+                "location": "MLC105"
+              },
+              {
+                "tag": "LAB",
+                "days": "M\u00b7\u00b7\u00b7\u00b7\u00b7\u00b7",
+                "time": "08:00 PM-10:50 PM",
+                "location": "S11"
+              }
+            ],
+            "availability": "Open"
+          },
+          {
+            "class_crn": "02080",
+            "meetings": [
+              {
+                "tag": "CLAS",
+                "days": "M\u00b7W\u00b7\u00b7\u00b7\u00b7",
+                "time": "05:30 PM-07:45 PM",
+                "location": "MLC105"
+              },
+              {
+                "tag": "LAB",
+                "days": "\u00b7\u00b7W\u00b7\u00b7\u00b7\u00b7",
+                "time": "08:00 PM-10:50 PM",
+                "location": "S11"
+              }
+            ],
+            "availability": "Open"
+          }
+        ]
+      }
+    },
+    "PHYS 4B": {
+      "Zuleyha Yuksek": {
+        "has_email": false,
+        "classes": [
+          {
+            "class_crn": "02081",
+            "meetings": [
+              {
+                "tag": "CLAS",
+                "days": "MTWR\u00b7\u00b7\u00b7",
+                "time": "09:30 AM-10:20 AM",
+                "location": "MLC105"
+              },
+              {
+                "tag": "LAB",
+                "days": "\u00b7T\u00b7\u00b7\u00b7\u00b7\u00b7",
+                "time": "10:30 AM-01:20 PM",
+                "location": "S17"
+              },
+              {
+                "tag": "CLAS",
+                "days": "\u00b7\u00b7\u00b7\u00b7F\u00b7\u00b7",
+                "time": "09:30 AM-10:20 AM",
+                "location": "ONLINE"
+              }
+            ],
+            "availability": "Open"
+          },
+          {
+            "class_crn": "27761",
+            "meetings": [
+              {
+                "tag": "CLAS",
+                "days": "MTWR\u00b7\u00b7\u00b7",
+                "time": "09:30 AM-10:20 AM",
+                "location": "MLC105"
+              },
+              {
+                "tag": "CLAS",
+                "days": "\u00b7\u00b7\u00b7\u00b7F\u00b7\u00b7",
+                "time": "09:30 AM-10:20 AM",
+                "location": "ONLINE"
+              },
+              {
+                "tag": "LAB",
+                "days": "\u00b7\u00b7\u00b7R\u00b7\u00b7\u00b7",
+                "time": "10:30 AM-01:20 PM",
+                "location": "S17"
+              }
+            ],
+            "availability": "Open"
+          }
+        ]
+      },
+      "Ronald Francis": {
+        "has_email": false,
+        "classes": [
+          {
+            "class_crn": "28256",
+            "meetings": [
+              {
+                "tag": "CLAS",
+                "days": "MTWR\u00b7\u00b7\u00b7",
+                "time": "01:30 PM-02:20 PM",
+                "location": "S35"
+              },
+              {
+                "tag": "LAB",
+                "days": "M\u00b7\u00b7\u00b7\u00b7\u00b7\u00b7",
+                "time": "02:30 PM-05:20 PM",
+                "location": "S17"
+              },
+              {
+                "tag": "CLAS",
+                "days": "\u00b7\u00b7\u00b7\u00b7F\u00b7\u00b7",
+                "time": "01:30 PM-02:20 PM",
+                "location": "ONLINE"
+              }
+            ],
+            "availability": "Open"
+          }
+        ]
+      },
+      "Kasra Khazeni": {
+        "has_email": false,
+        "classes": [
+          {
+            "class_crn": "26677",
+            "meetings": [
+              {
+                "tag": "CLAS",
+                "days": "M\u00b7W\u00b7\u00b7\u00b7\u00b7",
+                "time": "05:30 PM-07:45 PM",
+                "location": "S35"
+              },
+              {
+                "tag": "LAB",
+                "days": "M\u00b7\u00b7\u00b7\u00b7\u00b7\u00b7",
+                "time": "08:00 PM-10:50 PM",
+                "location": "S17"
+              }
+            ],
+            "availability": "Open"
+          },
+          {
+            "class_crn": "26685",
+            "meetings": [
+              {
+                "tag": "CLAS",
+                "days": "M\u00b7W\u00b7\u00b7\u00b7\u00b7",
+                "time": "05:30 PM-07:45 PM",
+                "location": "S35"
+              },
+              {
+                "tag": "LAB",
+                "days": "\u00b7\u00b7W\u00b7\u00b7\u00b7\u00b7",
+                "time": "08:00 PM-10:50 PM",
+                "location": "S17"
+              }
+            ],
+            "availability": "Open"
+          }
+        ]
+      }
+    },
+    "PHYS 4C": {
+      "Megan Ulbricht": {
+        "has_email": false,
+        "classes": [
+          {
+            "class_crn": "28850",
+            "meetings": [
+              {
+                "tag": "CLAS",
+                "days": "\u00b7T\u00b7R\u00b7\u00b7\u00b7",
+                "time": "05:30 PM-07:45 PM",
+                "location": "S35"
+              },
+              {
+                "tag": "LAB",
+                "days": "\u00b7T\u00b7\u00b7\u00b7\u00b7\u00b7",
+                "time": "02:30 PM-05:20 PM",
+                "location": "S17"
+              }
+            ],
+            "availability": "Open"
+          }
+        ]
+      }
+    },
+    "PHYS 10": {
+      "David Laubner": {
+        "has_email": false,
+        "classes": [
+          {
+            "class_crn": "28258",
+            "meetings": [
+              {
+                "tag": "CLAS",
+                "days": "\u00b7T\u00b7R\u00b7\u00b7\u00b7",
+                "time": "05:30 PM-07:45 PM",
+                "location": "ONLINE"
+              }
+            ],
+            "availability": "Open"
+          }
+        ]
+      }
+    },
+    "PHYS 50": {
+      "Eduardo Luna": {
+        "has_email": false,
+        "classes": [
+          {
+            "class_crn": "21249",
+            "meetings": [
+              {
+                "tag": "CLAS",
+                "days": "MTWR\u00b7\u00b7\u00b7",
+                "time": "08:30 AM-09:20 AM",
+                "location": "S34"
+              }
+            ],
+            "availability": "Open"
+          }
+        ]
+      },
+      "Zuleyha Yuksek": {
+        "has_email": false,
+        "classes": [
+          {
+            "class_crn": "02085",
+            "meetings": [
+              {
+                "tag": "CLAS",
+                "days": "MTWR\u00b7\u00b7\u00b7",
+                "time": "01:30 PM-02:20 PM",
+                "location": "S32"
+              }
+            ],
+            "availability": "Open"
+          }
+        ]
+      },
+      "STAFF, M": {
+        "has_email": false,
+        "classes": [
+          {
+            "class_crn": "02086",
+            "meetings": [
+              {
+                "tag": "CLAS",
+                "days": "\u00b7T\u00b7R\u00b7\u00b7\u00b7",
+                "time": "05:30 PM-07:20 PM",
+                "location": "ONLINE"
+              }
+            ],
+            "availability": "Open"
+          }
+        ]
+      },
+      "Alireza Naddaf": {
+        "has_email": false,
+        "classes": [
+          {
+            "class_crn": "22424",
+            "meetings": [
+              {
+                "tag": "CLAS",
+                "days": "M\u00b7W\u00b7\u00b7\u00b7\u00b7",
+                "time": "05:30 PM-07:20 PM",
+                "location": "ONLINE"
+              }
+            ],
+            "availability": "Open"
+          }
+        ]
+      }
+    },
+    "PHYS 77": {
+      "STAFF, M": {
+        "has_email": false,
+        "classes": [
+          {
+            "class_crn": "28259",
+            "meetings": [
+              {
+                "tag": "CLAS",
+                "days": "\u00b7\u00b7\u00b7\u00b7\u00b7\u00b7\u00b7",
+                "time": "TBA-TBA",
+                "location": "ONLINE"
+              }
+            ],
+            "availability": "Open"
+          }
+        ]
+      }
+    }
+  }
