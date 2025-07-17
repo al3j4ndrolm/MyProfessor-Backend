@@ -1,1 +1,2 @@
-base_url = "https://www.deanza.edu/schedule/"
+# Term URL
+BASE_URL = "https://www.deanza.edu/schedule/"

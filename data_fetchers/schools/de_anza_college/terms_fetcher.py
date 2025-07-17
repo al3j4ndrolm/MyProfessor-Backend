@@ -4,7 +4,7 @@ from bs4 import BeautifulSoup, Tag
 # Local imports
 import helpers.soup_getter
 import logging
-from .school_config import base_url
+from data_fetchers.schools.de_anza_college.school_config import BASE_URL
 from data_fetchers.api.terms.configs import TERM_NAME_KEY, TERM_CODE_KEY
 from data_fetchers.api.terms.response import create_response_data
 
@@ -18,7 +18,7 @@ def fetch_terms() -> list[dict]:
     """
     try:
         logger.info("Fetching terms for De Anza College")
-        soup = helpers.soup_getter.html_url_to_soup(base_url)
+        soup = helpers.soup_getter.html_url_to_soup(DE_ANZA_COLLEGE_BASE_URL)
 
         terms_fieldset = locate_terms_fieldset_in_soup(soup)
         terms_options = locate_terms_options_in_fieldset(terms_fieldset)
