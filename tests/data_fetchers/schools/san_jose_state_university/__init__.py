@@ -1,0 +1,1 @@
+# Test package for San Jose State University data fetchers 

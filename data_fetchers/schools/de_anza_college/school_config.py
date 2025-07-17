@@ -1,1 +1,0 @@
-base_url = "https://www.deanza.edu/schedule/"
