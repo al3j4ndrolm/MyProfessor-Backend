@@ -4,9 +4,9 @@ from bs4 import BeautifulSoup, Tag
 # Local imports
 import helpers.soup_getter
 import logging
-from data_fetchers.schools.de_anza_college.school_config import BASE_URL
+from data_fetchers.schools.de_anza_college.school_config import TERMS_BASE_URL
 from data_fetchers.api.terms.configs import TERM_NAME_KEY, TERM_CODE_KEY
-from data_fetchers.api.terms.response import create_response_data
+from data_fetchers.api.terms.response import create_terms_response_data
 
 logger = logging.getLogger(__name__)
 
@@ -18,7 +18,11 @@ def fetch_terms() -> list[dict]:
     """
     try:
         logger.info("Fetching terms for De Anza College")
+<<<<<<< Updated upstream
         soup = helpers.soup_getter.html_url_to_soup(DE_ANZA_COLLEGE_BASE_URL)
+=======
+        soup = helpers.soup_getter.html_url_to_soup(TERMS_BASE_URL)
+>>>>>>> Stashed changes
 
         terms_fieldset = locate_terms_fieldset_in_soup(soup)
         terms_options = locate_terms_options_in_fieldset(terms_fieldset)
@@ -101,7 +105,7 @@ def build_term_data_list(terms_options) -> list[dict]:
         except Exception as e:
             logger.error(f"Error getting value from term: {e}")
             raise e
-        term_data = create_response_data(term.text, value)
+        term_data = create_terms_response_data(term.text, value)
         term_data_list.append(term_data)
 
     return term_data_list
