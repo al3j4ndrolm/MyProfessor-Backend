@@ -109,7 +109,7 @@ class TestSJStateTermsFetcher:
     def test_integration_with_sample_file(self):
         sample_path = os.path.join(
             os.path.dirname(__file__),
-            '..', '..', '..', 'test_samples', 'san_jose_state_university', 'Schedules _ Class Schedules SJSU.html'
+            '..', '..', '..', 'test_samples', 'san_jose_state_university', 'terms_fetcher_test_sample.html'
         )
         with open(sample_path, 'r', encoding='utf-8') as f:
             html = f.read()
