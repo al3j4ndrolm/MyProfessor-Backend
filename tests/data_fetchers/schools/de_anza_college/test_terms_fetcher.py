@@ -18,7 +18,7 @@ class TestTermsFetcher:
         """Test locating the fieldset in soup using real HTML sample."""
         sample_path = os.path.join(
             os.path.dirname(__file__),
-            '..', '..', '..', 'test_samples', 'de_anza_college', 'schedule_of_classes.html'
+            '..', '..', '..', 'test_samples', 'de_anza_college', 'terms_fetcher_test_sample.html'
         )
         with open(sample_path, 'r', encoding='utf-8') as f:
             html = f.read()
@@ -32,7 +32,7 @@ class TestTermsFetcher:
         """Test locating term options in fieldset using real HTML sample."""
         sample_path = os.path.join(
             os.path.dirname(__file__),
-            '..', '..', '..', 'test_samples', 'de_anza_college', 'schedule_of_classes.html'
+            '..', '..', '..', 'test_samples', 'de_anza_college', 'terms_fetcher_test_sample.html'
         )
         with open(sample_path, 'r', encoding='utf-8') as f:
             html = f.read()
@@ -65,7 +65,7 @@ class TestTermsFetcher:
         """Integration test with real HTML parsing."""
         sample_path = os.path.join(
             os.path.dirname(__file__),
-            '..', '..', '..', 'test_samples', 'de_anza_college', 'schedule_of_classes.html'
+            '..', '..', '..', 'test_samples', 'de_anza_college', 'terms_fetcher_test_sample.html'
         )
         with open(sample_path, 'r', encoding='utf-8') as f:
             html = f.read()
