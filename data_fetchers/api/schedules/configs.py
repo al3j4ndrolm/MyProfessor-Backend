@@ -1,9 +1,9 @@
 
 # Schedules configs
-PROFESSOR_NAME_KEY = "professor_name"
-HAS_EMAIL_KEY = "has_email"
+PROFESSOR_NAME_KEY = "professorName"
+HAS_EMAIL_KEY = "hasEmail"
 CLASSES_KEY = "classes"
-CLASS_CRN_KEY = "class_crn"
+CLASS_CRN_KEY = "classCrn"
 MEETINGS_KEY = "meetings"
 TAG_KEY = "tag"
 DAYS_KEY = "days"
