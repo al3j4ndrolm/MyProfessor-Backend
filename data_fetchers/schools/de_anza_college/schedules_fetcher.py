@@ -15,24 +15,23 @@ from data_fetchers.api.schedules.configs import HAS_EMAIL_KEY, CLASSES_KEY, MEET
 
 logger = logging.getLogger(__name__)
 
-def fetch_schedules(term_code: str, department: str):
+def fetch_schedules(term_code: str, department: str, soup: BeautifulSoup) -> dict:
     """
     Fetch the schedules for a given term and department.
 
-    Returns [] if the schedules are not found in the soup.
+    Returns {} if the schedules are not found in the soup.
     """
     try:
         logger.info(f"Fetching schedules for {term_code} and {department}")
-        soup = helpers.soup_getter.html_url_to_soup(SCHEDULES_BASE_URL + f"dept={department}&t={term_code}")
-        schedules_fieldset = locate_schedules_fieldset_in_soup(soup)
-        schedules_options = locate_schedules_options_in_fieldset(schedules_fieldset)
-        schedule_data_list = build_schedule_data_list(schedules_options)
-        return schedule_data_list
+        schedules_fieldset = get_schedules_fieldset(soup)
+        schedules_options = get_schedules_options(schedules_fieldset)
+        schedule_data_table = build_schedule_data_table(schedules_options)
+        return schedule_data_table
 
     except Exception as e:
-        logger.error(f"Error fetching schedules for {term_code} and {department}: {e}")
+        return {}
 
-def locate_schedules_fieldset_in_soup(soup) -> Tag:
+def get_schedules_fieldset(soup) -> Tag:
     """
     Locate the schedules fieldset in the soup.
 
@@ -57,7 +56,7 @@ def locate_schedules_fieldset_in_soup(soup) -> Tag:
 
     return schedules_fieldset
 
-def locate_schedules_options_in_fieldset(schedules_fieldset) -> list[Tag]:
+def get_schedules_options(schedules_fieldset) -> list[Tag]:
     """
     Locate the schedules options in the schedules fieldset.
 
@@ -80,7 +79,7 @@ def locate_schedules_options_in_fieldset(schedules_fieldset) -> list[Tag]:
 
     return schedules_options
 
-def build_schedule_data_list(schedule_rows) -> dict:
+def build_schedule_data_table(schedule_rows) -> dict:
     """
     Build the schedule data list.
 

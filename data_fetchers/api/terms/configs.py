@@ -1,3 +1,3 @@
 # Term configs
-TERM_NAME_KEY = "term_name"
-TERM_CODE_KEY = "term_code"
+TERM_NAME_KEY = "termName"
+TERM_CODE_KEY = "termCode"
