@@ -8,6 +8,7 @@ sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(
 from bs4 import BeautifulSoup, Tag
 
 # Local Imports
+
 import logging
 from data_fetchers.schools.de_anza_college.main import main
 
@@ -37,6 +38,7 @@ logger = logging.getLogger(__name__)
 #     departments_full_name_list = extract_department_name_code_list(soup)
 #     departments_and_courses_data_table = build_departments_data_table(departments_full_name_list, offered_terms_list)
 #     return departments_and_courses_data_table
+
 
 def extract_department_name_code_list(soup: BeautifulSoup) -> list:
     """
@@ -150,4 +152,5 @@ def get_course_name_and_code(course_element: Tag) -> tuple[str, str]:
 
 if __name__ == "__main__":
     print(json.dumps(main(), indent=2))
+
 
