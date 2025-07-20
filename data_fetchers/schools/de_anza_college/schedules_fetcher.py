@@ -13,11 +13,37 @@ from data_fetchers.api.schedules.response import create_class_response_data, cre
 
 logger = logging.getLogger(__name__)
 
-def fetch_schedules(term_code: str, department: str, soup: BeautifulSoup) -> dict:
+def get_schedules(term_code: str, department: str, soup: BeautifulSoup) -> dict:
     """
     Fetch the schedules for a given term and department.
 
     Returns {} if the schedules are not found in the soup.
+
+    Example of return value:
+    {
+        "PHYS 4A": {
+            "John Doe": {
+                "has_email": False,
+                "classes": [
+                ]
+            }
+        }
+        "PHYS 1A": {
+            "John Doe": {
+                "has_email": False,
+                "classes": [
+                ]
+            }
+        }
+        "PHYS 2A": {
+            "John Doe": {
+                "has_email": False,
+                "classes": [
+                ]
+            }
+        }
+        ...
+    }
     """
     try:
         logger.info(f"Fetching schedules for {term_code} and {department}")

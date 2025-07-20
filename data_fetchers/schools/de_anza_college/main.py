@@ -1,64 +1,67 @@
-
+# Standard library imports
+import sys
+import os
+import json
+import logging
+from bs4 import BeautifulSoup
+sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))))
 
 # Local Imports
 from helpers.soup_getter import html_url_to_soup
 from data_fetchers.schools.de_anza_college.terms_fetcher import fetch_terms
-from data_fetchers.schools.de_anza_college.courses_fetcher import extract_department_name_code_list, get_course_name_list
+from data_fetchers.schools.de_anza_college.courses_fetcher import get_course_names
 from data_fetchers.schools.de_anza_college.school_config import TERMS_BASE_URL, SCHEDULES_BASE_URL
-from data_fetchers.schools.de_anza_college.schedules_fetcher import fetch_schedules
-from data_fetchers.api.courses.response import create_courses_data
+from data_fetchers.schools.de_anza_college.schedules_fetcher import get_schedules
+
+logger = logging.getLogger(__name__)
 
 def main() -> None:
-    """
-    Example of return value:
-    {
-        "ACCT - Accounting": [
-            "ACCT 64 - Payroll and Business Tax Accounting",
-            "ACCT 1C - Managerial Accounting",
-            ...
-        ],
-        "BIO - Biology": [
-            "BIO 10 - Introduction to Biology",
-            "BIO 11 - Introduction to Biology Lab",
-            ...
-        ],
-        ...
-    }
-    """
-    terms_data_table = fetch_terms()
-    offered_terms_list = [ term["termCode"] for term in terms_data_table ]
+
     soup = html_url_to_soup(TERMS_BASE_URL)
-    departments_full_name_list = extract_department_name_code_list(soup)
-    departments_and_courses_data_table = build_departments_data_table(departments_full_name_list, offered_terms_list) # TODO: update to database
+    terms_data_table = fetch_terms(soup)
+    # TODO: update terms_data_table to database `schools`
 
-def build_departments_data_table(departments_full_name_list: list, offered_terms_list: list) -> dict:
+    term_codes = [ term["termCode"] for term in terms_data_table ]
+    departments = get_departments(soup)
+    courses_data_table, schedules_data_table = get_courses_and_schedules(departments, term_codes)
+    # TODO: update courses_data_table to database `courses`
+    # TODO: update schedules_data_table to database `schedules`
+
+def get_departments(soup: BeautifulSoup) -> list:
     """
     Example of return value:
-    {
-        "ACCT - Accounting": [
-            "ACCT 64 - Payroll and Business Tax Accounting",
-            "ACCT 1C - Managerial Accounting",
-            ...
-        ],
-        "BIO - Biology": [
-            "BIO 10 - Introduction to Biology",
-            "BIO 11 - Introduction to Biology Lab",
-            ...
-        ],  
+    [
+        ("ACCT - Accounting", "ACCT"),
+        ("BIO - Biology", "BIO"),
         ...
-    }
+    ]   
     """
+
+    try:
+        department_elements_holder = soup.find("select", id="dept-select")
+        department_elements = department_elements_holder.find_all("option")[1:]
+    except Exception as e:
+        logger.error(f"Error fetching department elements: {e}")
+        return []
+
+    department_name_code_list = []
+    for element in department_elements:
+        department_name_code_list.append((element.text, element.get("value")))
+
+    return department_name_code_list
     
-    departments_and_courses_data_table = {}
+def get_courses_and_schedules(departments: list, term_codes: list) -> tuple[dict, dict]:
+    
+    courses_data_table = {}
+    schedules_data_table = {term_code: {} for term_code in term_codes}
 
-    for department_full_name, department_code in departments_full_name_list:
-        courses_full_name_list = []
+    for department_full_name, department_code in departments:
 
-        for term_code in offered_terms_list:
-            soup = html_url_to_soup(f"{SCHEDULES_BASE_URL}dept={department_code}&t={term_code}") 
-            fetch_schedules(term_code, department_code, soup) # TODO: update to database
-            courses_full_name_list += get_course_name_list(department_code, term_code, soup)
+        courses_names = set()
+        for term_code in term_codes:
+            department_soup = html_url_to_soup(f"{SCHEDULES_BASE_URL}dept={department_code}&t={term_code}") 
+            schedules_data_table[term_code][department_code] = get_schedules(term_code, department_code, department_soup)
+            courses_names.update(get_course_names(department_code, term_code, department_soup))
+        courses_data_table[department_full_name] = courses_names
 
-        departments_and_courses_data_table.update(create_courses_data(department_full_name, courses_full_name_list)) # TODO: update to database
-
-    return departments_and_courses_data_table
+    return courses_data_table, schedules_data_table
