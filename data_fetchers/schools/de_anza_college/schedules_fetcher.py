@@ -3,23 +3,47 @@ import sys
 import os
 import json
 sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))))
-from bs4 import BeautifulSoup, Tag
-from pprint import pprint
+from bs4 import BeautifulSoup, Tag  
 
 # Local imports
-import helpers.soup_getter
+from helpers.soup_getter import html_url_to_soup
 import logging
 from data_fetchers.schools.de_anza_college.school_config import SCHEDULES_BASE_URL
 from data_fetchers.api.schedules.response import create_class_response_data, create_meeting_data, create_professor_response_data, add_class_to_professor, add_meeting_to_professor
-from data_fetchers.api.schedules.configs import HAS_EMAIL_KEY, CLASSES_KEY, MEETINGS_KEY
 
 logger = logging.getLogger(__name__)
 
-def fetch_schedules(term_code: str, department: str, soup: BeautifulSoup) -> dict:
+def get_schedules(term_code: str, department: str, soup: BeautifulSoup) -> dict:
     """
     Fetch the schedules for a given term and department.
 
     Returns {} if the schedules are not found in the soup.
+
+    Example of return value:
+    {
+        "PHYS 4A": {
+            "John Doe": {
+                "has_email": False,
+                "classes": [
+                ]
+            }
+        }
+        "PHYS 1A": {
+            "John Doe": {
+                "has_email": False,
+                "classes": [
+                ]
+            }
+        }
+        "PHYS 2A": {
+            "John Doe": {
+                "has_email": False,
+                "classes": [
+                ]
+            }
+        }
+        ...
+    }
     """
     try:
         logger.info(f"Fetching schedules for {term_code} and {department}")
@@ -161,4 +185,7 @@ def build_schedule_data_table(schedule_rows) -> dict:
     return courses_data_table
 
 if __name__ == "__main__":
-    print(json.dumps(fetch_schedules("F2025", "PHYS"), indent=2))
+    department_code = "PHYS"
+    term_code = "F2025"
+    soup = html_url_to_soup(f"{SCHEDULES_BASE_URL}dept={department_code}&t={term_code}") 
+    print(json.dumps(fetch_schedules(term_code, department_code, soup), indent=2))

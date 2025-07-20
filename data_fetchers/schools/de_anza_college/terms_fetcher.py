@@ -10,7 +10,7 @@ from data_fetchers.api.terms.response import create_term_response_data
 
 logger = logging.getLogger(__name__)
 
-def fetch_terms() -> list[dict]:
+def fetch_terms(soup: BeautifulSoup) -> list[dict]:
     """
     Fetch the terms for De Anza College.
 
@@ -18,7 +18,6 @@ def fetch_terms() -> list[dict]:
     """
     try:
         logger.info("Fetching terms for De Anza College")
-        soup = helpers.soup_getter.html_url_to_soup(TERMS_BASE_URL)
 
         terms_fieldset = locate_terms_fieldset_in_soup(soup)
         terms_options = locate_terms_options_in_fieldset(terms_fieldset)
