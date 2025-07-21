@@ -4,15 +4,13 @@
 from bs4 import BeautifulSoup, Tag
 
 # Local imports
-import helpers.soup_getter
 import logging
-from data_fetchers.schools.san_jose_state_university.school_config import TERMS_BASE_URL
 from data_fetchers.api.terms.configs import TERM_NAME_KEY, TERM_CODE_KEY
 from data_fetchers.api.terms.response import create_term_response_data
 
 logger = logging.getLogger(__name__)
 
-def get_terms() -> list[dict]:
+def get_terms(soup: BeautifulSoup) -> list[dict]:
     """
     Fetch the terms for San Jose State University.
 
@@ -21,9 +19,6 @@ def get_terms() -> list[dict]:
 
     try:
         logger.info("Fetching terms for San Jose State University")
-
-        soup = helpers.soup_getter.html_url_to_soup(TERMS_BASE_URL)
-
         terms_fieldset = locate_terms_fieldset_in_soup(soup)
         terms_options = locate_terms_options_in_fieldset(terms_fieldset)
         terms_data = build_term_data_list(terms_options)
