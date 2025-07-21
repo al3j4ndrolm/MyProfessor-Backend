@@ -8,10 +8,10 @@ sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(
 
 # Local Imports
 from helpers.soup_getter import html_url_to_soup
-from data_fetchers.schools.de_anza_college.terms_fetcher import get_terms
-from data_fetchers.schools.de_anza_college.courses_fetcher import get_course_names
+from data_fetchers.schools.de_anza_college.terms import get_terms
+from data_fetchers.schools.de_anza_college.courses import get_course_names
+from data_fetchers.schools.de_anza_college.schedules import get_schedules
 from data_fetchers.schools.de_anza_college.school_config import TERMS_BASE_URL, SCHEDULES_BASE_URL
-from data_fetchers.schools.de_anza_college.schedules_fetcher import get_schedules
 
 logger = logging.getLogger(__name__)
 
