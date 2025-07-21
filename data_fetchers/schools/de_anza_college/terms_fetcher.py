@@ -10,7 +10,7 @@ from data_fetchers.api.terms.response import create_term_response_data
 
 logger = logging.getLogger(__name__)
 
-def fetch_terms(soup: BeautifulSoup) -> list[dict]:
+def get_terms(soup: BeautifulSoup) -> list[dict]:
     """
     Fetch the terms for De Anza College.
 

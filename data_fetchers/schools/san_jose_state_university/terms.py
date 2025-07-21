@@ -8,11 +8,11 @@ import helpers.soup_getter
 import logging
 from data_fetchers.schools.san_jose_state_university.school_config import TERMS_BASE_URL
 from data_fetchers.api.terms.configs import TERM_NAME_KEY, TERM_CODE_KEY
-from data_fetchers.api.terms.response import create_terms_response_data
+from data_fetchers.api.terms.response import create_term_response_data
 
 logger = logging.getLogger(__name__)
 
-def fetch_terms() -> list[dict]:
+def get_terms() -> list[dict]:
     """
     Fetch the terms for San Jose State University.
 
@@ -99,10 +99,10 @@ def build_term_data_list(terms_options) -> list[dict]:
             logger.error(f"Error getting value from term: {e}")
             raise e
 
-        term_data = create_terms_response_data(term.text, value)
+        term_data = create_term_response_data(term.text, value)
         term_data_list.append(term_data)
 
     return term_data_list
 
 if __name__ == "__main__":
-    print(fetch_terms())
+    print(get_terms())

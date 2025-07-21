@@ -76,7 +76,7 @@ def get_schedules_fieldset(soup) -> Tag:
     """
     schedules_fieldset = soup.find("table", class_="table table-schedule table-hover mix-container").find("tbody")
     if schedules_fieldset is None:
-        raise ValueError("Schedules fieldset not found in soup")
+        raise ValueError("Schedules fieldset not found in soup for De Anza College")
 
     return schedules_fieldset
 
@@ -99,7 +99,7 @@ def get_schedules_options(schedules_fieldset) -> list[Tag]:
     schedules_options = schedules_fieldset.find_all("tr")
 
     if schedules_options is None:
-        raise ValueError("Schedules options not found in fieldset")
+        raise ValueError("Schedules options not found in fieldset for De Anza College")
 
     return schedules_options
 
