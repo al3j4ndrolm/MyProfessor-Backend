@@ -1,53 +1,65 @@
-import json
+# Standard library imports
+import os, sys
+import traceback
+
+sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))))
+
+# Local imports
+from bs4 import BeautifulSoup, Tag
+from data_fetchers.api.schedules.response import create_professor_response_data, create_class_response_data, add_class_to_professor, create_meeting_data, add_meeting_to_professor
 import logging
 from data_fetchers.schools.san_jose_state_university.school_config import SCHEDULES_BASE_URL
-from helpers import soup_getter
-from data_fetchers.api.schedules.response import create_class_response_data, create_meeting_data, add_class_to_professor, add_meeting_to_professor
-from bs4 import BeautifulSoup, Tag
-from data_fetchers.schools.san_jose_state_university.courses import build_courses_data_table
+from helpers.soup_getter import html_url_to_soup
 
 logger = logging.getLogger(__name__)
 
-def get_schedules(term_code: str, department: str, soup: BeautifulSoup):
+def get_schedules(soup: BeautifulSoup, departments: set) -> dict:
+    """
+    Fetch the schedules for San Jose State University.
+
+    Returns {} if the schedules are not found in the soup.
+    """
 
     try:
-        logger.info(f"Getting schedules for {term_code} and {department}")
-        schedules_fieldset = get_schedules_fieldset(soup)
-        schedules_options = get_schedules_options(schedules_fieldset)
-        schedules_data_table = build_schedules_data_table(schedules_options)
-        logger.info(f"Fetched {len(schedules_data_table)} schedules for {term_code} and {department}")
+        schedules_holder = soup.find("table", id="classSchedule")
+        if schedules_holder is None:
+            raise ValueError("Schedules holder not found in soup for San Jose State University")
+        schedules_options = schedules_holder.find_all("tr")[1:]
+        if schedules_options is None:
+            raise ValueError("Schedules options not found in holder for San Jose State University")
+        schedules_data_table = build_schedules_data_table(schedules_options, departments)
+
         return schedules_data_table
 
     except Exception as e:
-        logger.error(f"Error getting schedules for {term_code} and {department}: {e}")
-        return []
+        logger.error(f"Error getting schedules for San Jose State University: {traceback.format_exc()}")
+        return {}
 
-def get_schedules_fieldset(soup: BeautifulSoup) -> Tag:
+def build_schedules_data_table(schedules_rows: list[Tag], departments: set) -> dict:
 
-    schedules_holder = soup.find("table", id="classSchedule")
-
-    if schedules_holder is None:
-        raise ValueError("Schedules holder not found in soup for San Jose State University")
-
-    return schedules_holder
-
-def get_schedules_options(schedules_fieldset: Tag) -> list[Tag]:
-
-    try:
-        schedules_options = schedules_fieldset.find_all("tr")[1:]
-    except Exception as e:
-        raise ValueError("Schedules options not found in fieldset for San Jose State University")
-
-    return schedules_options
-
-def build_schedules_data_table(schedules_rows: list[Tag]) -> dict:
-
-    courses_data_table = {}
+    schedules_data_table = {department: {} for department in departments}
 
     for schedule_row in schedules_rows:
         schedule_data = schedule_row.find_all("td")
 
-        if len(schedule_data) == 13:
+        if len(schedule_data) > 13:
+            """
+            Example of schedule_row (first row is the header):
+            <td>AAS 1 (Section 01)</td>
+            <td>47414</td>
+            <td>In Person</td>
+            <td>Introduction to Asian American Studies</td>
+            <td>GE: 6</td>
+            <td> 3.0</td>
+            <td>LEC</td>
+            <td>MW</td>
+            <td>09:00AM-10:15AM</td>
+            <td><a href="mailto:joanne.rondilla@sjsu.edu">Joanne Rondilla</a></td>
+            <td>DMH355</td>
+            <td>08/20/25-12/08/25</td>
+            <td>   0</td>
+            """
+
             class_crn = schedule_data[1].text.strip()
             course_name = schedule_data[0].text.strip().split(' (')[0] # This way we only get the course name
             course_title = schedule_data[2].text.strip()
@@ -55,47 +67,45 @@ def build_schedules_data_table(schedules_rows: list[Tag]) -> dict:
             days = schedule_data[7]
             time = schedule_data[8]
             professor_name = schedule_data[9].text.strip()
-            location = schedule_data[10].text.strip()
+            location = schedule_data[10]
             tag = "CLAS"
 
-            if days.find("br") is not None: # This is for the case where the days are split into multiple lines (Multiple schedules fo one class)
-                lines = [line.strip() for line in days.stripped_strings if line.strip()]
-                days = []
-                times = []
+            if days.find("br") is not None:
+                lines = [line.strip() for line in time.get_text(separator='\n').split('\n') if line.strip()]
+                locations = location.get_text(separator='\n').split('\n')
 
-                i = 0
-                while i < len(lines):
-                    day = lines[i]
-                    time = lines[i+1] if i+1 < len(lines) and ':' in lines[i+1] else None
-                    days.append(day.text.strip())
-                    times.append(time.text.strip())
-                    i += 2 if time else 1
+                days = lines[::2]   # every 0,2,4... line is a day
+                time = lines[1::2]
+                location = locations
             else:
-                days = days.text.strip() # This is for the case where the days are not split into multiple lines (One schedule for one class)
-                time = time.text.strip()
+                days = [days.text.strip()]
+                time = [time.text.strip()]
+                location = [location.text.strip()]
         
-            courses_data_table = build_courses_data_table(course_name, course_title, courses_data_table)
-        
-            professor_data = courses_data_table[course_name][professor_name]
-            class_data = create_class_response_data(class_crn, availability)
-            add_class_to_professor(professor_data, class_data)
-            meeting_data = create_meeting_data(tag, days, time, location)
-            add_meeting_to_professor(professor_data, meeting_data)
-        else:
-            professor_data = courses_data_table[course_name][professor_name]
-            meeting_data = create_meeting_data(
-                tag = schedule_data[0].text,
-                days = schedule_data[1].text,
-                time = schedule_data[2].text,
-                location = schedule_data[4].text
-            )
+        department = course_name.split(' ')[0]
+
+        if department not in departments:
+            continue
+
+        if course_name not in schedules_data_table[department]:
+            schedules_data_table[department][course_name] = {}
+
+        if professor_name not in schedules_data_table[department][course_name]:
+            schedules_data_table[department][course_name][professor_name] = create_professor_response_data(professor_name, False)
+
+        professor_data = schedules_data_table[department][course_name][professor_name]
+        class_data = create_class_response_data(class_crn, availability)
+        add_class_to_professor(professor_data, class_data)
+
+        for day, time, location in zip(days, time, location):
+            meeting_data = create_meeting_data(tag, day, time, location)
             add_meeting_to_professor(professor_data, meeting_data)
 
-    return courses_data_table
+    return schedules_data_table
 
 if __name__ == "__main__":
-    department_code = "MATH"
-    term_code = "2025F"
-    soup = soup_getter.html_url_to_soup(f"{SCHEDULES_BASE_URL}dept={department_code}&t={term_code}")
-    schedules_data_table = get_schedules(term_code, department_code, soup)
+    import json
+    soup = html_url_to_soup(SCHEDULES_BASE_URL + "summer-2025.php")
+    departments = {"ART"}
+    schedules_data_table = get_schedules(soup, departments)
     print(json.dumps(schedules_data_table, indent=2))

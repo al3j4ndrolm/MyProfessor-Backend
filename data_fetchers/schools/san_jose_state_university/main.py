@@ -12,6 +12,8 @@ from data_fetchers.schools.san_jose_state_university.schedules import get_schedu
 from data_fetchers.schools.san_jose_state_university.school_config import TERMS_BASE_URL, SCHEDULES_BASE_URL
 from helpers import soup_getter
 
+logger = logging.getLogger(__name__)
+
 def main() -> None:
 
     terms_soup = soup_getter.html_url_to_soup(TERMS_BASE_URL)
@@ -19,17 +21,52 @@ def main() -> None:
     # TODO: update terms_data_table to database `schools`
 
     term_codes = [ term["termCode"] for term in terms_data_table ]
+    courses_data_table, schedules_data_table = get_courses_and_schedules(term_codes)
+    # TODO: update courses_data_table to database `courses`
+    # TODO: update schedules_data_table to database `schedules`
 
+
+def get_courses_and_schedules(term_codes: list) -> tuple[dict, dict]:
+    """
+    Example of return schedules_data_table:
+    {
+        "2025F": {
+            "MATH": {
+                "MATH 101": {
+                    "John Doe": {
+                        "has_email": False,
+                        "classes": [
+                        ]
+                    }
+                }
+            },
+            "PHYS": {
+                "PHYS 101": {
+                    "John Doe": {
+                        "has_email": False,
+                        "classes": [
+                        ]
+                    }
+                }
+            }
+        }
+    }
+    """
     courses_data_table = {}
     schedules_data_table = {}
+    departments = set()
 
     for term_code in term_codes:
-        courses_and_schedules_soup = soup_getter.html_url_to_soup(f"{SCHEDULES_BASE_URL}{term_code}")
-        courses_data = get_courses(courses_and_schedules_soup, courses_data_table) # TODO: update courses_data_table to database `courses`
-        schedules_data = schedules_data_table.update(get_schedules(courses_and_schedules_soup, courses_data_table)) # TODO: update schedules_data_table to database `schedules`
-    
-    print(courses_data_table)
-    print(schedules_data_table)
+        schedules_soup = soup_getter.html_url_to_soup(f"{SCHEDULES_BASE_URL}{term_code}")
 
-if __name__ == "__main__":
-    main()
+        # courses_data includes courses for all departments in one term, is a dict of str to sets
+        courses_data = get_courses(schedules_soup, courses_data_table)
+        for department, _ in courses_data.items():
+            courses_data_table[department].update(courses_data[department])
+            departments.add(department)
+
+        # schedules_data includes schedules for all departments in one term
+        schedules_data = get_schedules(schedules_soup, departments)
+        schedules_data_table[term_code] = schedules_data
+
+    return courses_data_table, schedules_data_table
