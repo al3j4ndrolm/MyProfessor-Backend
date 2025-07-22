@@ -4,7 +4,7 @@ from bs4 import BeautifulSoup, Tag
 
 logger = logging.getLogger(__name__)
 
-def get_courses(soup: BeautifulSoup, courses_data_table: dict) -> dict:
+def get_courses_all_departments(soup: BeautifulSoup, courses_data_table: dict) -> dict:
     try:
         logger.info(f"Extracting courses for San Jose State University ...")
 

@@ -27,8 +27,8 @@ def get_reference_data():
 
 class TestSJSUSchedules:
     def test_get_schedules(self):
-        soup = html_url_to_soup(SCHEDULES_BASE_URL + "fall-2025.php")
-        departments = {"MATH", "PHYS"}
+        soup = html_url_to_soup(SCHEDULES_BASE_URL + "summer-2025.php")
+        departments = {"ART"}
         result = schedules.get_schedules(soup, departments)
         reference_data = get_reference_data()
         # Compare the result with the reference data (by keys and values)

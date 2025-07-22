@@ -55,7 +55,7 @@ def create_class_response_data(class_crn = "N/A", availability = "N/A") -> dict:
             AVAILABILITY_KEY: availability,
         }
 
-def create_meeting_data(tag = "N/A", days = "N/A", time = "N/A", location = "N/A") -> dict:
+def create_meeting_data(tag = "", days = "·······", time = "", location = "") -> dict:
     """
     Example of return value: {
         "tag": "CLAS",
