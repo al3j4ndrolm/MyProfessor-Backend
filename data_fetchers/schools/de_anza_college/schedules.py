@@ -1,153 +1,58 @@
 # Standard library imports
-import sys
-import os
-import json
-sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))))
-from bs4 import BeautifulSoup, Tag  
+import logging
+import traceback
+from bs4 import BeautifulSoup
 
 # Local imports
-from helpers.soup_getter import html_url_to_soup
-import logging
-from data_fetchers.schools.de_anza_college.school_config import SCHEDULES_BASE_URL
 from data_fetchers.api.schedules.response import create_class_response_data, create_meeting_data, create_professor_response_data, add_class_to_professor, add_meeting_to_professor
 
 logger = logging.getLogger(__name__)
 
-def get_schedules(term_code: str, department: str, soup: BeautifulSoup) -> dict:
+def get_schedules(soup: BeautifulSoup) -> dict:
     """
-    Fetch the schedules for a given term and department.
+    Fetch the schedules for De Anza College.
 
     Returns {} if the schedules are not found in the soup.
-
-    Example of return value:
-    {
-        "PHYS 4A": {
-            "John Doe": {
-                "has_email": False,
-                "classes": [
-                ]
-            }
-        }
-        "PHYS 1A": {
-            "John Doe": {
-                "has_email": False,
-                "classes": [
-                ]
-            }
-        }
-        "PHYS 2A": {
-            "John Doe": {
-                "has_email": False,
-                "classes": [
-                ]
-            }
-        }
-        ...
-    }
     """
     try:
-        logger.info(f"Fetching schedules for {term_code} and {department}")
-        schedules_fieldset = get_schedules_fieldset(soup)
-        schedules_options = get_schedules_options(schedules_fieldset)
-        schedule_data_table = build_schedule_data_table(schedules_options)
+        schedules_holder = soup.find("table", class_="table table-schedule table-hover mix-container")
+        if schedules_holder is None:
+            raise ValueError("Schedules holder not found in soup for De Anza College")
+        schedules_options = schedules_holder.find_all("tr")
+        if schedules_options is None:
+            raise ValueError("Schedules options not found in holder for De Anza College")
+        schedule_data_table = build_schedule_data_table(schedules_options[1:])
+
+        logger.info(f"Extracted schedules for {len(schedule_data_table)} courses.")
         return schedule_data_table
 
     except Exception as e:
+        logger.error(f"Error extracting schedules: {traceback.format_exc()}")
         return {}
 
-def get_schedules_fieldset(soup) -> Tag:
-    """
-    Locate the schedules fieldset in the soup.
-
-    Example of soup:
-    <html>
-        <table class="table table-schedule table-hover mix-container">
-            <tbody>
-                <tr>
-                    <td>Schedule 1</td>
-                    <td>Schedule 2</td>
-                </tr>
-            </tbody>
-        </table>
-    </html>
-
-    Raises:
-        ValueError: If the schedules fieldset is not found in the soup.
-    """
-    schedules_fieldset = soup.find("table", class_="table table-schedule table-hover mix-container").find("tbody")
-    if schedules_fieldset is None:
-        raise ValueError("Schedules fieldset not found in soup for De Anza College")
-
-    return schedules_fieldset
-
-def get_schedules_options(schedules_fieldset) -> list[Tag]:
-    """
-    Locate the schedules options in the schedules fieldset.
-
-    Example of Tag:
-    <table class="table table-schedule table-hover mix-container">
-        <tr>
-            <td>Schedule 1</td>
-            <td>Schedule 2</td>
-        </tr>
-    </table>
-
-    Raises:
-        ValueError: If the schedules options are not found in the fieldset.
-
-    """
-    schedules_options = schedules_fieldset.find_all("tr")
-
-    if schedules_options is None:
-        raise ValueError("Schedules options not found in fieldset for De Anza College")
-
-    return schedules_options
-
 def build_schedule_data_table(schedule_rows) -> dict:
-    """
-    Build the schedule data list.
-
-    Example of schedules_option:
-    <tr>
-        <td>PHYS 4A</td>
-        <td>John Doe</td>
-        <td>Open</td>
-        <td>MTWR···</td>
-        <td>09:30 AM-10:20 AM</td>
-        <td>S35</td>
-        <td>CLAS</td>
-    </tr>
-
-    Example of return value:
-    {
-        "PHYS 4A": {
-            "John Doe": {
-                "has_email": False,
-                "classes": [
-                    {
-                        "class_crn": "123456",
-                        "meetings": [
-                            {
-                                "tag": "CLAS",
-                                "days": "MTWR···",
-                                "time": "09:30 AM-10:20 AM",
-                                "location": "S35"  
-                            }
-                        ]
-                    }
-                ]
-            }
-        }
-    }
-    """
-
     courses_data_table = {}
+    last_course_name = None
+    last_professor_name = None
 
     for schedule_row in schedule_rows:
 
         schedule_data = schedule_row.find_all("td")
 
         if len(schedule_data) > 5:
+            """
+            Example of schedule_row (first row is the header):
+
+            <td rowspan="2">25051</td>
+            <td rowspan="2">PHYS 2A</td>
+            <td rowspan="2">02</td>
+            <td rowspan="2"><span class="label label-success label-seats">Open</span></td>
+            <td>General Physics I</td>
+            <td><span class="days">MTWR···</span></td>
+            <td>09:30 AM-10:20 AM</td>
+            <td>Ronald Francis</a></td>
+            <td>S35</td>
+            """
             class_crn = schedule_data[0].text
             course_name = schedule_data[1].text
             availability = schedule_data[3].text
@@ -156,6 +61,9 @@ def build_schedule_data_table(schedule_rows) -> dict:
             professor_name = schedule_data[7].text
             location = schedule_data[8].text
             tag = "CLAS"
+
+            last_course_name = course_name
+            last_professor_name = professor_name
 
             # If the course name is not in the schedule data list, add it
             if course_name not in courses_data_table:
@@ -173,7 +81,16 @@ def build_schedule_data_table(schedule_rows) -> dict:
         
         # If the schedule data is not 9 elements long, add the meeting to the last visited course name and professor name
         else:
-            professor_data = courses_data_table[course_name][professor_name]
+            """
+            Example of schedule_row (not first row):
+
+            <td><em>LAB</em></td>
+            <td><span class="days">M······</span></td>
+            <td><em>10:30 AM-01:20 PM</em></td>
+            <td></td>
+            <td><em>S17</em></td>
+            """
+            professor_data = courses_data_table[last_course_name][last_professor_name]
             meeting_data = create_meeting_data(
                 tag = schedule_data[0].text,
                 days = schedule_data[1].text,
@@ -183,9 +100,3 @@ def build_schedule_data_table(schedule_rows) -> dict:
             add_meeting_to_professor(professor_data, meeting_data)
 
     return courses_data_table
-
-if __name__ == "__main__":
-    department_code = "PHYS"
-    term_code = "F2025"
-    soup = html_url_to_soup(f"{SCHEDULES_BASE_URL}dept={department_code}&t={term_code}") 
-    print(json.dumps(fetch_schedules(term_code, department_code, soup), indent=2))

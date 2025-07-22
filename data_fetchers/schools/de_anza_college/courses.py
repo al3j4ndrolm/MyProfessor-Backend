@@ -1,20 +1,15 @@
 # Standard library imports
-import sys
 import os
-import json
+import sys
+import logging
 sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))))
 
 # Third Party Imports
 from bs4 import BeautifulSoup, Tag
 
-# Local Imports
-
-import logging
-from data_fetchers.schools.de_anza_college.main import main
-
 logger = logging.getLogger(__name__)
 
-def get_course_names(department_code: str, term_code: str, soup: BeautifulSoup) -> set:
+def get_course_names(department_code: str, soup: BeautifulSoup) -> set:
     """
     Example of return value:
     [
@@ -25,8 +20,9 @@ def get_course_names(department_code: str, term_code: str, soup: BeautifulSoup) 
     """
 
     try:
-        courses_elements = get_courses_elements_holder(department_code, term_code, soup)
+        courses_elements = get_courses_elements_holder(soup)
     except Exception as e:
+        logger.error(f"Error getting courses: {e}")
         return set()
 
     courses_full_name_set = set()
@@ -37,27 +33,13 @@ def get_course_names(department_code: str, term_code: str, soup: BeautifulSoup) 
         
     return courses_full_name_set
 
-def get_courses_elements_holder(department_code: str, term_code: str, soup: BeautifulSoup) -> list[Tag]:
-    """
-    Example of return value:
-    [
-        <tr class="mix">
-            <td>ACCT 64</td>
-            <td>Payroll and Business Tax Accounting</td>
-            ... 
-        </tr>,
-        ...
-    ]
-    """
+def get_courses_elements_holder(soup: BeautifulSoup) -> list[Tag]:
+
     courses_elements_holder = soup.find("table", class_="table table-schedule table-hover mix-container")
     courses_elements = courses_elements_holder.find_all("tr")[1:]
     return courses_elements
 
 def get_course_name_and_code(course_element: Tag) -> tuple[str, str]:
-    """
-    Example of return value:
-    ("ACCT 64", "Payroll and Business Tax Accounting")
-    """
 
     course_data = course_element.find_all("td")
 
@@ -68,7 +50,5 @@ def get_course_name_and_code(course_element: Tag) -> tuple[str, str]:
     else:
         return "", ""
 
-if __name__ == "__main__":
-    print(json.dumps(main(), indent=2))
 
 
