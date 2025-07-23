@@ -1,0 +1,438 @@
+{
+  "AAS":[
+     "AAS 33A - Asian Americans in U.S. History I",
+     "AAS 33B - Asian Americans in U.S. History II",
+     "AAS 1 - Introduction to Asian American Studies",
+     "AAS 25 - The Changing Majority: Power and Ethnicity in America"
+  ],
+  "AE":[
+     "AE 295B - Aerospace Engineering Masters Project II",
+     "AE 180 - Individual Studies",
+     "AE 295A - Aerospace Engineering Masters Project I",
+     "AE 298 - Special Projects in Aerospace Engineering"
+  ],
+  "AFAM":[
+     "AFAM 162 - The Aesthetics of Hip-Hop",
+     "AFAM 25 - The Changing Majority: Power and Ethnicity in America",
+     "AFAM 2A - African Americans and the Development of America's History and Government",
+     "AFAM 22 - The Humanities in African American Culture",
+     "AFAM 2B - African Americans and the Development of America's History and Government",
+     "AFAM 134 - The Black Civil Rights Movements"
+  ],
+  "AMS":[
+     "AMS 159 - Nature and World Cultures",
+     "AMS 139 - Animals and Society"
+  ],
+  "ANTH":[
+     "ANTH 140 - Human Sexuality",
+     "ANTH 146 - Culture and Conflict",
+     "ANTH 180 - Individual Studies",
+     "ANTH 160 - Mysteries of Ancient Civilizations",
+     "ANTH 115 - The Emerging Global Culture"
+  ],
+  "ART":[
+     "ART 175 - Special Topics in Studio Art",
+     "ART 178 - Art Field Work"
+  ],
+  "ARTH":[
+     "ARTH 70B - Art History, Renaissance to Modern",
+     "ARTH 72 - Design in Society"
+  ],
+  "ASIA":[
+     "ASIA 115 - The Emerging Global Culture",
+     "ASIA 19 - Music in World Cultures",
+     "ASIA 104 - Asian Philosophy"
+  ],
+  "ASTR":[
+     "ASTR 101 - Modern Astronomy"
+  ],
+  "AVIA":[
+     "AVIA 195 - Internship with the Aviation Industry",
+     "AVIA 180 - Individual Research Study"
+  ],
+  "BIOL":[
+     "BIOL 54 - Human Understanding",
+     "BIOL 140 - Human Sexuality",
+     "BIOL 129 - Neuroscience",
+     "BIOL 10 - The Living World"
+  ],
+  "BME":[
+     "BME 180 - Individual Studies"
+  ],
+  "BUS1":[
+     "BUS1 20 - Financial Accounting",
+     "BUS1 175 - Real Estate Finance",
+     "BUS1 180A - Individual Study Accounting",
+     "BUS1 170 - Fundamentals of Finance"
+  ],
+  "BUS2":[
+     "BUS2 136 - Product Development",
+     "BUS2 130 - Introduction to Marketing",
+     "BUS2 139 - Marketing Management",
+     "BUS2 90 - Business Statistics",
+     "BUS2 180F - Individual Study Marketing",
+     "BUS2 190 - Fundamentals of Business Analytics"
+  ],
+  "BUS3":[
+     "BUS3 166 - Business, Government, a Society",
+     "BUS3 160 - Fundamentals of Management and Organizational Behavior",
+     "BUS3 186 - Professional and Business Ethics",
+     "BUS3 189 - Strategic Management"
+  ],
+  "BUS4":[
+     "BUS4 188 - Business Systems and Policy",
+     "BUS4 180I - Individual Studies MIS",
+     "BUS4 91L - Computer Tools for Business"
+  ],
+  "BUS5":[
+     "BUS5 187 - Global Dimensions of Business",
+     "BUS5 180D - Individual Study",
+     "BUS5 140 - Fundamentals of Operations Management"
+  ],
+  "CA":[
+     "CA 172 - The Arts in U.S. Society"
+  ],
+  "CCS":[
+     "CCS 1 - Introduction to Chicana and Chicano Studies",
+     "CCS 160 - Gender and Sexuality in the Chicana/o Community",
+     "CCS 25 - The Changing Majority: Power and Ethnicity in America",
+     "CCS 10A - Mexican Americans and the Development of U.S. History and Government",
+     "CCS 10B - Mexican Americans and the Development of U.S. History and Government",
+     "CCS 130 - Chicanas and Chicanos in American Society"
+  ],
+  "CE":[
+     "CE 285 - Graduate Curricular Practical Training",
+     "CE 185 - Undergraduate Curricular Practical Training"
+  ],
+  "CHAD":[
+     "CHAD 102 - Development of Self in a Culturally Diverse Society",
+     "CHAD 106 - Concepts of Childhood"
+  ],
+  "CHE":[
+     "CHE 299 - Master's Thesis",
+     "CHE 180 - Individual Studies",
+     "CHE 180R - Undergraduate Research and Projects",
+     "CHE 298 - MS Research/Project",
+     "CHE 280 - Graduate Research",
+     "CHE 280I - Graduate Research Internship",
+     "CHE 298I - MS Research/Project Internship"
+  ],
+  "CMPE":[
+     "CMPE 295B - Master Project II",
+     "CMPE 298I - Computer/Software Engineering Internship",
+     "CMPE 198 - Technology and Civilization",
+     "CMPE 295A - Master Project I",
+     "CMPE 180 - Individual Studies"
+  ],
+  "COMM":[
+     "COMM 20 - Public Speaking",
+     "COMM 111P - Interviewing",
+     "COMM 100W - Writing Workshop: Writing for Influence",
+     "COMM 185F - Health Communication",
+     "COMM 176P - Communication and Gender",
+     "COMM 154I - Ethnography for Communication Studies",
+     "COMM 174 - Intercultural Comm and Structural Inequalities",
+     "COMM 45 - Media and Culture",
+     "COMM 155I - Quantitative Communication Inquiry",
+     "COMM 110F - Interpersonal Communication",
+     "COMM 10 - Communication and Human Relationships",
+     "COMM 179 - Global Media and Resistance"
+  ],
+  "CS":[
+     "CS 166 - Information Security",
+     "CS 190I - Internship Project",
+     "CS 154 - Formal Languages and Computability",
+     "CS 146 - Data Structures and Algorithms",
+     "CS 157A - Introduction to Database Management Systems",
+     "CS 158A - Computer Networks",
+     "CS 156 - Introduction to Artificial Intelligence",
+     "CS 131 - Processing Big Data: Tools and Techniques",
+     "CS 190 - Internship Project",
+     "CS 200W - Graduate Technical Writing"
+  ],
+  "DANC":[
+     "DANC 102 - Dance in World Cultures"
+  ],
+  "DSGN":[
+     "DSGN 180 - Individual Studies",
+     "DSGN 127 - Internship"
+  ],
+  "ECON":[
+     "ECON 132 - Public Finance",
+     "ECON 1A - Principles of Economics: Macroeconomics",
+     "ECON 1B - Principles of Economics: Microeconomics",
+     "ECON 121 - Industrial Organization",
+     "ECON 102 - Macroeconomic Analysis",
+     "ECON 104 - Mathematical Methods for Economics",
+     "ECON 101 - Microeconomic Analysis",
+     "ECON 185 - Applied Economics Internship"
+  ],
+  "EE":[
+     "EE 298I - Electrical Engineering Internship Experience"
+  ],
+  "ENGL":[
+     "ENGL 1B - Argument and Analysis",
+     "ENGL 71 - Creative Writing",
+     "ENGL 100WB - Written Communication: Business",
+     "ENGL 113 - Gothic and Horror Fiction",
+     "ENGL 172 - The Arts in U.S. Society",
+     "ENGL 123D - Literatures of Asia",
+     "ENGL 22 - Fantasy and Science Fiction",
+     "ENGL 1A - First Year Writing",
+     "ENGL 2 - Critical Thinking and Writing",
+     "ENGL 145 - Shakespeare and Performance"
+  ],
+  "ENGR":[
+     "ENGR 100W - Engineering Reports",
+     "ENGR 198 - Technology and Civilization"
+  ],
+  "ENVS":[
+     "ENVS 159 - Nature and World Cultures",
+     "ENVS 150 - Introduction to Environmental Thought",
+     "ENVS 10 - Life on a Changing Planet",
+     "ENVS 193 - Supervised Projects and Research"
+  ],
+  "FS":[
+     "FS 162 - Forensic Science Applications",
+     "FS 160 - Special Topics in Forensic Science",
+     "FS 170 - Forensic Science in Human Rights Investigations"
+  ],
+  "GEOG":[
+     "GEOG 140 - The United States",
+     "GEOG 1 - Physical Geography",
+     "GEOG 112 - Nations, Cultures a Globalization",
+     "GEOG 282 - Advanced Geographic Techniques"
+  ],
+  "GEOL":[
+     "GEOL 103 - Earth Systems and the Environment",
+     "GEOL 129B - Advanced Field Geology"
+  ],
+  "GERO":[
+     "GERO 114 - Psychology of Aging"
+  ],
+  "GLST":[
+     "GLST 1B - Introduction to Global Studies"
+  ],
+  "HIST":[
+     "HIST 170S - Topics in American History: American Identities and Institutions",
+     "HIST 189B - California History Since 1900",
+     "HIST 15 - Essentials of U.S. History",
+     "HIST 153 - History of Women in Europe",
+     "HIST 185 - LGBTQ+ History in the United States"
+  ],
+  "HSPM":[
+     "HSPM 191 - Hospitality, Tourism and Event Management Internship"
+  ],
+  "HUM":[
+     "HUM 159 - Nature and World Cultures",
+     "HUM 180 - Individual Studies"
+  ],
+  "ISE":[
+     "ISE 241 - Advanced Operations Planning and Control",
+     "ISE 295C - Graduate Curricular Practical Training"
+  ],
+  "JS":[
+     "JS 189 - Senior Seminar: Contemporary Problems",
+     "JS 103 - Courts and Society",
+     "JS 145 - White Collar Crime",
+     "JS 171 - Human Rights and Justice",
+     "JS 117 - Qualitative Research Methods",
+     "JS 104 - Penal Politics a Institutions",
+     "JS 152 - Juvenile Delinquency a Justice",
+     "JS 132 - Race, Gender, Inequality and the Law",
+     "JS 181 - Internship: Justice Studies",
+     "JS 100W - Writing Workshop",
+     "JS 151 - Criminological Theory",
+     "JS 114 - Research Methods in Justice Studies",
+     "JS 155 - Victimology"
+  ],
+  "KIN":[
+     "KIN 198 - Internship in Kinesiology",
+     "KIN 280 - Advanced Fieldwork in Sport Management",
+     "KIN 52A - Beginning Judo",
+     "KIN 285 - Internship in Kinesiology",
+     "KIN 111 - Sport a Movement in a Global Context",
+     "KIN 155 - Exercise Physiology",
+     "KIN 54A - Beginning Tae Kwon Do",
+     "KIN 2A - Beginning Swimming",
+     "KIN 175 - Measurement and Evaluation in Kinesiology",
+     "KIN 165 - Motor Development",
+     "KIN 34 - Step Training",
+     "KIN 20A - Beginning Badminton",
+     "KIN 36 - Conditioning through Cross Training"
+  ],
+  "LING":[
+     "LING 123 - Sound and Communication",
+     "LING 129 - Culture, Language and Ethnicity in the U.S.",
+     "LING 21 - Critical Thinking and Language"
+  ],
+  "LLD":[
+     "LLD 100WB - Writing Workshop for Business Students"
+  ],
+  "MATE":[
+     "MATE 280 - Graduate Research",
+     "MATE 299 - Master's Thesis",
+     "MATE 180 - Individual Studies",
+     "MATE 298I - Master's Project Internship",
+     "MATE 298 - MS Research/Project",
+     "MATE 280I - Graduate Research Internship"
+  ],
+  "MATH":[
+     "MATH 188I - Student Internships",
+     "MATH 30X - Calculus I",
+     "MATH 32X - Calculus III",
+     "MATH 32W - Calculus III Workshop",
+     "MATH 161A - Applied Probability and Statistics I",
+     "MATH 31 - Calculus II",
+     "MATH 70 - Mathematics for Business",
+     "MATH 32 - Calculus III",
+     "MATH 19 - Precalculus",
+     "MATH 31W - Calculus II Workshop",
+     "MATH 70X - Mathematics for Business",
+     "MATH 30 - Calculus I",
+     "MATH 70W - Mathematics for Business Workshop",
+     "MATH 31X - Calculus II",
+     "MATH 30W - Calculus I Workshop",
+     "MATH 18A - College Algebra",
+     "MATH 39 - Linear Algebra I"
+  ],
+  "MCOM":[
+     "MCOM 63 - New Media",
+     "MCOM 180 - Independent Study",
+     "MCOM 111 - Internship",
+     "MCOM 70 - Visual Communication for Modern Media",
+     "MCOM 100W - Writing Workshop: Mass Communications"
+  ],
+  "ME":[
+     "ME 180 - Individual Studies",
+     "ME 147 - Dynamic Systems Vibration and Control",
+     "ME 198 - Technology and Civilization",
+     "ME 114 - Heat Transfer",
+     "ME 115 - Thermal Engineering Laboratory",
+     "ME 201 - Project Planning",
+     "ME 298 - Special Project in Mechanical Engineering"
+  ],
+  "METR":[
+     "METR 112 - Global Climate Changes"
+  ],
+  "MUSC":[
+     "MUSC 120 - Worlds of Jazz",
+     "MUSC 172 - The Arts in U.S. Society",
+     "MUSC 10A - Music Appreciation",
+     "MUSC 10D - Introduction to Hip Hop",
+     "MUSC 19 - Music in World Cultures"
+  ],
+  "NAIS":[
+     "NAIS 2 - California Indigenous Peoples"
+  ],
+  "NUFS":[
+     "NUFS 144 - Food Culture: Consuming Passions",
+     "NUFS 139 - Hunger and Environmental Nutrition"
+  ],
+  "OCTH":[
+     "OCTH 190 - Foundations of Neuroscience for Occupational Therapy",
+     "OCTH 201B - Advanced Field Work Experience",
+     "OCTH 201A - Field Work Experience"
+  ],
+  "PH":[
+     "PH 291B - Fieldwork Practicum",
+     "PH 165C - Public Health Leadership Series III Fieldwork Experience",
+     "PH 291P - Professional Development",
+     "PH 140 - Human Sexuality"
+  ],
+  "PHIL":[
+     "PHIL 134 - Computers, Ethics and Society",
+     "PHIL 61 - Moral Issues",
+     "PHIL 66 - Introduction to Aesthetics",
+     "PHIL 110 - Science, Technology and Human Values",
+     "PHIL 10 - Introduction to Philosophy",
+     "PHIL 104 - Asian Philosophy",
+     "PHIL 186 - Professional and Business Ethics",
+     "PHIL 57 - Logic and Critical Reasoning",
+     "PHIL 160 - Philosophy of Science",
+     "PHIL 133 - Ethics in Science",
+     "PHIL 70B - Early Modern Philosophy"
+  ],
+  "PHYS":[
+     "PHYS 2B - Fundamentals of Physics",
+     "PHYS 2A - Fundamentals of Physics",
+     "PHYS 51 - General Physics II: Electricity and Magnetism",
+     "PHYS 50 - General Physics I: Mechanics",
+     "PHYS 52 - General Physics III: Waves, Light, Heat"
+  ],
+  "POLS":[
+     "POLS 100W - Writing Workshop",
+     "POLS 20 - Controversial Legal Issues",
+     "POLS 15 - Essentials of U.S. a California Government",
+     "POLS 3 - Introduction to Political Thought",
+     "POLS 170V - American Politics in Global Perspective",
+     "POLS 2 - Introduction to Comparative Politics"
+  ],
+  "PSYC":[
+     "PSYC 114 - Psychology of Aging",
+     "PSYC 155 - Human Learning",
+     "PSYC 158 - Perception",
+     "PSYC 191 - The Psychology of Prejudice",
+     "PSYC 135 - Cognition",
+     "PSYC 110 - Adult Psychopathology",
+     "PSYC 117 - Psychological Tests and Measures",
+     "PSYC 298 - Special Problems",
+     "PSYC 102 - Psychology of Childhood",
+     "PSYC 129 - Neuroscience",
+     "PSYC 194 - Cultural Psychology",
+     "PSYC 186 - Psychology Field Work",
+     "PSYC 190 - Current Issues Capstone",
+     "PSYC 30 - Introductory Psychobiology",
+     "PSYC 1 - Introduction to Psychology",
+     "PSYC 118 - Advanced Research Methods in Psychology",
+     "PSYC 142 - Child Psychopathology",
+     "PSYC 154 - Social Psychology",
+     "PSYC 18 - Introduction to Research Methods",
+     "PSYC 100W - Writing Workshop",
+     "PSYC 153 - Psychology in the Courtroom"
+  ],
+  "RECL":[
+     "RECL 170C - Internship in Recreation Therapy"
+  ],
+  "RELS":[
+     "RELS 104 - Asian Philosophy"
+  ],
+  "RTVF":[
+     "RTVF 198 - RTVF Internships, Portfolio, Career Prep",
+     "RTVF 160 - Introduction to Screenwriting",
+     "RTVF 10 - The Art of Film",
+     "RTVF 111 - Global Screen Cultures",
+     "RTVF 134 - Spartan Film Studio Summer Film Production",
+     "RTVF 110 - Media and Culture"
+  ],
+  "SE":[
+     "SE 154 - Formal Languages and Computability",
+     "SE 156 - Introduction to Artificial Intelligence",
+     "SE 180 - Individual Studies"
+  ],
+  "SOCI":[
+     "SOCI 105 - Qualitative Research Methods",
+     "SOCI 163 - Social Change",
+     "SOCI 162 - Race and Ethnic Relations"
+  ],
+  "SPAN":[
+     "SPAN 102B - Hispanic American Culture"
+  ],
+  "STAT":[
+     "STAT 115 - Intermediate Statistics",
+     "STAT 95 - Elementary Statistics"
+  ],
+  "TA":[
+     "TA 145 - Shakespeare and Performance",
+     "TA 10 - Theatre Appreciation",
+     "TA 172 - The Arts in U.S. Society"
+  ],
+  "TECH":[
+     "TECH 180A - Individual Research Studies",
+     "TECH 195 - Cooperative Internship",
+     "TECH 198 - Technology and Civilization"
+  ],
+  "URBP":[
+     "URBP 275G - Geographic Information Systems Overview: Urban Planning Applications"
+  ]
+}

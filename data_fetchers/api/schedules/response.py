@@ -55,7 +55,7 @@ def create_class_response_data(class_crn = "N/A", availability = "N/A") -> dict:
             AVAILABILITY_KEY: availability,
         }
 
-def create_meeting_data(tag = "N/A", days = "N/A", time = "N/A", location = "N/A") -> dict:
+def create_meeting_data(tag = "", days = "·······", time = "", location = "") -> dict:
     """
     Example of return value: {
         "tag": "CLAS",
@@ -66,10 +66,18 @@ def create_meeting_data(tag = "N/A", days = "N/A", time = "N/A", location = "N/A
     """
     return {
         TAG_KEY: tag,
-        DAYS_KEY: days,
+        DAYS_KEY: format_days(days),
         TIME_KEY: time,
         LOCATION_KEY: location
     }
+
+def format_days(day_str):
+    valid_chars = set('MTWRFSU·')
+    if len(day_str) == 7 and all(c in valid_chars for c in day_str):
+        return day_str  # already formatted
+
+    all_days = ['M', 'T', 'W', 'R', 'F', 'S', 'U']
+    return ''.join([d if d in day_str else '·' for d in all_days])
 
 if __name__ == "__main__":
     print(json.dumps(create_professor_response_data("John Doe", False), indent=2))

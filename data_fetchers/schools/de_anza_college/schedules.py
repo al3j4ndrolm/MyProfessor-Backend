@@ -1,0 +1,102 @@
+# Standard library imports
+import logging
+import traceback
+from bs4 import BeautifulSoup
+
+# Local imports
+from data_fetchers.api.schedules.response import create_class_response_data, create_meeting_data, create_professor_response_data, add_class_to_professor, add_meeting_to_professor
+
+logger = logging.getLogger(__name__)
+
+def get_schedules(soup: BeautifulSoup) -> dict:
+    """
+    Fetch the schedules for De Anza College.
+
+    Returns {} if the schedules are not found in the soup.
+    """
+    try:
+        schedules_holder = soup.find("table", class_="table table-schedule table-hover mix-container")
+        if schedules_holder is None:
+            raise ValueError("Schedules holder not found in soup for De Anza College")
+        schedules_options = schedules_holder.find_all("tr")
+        if schedules_options is None:
+            raise ValueError("Schedules options not found in holder for De Anza College")
+        schedule_data_table = build_schedule_data_table(schedules_options[1:])
+
+        logger.info(f"Extracted schedules for {len(schedule_data_table)} courses.")
+        return schedule_data_table
+
+    except Exception as e:
+        logger.error(f"Error extracting schedules: {traceback.format_exc()}")
+        return {}
+
+def build_schedule_data_table(schedule_rows) -> dict:
+    courses_data_table = {}
+    last_course_name = None
+    last_professor_name = None
+
+    for schedule_row in schedule_rows:
+
+        schedule_data = schedule_row.find_all("td")
+
+        if len(schedule_data) > 5:
+            """
+            Example of schedule_row (first row is the header):
+
+            <td rowspan="2">25051</td>
+            <td rowspan="2">PHYS 2A</td>
+            <td rowspan="2">02</td>
+            <td rowspan="2"><span class="label label-success label-seats">Open</span></td>
+            <td>General Physics I</td>
+            <td><span class="days">MTWR···</span></td>
+            <td>09:30 AM-10:20 AM</td>
+            <td>Ronald Francis</a></td>
+            <td>S35</td>
+            """
+            class_crn = schedule_data[0].text
+            course_name = schedule_data[1].text
+            availability = schedule_data[3].text
+            days = schedule_data[5].text
+            time = schedule_data[6].text
+            professor_name = schedule_data[7].text
+            location = schedule_data[8].text
+            tag = "CLAS"
+
+            last_course_name = course_name
+            last_professor_name = professor_name
+
+            # If the course name is not in the schedule data list, add it
+            if course_name not in courses_data_table:
+                courses_data_table[course_name] = {}
+
+            # If the professor name is not in the course name, add the professor name to the course name
+            if professor_name not in courses_data_table[course_name]:
+                courses_data_table[course_name][professor_name] = create_professor_response_data(professor_name, False)
+                
+            professor_data = courses_data_table[course_name][professor_name]
+            class_data = create_class_response_data(class_crn, availability)
+            add_class_to_professor(professor_data, class_data)
+            meeting_data = create_meeting_data(tag, days, time, location)
+            add_meeting_to_professor(professor_data, meeting_data)
+        
+        # If the schedule data is not 9 elements long, add the meeting to the last visited course name and professor name
+        else:
+            """
+            Example of schedule_row (not first row):
+
+            <td><em>LAB</em></td>
+            <td><span class="days">M······</span></td>
+            <td><em>10:30 AM-01:20 PM</em></td>
+            <td></td>
+            <td><em>S17</em></td>
+            """
+            professor_data = courses_data_table[last_course_name][last_professor_name]
+            meeting_data = create_meeting_data(
+                tag = schedule_data[0].text,
+                days = schedule_data[1].text,
+                time = schedule_data[2].text,
+                location = schedule_data[4].text
+            )
+            add_meeting_to_professor(professor_data, meeting_data)
+
+    return courses_data_table

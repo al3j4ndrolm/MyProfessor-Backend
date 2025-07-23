@@ -1,0 +1,505 @@
+{
+  "PHYS 2A":{
+     "Ronald Francis":{
+        "hasEmail":false,
+        "classes":[
+           {
+              "classCrn":"25051",
+              "meetings":[
+                 {
+                    "tag":"CLAS",
+                    "days":"MTWR···",
+                    "time":"09:30 AM-10:20 AM",
+                    "location":"S35"
+                 },
+                 {
+                    "tag":"LAB",
+                    "days":"M······",
+                    "time":"10:30 AM-01:20 PM",
+                    "location":"S17"
+                 }
+              ],
+              "availability":"Open"
+           },
+           {
+              "classCrn":"02071",
+              "meetings":[
+                 {
+                    "tag":"CLAS",
+                    "days":"MTWR···",
+                    "time":"09:30 AM-10:20 AM",
+                    "location":"S35"
+                 },
+                 {
+                    "tag":"LAB",
+                    "days":"··W····",
+                    "time":"10:30 AM-01:20 PM",
+                    "location":"S17"
+                 }
+              ],
+              "availability":"Open"
+           }
+        ]
+     }
+  },
+  "PHYS 4A":{
+     "Eduardo Luna":{
+        "hasEmail":false,
+        "classes":[
+           {
+              "classCrn":"02076",
+              "meetings":[
+                 {
+                    "tag":"CLAS",
+                    "days":"MTWR···",
+                    "time":"09:30 AM-10:20 AM",
+                    "location":"S34"
+                 },
+                 {
+                    "tag":"LAB",
+                    "days":"···R···",
+                    "time":"10:30 AM-01:20 PM",
+                    "location":"S11"
+                 },
+                 {
+                    "tag":"CLAS",
+                    "days":"····F··",
+                    "time":"09:30 AM-10:20 AM",
+                    "location":"ONLINE"
+                 }
+              ],
+              "availability":"Open"
+           },
+           {
+              "classCrn":"02075",
+              "meetings":[
+                 {
+                    "tag":"CLAS",
+                    "days":"MTWR···",
+                    "time":"09:30 AM-10:20 AM",
+                    "location":"S34"
+                 },
+                 {
+                    "tag":"LAB",
+                    "days":"·T·····",
+                    "time":"10:30 AM-01:20 PM",
+                    "location":"S11"
+                 },
+                 {
+                    "tag":"CLAS",
+                    "days":"····F··",
+                    "time":"09:30 AM-10:20 AM",
+                    "location":"ONLINE"
+                 }
+              ],
+              "availability":"Open"
+           }
+        ]
+     },
+     "Kasra Khazeni":{
+        "hasEmail":false,
+        "classes":[
+           {
+              "classCrn":"25893",
+              "meetings":[
+                 {
+                    "tag":"CLAS",
+                    "days":"MTWR···",
+                    "time":"12:30 PM-01:20 PM",
+                    "location":"S34"
+                 },
+                 {
+                    "tag":"LAB",
+                    "days":"·T·····",
+                    "time":"01:30 PM-04:20 PM",
+                    "location":"S11"
+                 },
+                 {
+                    "tag":"CLAS",
+                    "days":"····F··",
+                    "time":"12:30 PM-01:20 PM",
+                    "location":"ONLINE"
+                 }
+              ],
+              "availability":"Open"
+           },
+           {
+              "classCrn":"25898",
+              "meetings":[
+                 {
+                    "tag":"CLAS",
+                    "days":"MTWR···",
+                    "time":"12:30 PM-01:20 PM",
+                    "location":"S34"
+                 },
+                 {
+                    "tag":"LAB",
+                    "days":"···R···",
+                    "time":"01:30 PM-04:20 PM",
+                    "location":"S11"
+                 },
+                 {
+                    "tag":"CLAS",
+                    "days":"····F··",
+                    "time":"12:30 PM-01:20 PM",
+                    "location":"ONLINE"
+                 }
+              ],
+              "availability":"Open"
+           }
+        ]
+     },
+     "STAFF, M":{
+        "hasEmail":false,
+        "classes":[
+           {
+              "classCrn":"25354",
+              "meetings":[
+                 {
+                    "tag":"CLAS",
+                    "days":"MTWR···",
+                    "time":"01:30 PM-02:20 PM",
+                    "location":"MLC105"
+                 },
+                 {
+                    "tag":"LAB",
+                    "days":"M······",
+                    "time":"10:30 AM-01:20 PM",
+                    "location":"S11"
+                 },
+                 {
+                    "tag":"CLAS",
+                    "days":"····F··",
+                    "time":"01:30 PM-02:20 PM",
+                    "location":"ONLINE"
+                 }
+              ],
+              "availability":"Open"
+           },
+           {
+              "classCrn":"25975",
+              "meetings":[
+                 {
+                    "tag":"CLAS",
+                    "days":"MTWR···",
+                    "time":"01:30 PM-02:20 PM",
+                    "location":"MLC105"
+                 },
+                 {
+                    "tag":"LAB",
+                    "days":"··W····",
+                    "time":"10:30 AM-01:20 PM",
+                    "location":"S11"
+                 },
+                 {
+                    "tag":"CLAS",
+                    "days":"····F··",
+                    "time":"01:30 PM-02:20 PM",
+                    "location":"ONLINE"
+                 }
+              ],
+              "availability":"Open"
+           }
+        ]
+     },
+     "Ramin Alizadeh":{
+        "hasEmail":false,
+        "classes":[
+           {
+              "classCrn":"02078",
+              "meetings":[
+                 {
+                    "tag":"CLAS",
+                    "days":"M·W····",
+                    "time":"05:30 PM-07:45 PM",
+                    "location":"MLC105"
+                 },
+                 {
+                    "tag":"LAB",
+                    "days":"M······",
+                    "time":"08:00 PM-10:50 PM",
+                    "location":"S11"
+                 }
+              ],
+              "availability":"Open"
+           },
+           {
+              "classCrn":"02080",
+              "meetings":[
+                 {
+                    "tag":"CLAS",
+                    "days":"M·W····",
+                    "time":"05:30 PM-07:45 PM",
+                    "location":"MLC105"
+                 },
+                 {
+                    "tag":"LAB",
+                    "days":"··W····",
+                    "time":"08:00 PM-10:50 PM",
+                    "location":"S11"
+                 }
+              ],
+              "availability":"Open"
+           }
+        ]
+     }
+  },
+  "PHYS 4B":{
+     "Zuleyha Yuksek":{
+        "hasEmail":false,
+        "classes":[
+           {
+              "classCrn":"02081",
+              "meetings":[
+                 {
+                    "tag":"CLAS",
+                    "days":"MTWR···",
+                    "time":"09:30 AM-10:20 AM",
+                    "location":"MLC105"
+                 },
+                 {
+                    "tag":"LAB",
+                    "days":"·T·····",
+                    "time":"10:30 AM-01:20 PM",
+                    "location":"S17"
+                 },
+                 {
+                    "tag":"CLAS",
+                    "days":"····F··",
+                    "time":"09:30 AM-10:20 AM",
+                    "location":"ONLINE"
+                 }
+              ],
+              "availability":"Open"
+           },
+           {
+              "classCrn":"27761",
+              "meetings":[
+                 {
+                    "tag":"CLAS",
+                    "days":"MTWR···",
+                    "time":"09:30 AM-10:20 AM",
+                    "location":"MLC105"
+                 },
+                 {
+                    "tag":"CLAS",
+                    "days":"····F··",
+                    "time":"09:30 AM-10:20 AM",
+                    "location":"ONLINE"
+                 },
+                 {
+                    "tag":"LAB",
+                    "days":"···R···",
+                    "time":"10:30 AM-01:20 PM",
+                    "location":"S17"
+                 }
+              ],
+              "availability":"Open"
+           }
+        ]
+     },
+     "Ronald Francis":{
+        "hasEmail":false,
+        "classes":[
+           {
+              "classCrn":"28256",
+              "meetings":[
+                 {
+                    "tag":"CLAS",
+                    "days":"MTWR···",
+                    "time":"01:30 PM-02:20 PM",
+                    "location":"S35"
+                 },
+                 {
+                    "tag":"LAB",
+                    "days":"M······",
+                    "time":"02:30 PM-05:20 PM",
+                    "location":"S17"
+                 },
+                 {
+                    "tag":"CLAS",
+                    "days":"····F··",
+                    "time":"01:30 PM-02:20 PM",
+                    "location":"ONLINE"
+                 }
+              ],
+              "availability":"Open"
+           }
+        ]
+     },
+     "Kasra Khazeni":{
+        "hasEmail":false,
+        "classes":[
+           {
+              "classCrn":"26677",
+              "meetings":[
+                 {
+                    "tag":"CLAS",
+                    "days":"M·W····",
+                    "time":"05:30 PM-07:45 PM",
+                    "location":"S35"
+                 },
+                 {
+                    "tag":"LAB",
+                    "days":"M······",
+                    "time":"08:00 PM-10:50 PM",
+                    "location":"S17"
+                 }
+              ],
+              "availability":"Open"
+           },
+           {
+              "classCrn":"26685",
+              "meetings":[
+                 {
+                    "tag":"CLAS",
+                    "days":"M·W····",
+                    "time":"05:30 PM-07:45 PM",
+                    "location":"S35"
+                 },
+                 {
+                    "tag":"LAB",
+                    "days":"··W····",
+                    "time":"08:00 PM-10:50 PM",
+                    "location":"S17"
+                 }
+              ],
+              "availability":"Open"
+           }
+        ]
+     }
+  },
+  "PHYS 4C":{
+     "Megan Ulbricht":{
+        "hasEmail":false,
+        "classes":[
+           {
+              "classCrn":"28850",
+              "meetings":[
+                 {
+                    "tag":"CLAS",
+                    "days":"·T·R···",
+                    "time":"05:30 PM-07:45 PM",
+                    "location":"S35"
+                 },
+                 {
+                    "tag":"LAB",
+                    "days":"·T·····",
+                    "time":"02:30 PM-05:20 PM",
+                    "location":"S17"
+                 }
+              ],
+              "availability":"Open"
+           }
+        ]
+     }
+  },
+  "PHYS 10":{
+     "David Laubner":{
+        "hasEmail":false,
+        "classes":[
+           {
+              "classCrn":"28258",
+              "meetings":[
+                 {
+                    "tag":"CLAS",
+                    "days":"·T·R···",
+                    "time":"05:30 PM-07:45 PM",
+                    "location":"ONLINE"
+                 }
+              ],
+              "availability":"Open"
+           }
+        ]
+     }
+  },
+  "PHYS 50":{
+     "Eduardo Luna":{
+        "hasEmail":false,
+        "classes":[
+           {
+              "classCrn":"21249",
+              "meetings":[
+                 {
+                    "tag":"CLAS",
+                    "days":"MTWR···",
+                    "time":"08:30 AM-09:20 AM",
+                    "location":"S34"
+                 }
+              ],
+              "availability":"Open"
+           }
+        ]
+     },
+     "Zuleyha Yuksek":{
+        "hasEmail":false,
+        "classes":[
+           {
+              "classCrn":"02085",
+              "meetings":[
+                 {
+                    "tag":"CLAS",
+                    "days":"MTWR···",
+                    "time":"01:30 PM-02:20 PM",
+                    "location":"S32"
+                 }
+              ],
+              "availability":"Open"
+           }
+        ]
+     },
+     "STAFF, M":{
+        "hasEmail":false,
+        "classes":[
+           {
+              "classCrn":"02086",
+              "meetings":[
+                 {
+                    "tag":"CLAS",
+                    "days":"·T·R···",
+                    "time":"05:30 PM-07:20 PM",
+                    "location":"ONLINE"
+                 }
+              ],
+              "availability":"Open"
+           }
+        ]
+     },
+     "Alireza Naddaf":{
+        "hasEmail":false,
+        "classes":[
+           {
+              "classCrn":"22424",
+              "meetings":[
+                 {
+                    "tag":"CLAS",
+                    "days":"M·W····",
+                    "time":"05:30 PM-07:20 PM",
+                    "location":"ONLINE"
+                 }
+              ],
+              "availability":"Open"
+           }
+        ]
+     }
+  },
+  "PHYS 77":{
+     "STAFF, M":{
+        "hasEmail":false,
+        "classes":[
+           {
+              "classCrn":"28259",
+              "meetings":[
+                 {
+                    "tag":"CLAS",
+                    "days":"·······",
+                    "time":"TBA-TBA",
+                    "location":"ONLINE"
+                 }
+              ],
+              "availability":"Open"
+           }
+        ]
+     }
+  }
+}
