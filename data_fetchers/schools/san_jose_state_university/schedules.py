@@ -68,7 +68,6 @@ def build_schedules_data_table(schedules_rows: list[Tag], departments: set) -> d
             time = schedule_data[8]
             professor_name = schedule_data[9].text.strip()
             location = schedule_data[10]
-            tag = "CLAS"
 
             if days.find("br") is not None:
                 lines = [line.strip() for line in time.get_text(separator='\n').split('\n') if line.strip()]
@@ -97,8 +96,8 @@ def build_schedules_data_table(schedules_rows: list[Tag], departments: set) -> d
         class_data = create_class_response_data(class_crn, availability)
         add_class_to_professor(professor_data, class_data)
 
-        for day, time, location in zip(days, time, location):
-            meeting_data = create_meeting_data(tag, day, time, location)
+        for days_per_meeting, time_per_meeting, location_per_meeting in zip(days, time, location):
+            meeting_data = create_meeting_data(tag = "", days = days_per_meeting, time = time_per_meeting, location = location_per_meeting)
             add_meeting_to_professor(professor_data, meeting_data)
 
     return schedules_data_table

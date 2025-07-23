@@ -4,7 +4,7 @@ from bs4 import BeautifulSoup, Tag
 
 logger = logging.getLogger(__name__)
 
-def get_courses_all_departments(soup: BeautifulSoup, courses_data_table: dict) -> dict:
+def update_courses_data_table(soup: BeautifulSoup, courses_data_table: dict) -> None:
     try:
         logger.info(f"Extracting courses for San Jose State University ...")
 
@@ -13,25 +13,16 @@ def get_courses_all_departments(soup: BeautifulSoup, courses_data_table: dict) -
             raise ValueError("Courses holder not found in soup for San Jose State University")
         courses_options = courses_fieldset.find_all("tr")[1:]
 
-        courses_data_table = build_courses_data_table(courses_options, courses_data_table)
+        for course_row in courses_options:
+            course_data = course_row.find_all("td")
+            course_name = course_data[0].text.strip().split(' (')[0]
+            course_title = course_data[3].text.strip()
+            department_code = course_name.split(' ')[0]
+
+            if department_code not in courses_data_table:
+                courses_data_table[department_code] = set()
+            courses_data_table[department_code].add(course_name + " - " + course_title)
 
         logger.info(f"Extracted courses for {len(courses_data_table)} departments for San Jose State University")
-        return courses_data_table
     except Exception as e:
         logger.error(f"Error getting courses for San Jose State University: {e}")
-        return {}
-
-def build_courses_data_table(courses_rows: list[Tag], courses_data_table: dict) -> dict:
-
-    for course_row in courses_rows:
-
-        course_data = course_row.find_all("td")
-        course_name = course_data[0].text.strip().split(' (')[0]
-        course_title = course_data[3].text.strip()
-        department_code = course_name.split(' ')[0]
-
-        if department_code not in courses_data_table:
-            courses_data_table[department_code] = set()
-        courses_data_table[department_code].add(course_name + " - " + course_title)
-
-    return courses_data_table

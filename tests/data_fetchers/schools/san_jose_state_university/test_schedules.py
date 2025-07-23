@@ -3,8 +3,6 @@ import pytest
 from bs4 import BeautifulSoup
 from data_fetchers.schools.san_jose_state_university import schedules
 import json
-from helpers.soup_getter import html_url_to_soup
-from data_fetchers.schools.san_jose_state_university.school_config import SCHEDULES_BASE_URL
 
 # Helper to get sample soup from HTML file
 def get_sample_soup():
@@ -27,7 +25,7 @@ def get_reference_data():
 
 class TestSJSUSchedules:
     def test_get_schedules(self):
-        soup = html_url_to_soup(SCHEDULES_BASE_URL + "summer-2025.php")
+        soup = get_sample_soup()
         departments = {"ART"}
         result = schedules.get_schedules(soup, departments)
         reference_data = get_reference_data()

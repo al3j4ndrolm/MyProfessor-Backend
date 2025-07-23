@@ -1,22 +1,19 @@
 import sys
 import os
-import json
 import logging
-from bs4 import BeautifulSoup
 sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))))
 
 from helpers.soup_getter import html_url_to_soup
 from data_fetchers.schools.san_jose_state_university.terms import get_terms
-from data_fetchers.schools.san_jose_state_university.courses import get_courses
+from data_fetchers.schools.san_jose_state_university.courses import update_courses_data_table
 from data_fetchers.schools.san_jose_state_university.schedules import get_schedules
 from data_fetchers.schools.san_jose_state_university.school_config import TERMS_BASE_URL, SCHEDULES_BASE_URL
-from helpers import soup_getter
 
 logger = logging.getLogger(__name__)
 
 def main() -> None:
 
-    terms_soup = soup_getter.html_url_to_soup(TERMS_BASE_URL)
+    terms_soup = html_url_to_soup(TERMS_BASE_URL)
     terms_data_table = get_terms(terms_soup)
     # TODO: update terms_data_table to database `schools`
 
@@ -57,12 +54,11 @@ def get_courses_and_schedules(term_codes: list) -> tuple[dict, dict]:
     departments = set()
 
     for term_code in term_codes:
-        schedules_soup = soup_getter.html_url_to_soup(f"{SCHEDULES_BASE_URL}{term_code}")
+        schedules_soup = html_url_to_soup(f"{SCHEDULES_BASE_URL}{term_code}")
 
         # courses_data includes courses for all departments in one term, is a dict of str to sets
-        courses_data = get_courses(schedules_soup, courses_data_table)
-        for department, _ in courses_data.items():
-            courses_data_table[department].update(courses_data[department])
+        update_courses_data_table(schedules_soup, courses_data_table)
+        for department, _ in courses_data_table.items():
             departments.add(department)
 
         # schedules_data includes schedules for all departments in one term

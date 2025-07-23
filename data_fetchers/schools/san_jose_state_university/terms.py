@@ -1,6 +1,6 @@
 # Standard library imports
 import logging
-from helpers.soup_getter import html_url_to_soup
+from bs4 import BeautifulSoup
 
 # Local imports
 from data_fetchers.api.terms.response import create_term_response_data

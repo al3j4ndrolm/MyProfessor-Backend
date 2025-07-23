@@ -8,14 +8,14 @@
              "classCrn": "31413",
              "meetings": [
                {
-                 "tag": "CLAS",
-                 "days": "\u00b7T\u00b7R\u00b7\u00b7\u00b7",
+                 "tag": "",
+                 "days": "·T·R···",
                  "time": "12:00PM-06:00PM",
                  "location": "ART241 "
                },
                {
-                 "tag": "CLAS",
-                 "days": "\u00b7T\u00b7\u00b7\u00b7\u00b7\u00b7",
+                 "tag": "",
+                 "days": "·T·····",
                  "time": "TBA",
                  "location": " HYBRID"
                }
@@ -33,8 +33,8 @@
              "classCrn": "31654",
              "meetings": [
                {
-                 "tag": "CLAS",
-                 "days": "\u00b7T\u00b7\u00b7\u00b7\u00b7\u00b7",
+                 "tag": "",
+                 "days": "·T·····",
                  "time": "TBA",
                  "location": "ONLINE"
                }

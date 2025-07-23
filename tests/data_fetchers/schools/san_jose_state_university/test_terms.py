@@ -10,7 +10,7 @@ sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(
 def get_sample_soup():
     sample_path = os.path.join(
         os.path.dirname(__file__),
-        '..', '..', '..', '..', 'tests', 'test_samples', 'san_jose_state_university', 'terms_fetcher_test_sample.html'
+        '..', '..', '..', '..', 'tests', 'test_samples', 'san_jose_state_university', 'terms_test_sample.html'
     )
     with open(sample_path, 'r', encoding='utf-8') as f:
         html = f.read()
