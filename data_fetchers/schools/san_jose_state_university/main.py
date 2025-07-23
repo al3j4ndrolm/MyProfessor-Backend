@@ -7,8 +7,8 @@ from helpers.soup_getter import html_url_to_soup
 from data_fetchers.schools.san_jose_state_university.terms import get_terms
 from data_fetchers.schools.san_jose_state_university.courses import update_courses_data_table
 from data_fetchers.schools.san_jose_state_university.schedules import get_schedules
-from data_fetchers.schools.san_jose_state_university.school_config import TERMS_BASE_URL, SCHEDULES_BASE_URL
-from data_fetchers.database.save_data import save_courses_data
+from data_fetchers.schools.san_jose_state_university.school_config import TERMS_BASE_URL, SCHEDULES_BASE_URL, SCHOOL_NAME
+from database.courses import save_courses_data
 
 logger = logging.getLogger(__name__)
 
@@ -20,7 +20,7 @@ def main() -> None:
 
     term_codes = [ term["termCode"] for term in terms_data_table ]
     courses_data_table, schedules_data_table = get_courses_and_schedules(term_codes)
-    # TODO: update courses_data_table to database `courses`
+    save_courses_data(courses_data_table, SCHOOL_NAME)
     # TODO: update schedules_data_table to database `schedules`
 
 
@@ -66,8 +66,4 @@ def get_courses_and_schedules(term_codes: list) -> tuple[dict, dict]:
         schedules_data = get_schedules(schedules_soup, departments)
         schedules_data_table[term_code] = schedules_data
 
-    save_courses_data(courses_data_table, "San Jose State University")
     return courses_data_table, schedules_data_table
-
-if __name__ == "__main__":
-    get_courses_and_schedules(["summer-2025.php"])
