@@ -9,6 +9,7 @@ from data_fetchers.schools.san_jose_state_university.terms import get_terms
 from data_fetchers.schools.san_jose_state_university.courses import update_courses_data_table
 from data_fetchers.schools.san_jose_state_university.schedules import get_schedules
 from data_fetchers.schools.san_jose_state_university.school_config import TERMS_BASE_URL, SCHEDULES_BASE_URL
+from data_fetchers.database.save_data import save_courses_data
 
 logger = logging.getLogger(__name__)
 
@@ -66,4 +67,8 @@ def get_courses_and_schedules(term_codes: list) -> tuple[dict, dict]:
         schedules_data = get_schedules(schedules_soup, departments)
         schedules_data_table[term_code] = schedules_data
 
+    save_courses_data(courses_data_table, "San Jose State University")
     return courses_data_table, schedules_data_table
+
+if __name__ == "__main__":
+    get_courses_and_schedules(["summer-2025.php"])

@@ -1,4 +1,5 @@
 beautifulsoup4
 requests
 pytest
-coverage
+supabase
+websockets
