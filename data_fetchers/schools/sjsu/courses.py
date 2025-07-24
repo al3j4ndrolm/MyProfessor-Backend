@@ -6,7 +6,7 @@ logger = logging.getLogger(__name__)
 
 def update_courses_data_table(soup: BeautifulSoup, courses_data_table: dict) -> None:
     try:
-        logger.info(f"Extracting courses for San Jose State University ...")
+        logger.debug(f"Extracting courses for San Jose State University ...")
 
         courses_fieldset = soup.find("table", id="classSchedule")
         if courses_fieldset is None:

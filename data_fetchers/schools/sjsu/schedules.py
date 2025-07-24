@@ -17,17 +17,15 @@ def get_schedules_all_departments(soup: BeautifulSoup, departments: set) -> dict
 
     Returns {} if the schedules are not found in the soup.
     """
+    logger.debug("Extracting schedules for San Jose State University ...")
+    
     try:
         schedules_holder = soup.find("table", id="classSchedule")
-        if schedules_holder is None:
-            raise ValueError("Schedules holder not found in soup for San Jose State University")
         schedules_options = schedules_holder.find_all("tr")[1:]
-        if schedules_options is None:
-            raise ValueError("Schedules options not found in holder for San Jose State University")
         schedules_data_table = build_schedules_data_table(schedules_options, departments)
 
+        logger.info(f"Extracted schedules for {len(schedules_data_table)} departments.")
         return schedules_data_table
-
     except Exception as e:
         logger.error(f"Error getting schedules for San Jose State University: {traceback.format_exc()}")
         return {}

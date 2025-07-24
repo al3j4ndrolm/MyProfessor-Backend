@@ -6,10 +6,10 @@ TABLE_NAME = "schools"
 class School(BaseModel):
     school: str
     rmp_code: str
-    terms: dict
+    terms: list[dict]
     status: int
 
-def save_schools_data(supabase: Client, school_name: str, rmp_code: str, terms: dict):
+def save_schools_data(supabase: Client, school_name: str, rmp_code: str, terms: list[dict]):
 
     school = School(school=school_name, rmp_code=rmp_code, terms=terms, status=0)
     

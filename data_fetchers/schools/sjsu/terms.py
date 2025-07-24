@@ -15,7 +15,7 @@ def get_terms(soup: BeautifulSoup) -> list[dict]:
     """
 
     try:
-        logger.info("Fetching terms for San Jose State University")
+        logger.debug("Fetching terms for San Jose State University")
 
         terms_fieldset = soup.find("ul", class_="nested vertical menu")
         terms_options = terms_fieldset.find_all("a")[0:2]

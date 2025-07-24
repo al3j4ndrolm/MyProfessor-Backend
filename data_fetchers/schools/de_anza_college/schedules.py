@@ -15,20 +15,18 @@ def get_schedules_per_department(soup: BeautifulSoup) -> dict:
 
     Returns {} if the schedules are not found in the soup.
     """
+    schedules_holder = soup.find("table", class_="table table-schedule table-hover mix-container")
+    if schedules_holder is None:
+        return {}
+
     try:
-        schedules_holder = soup.find("table", class_="table table-schedule table-hover mix-container")
-        if schedules_holder is None:
-            raise ValueError("Schedules holder not found in soup for De Anza College")
         schedules_options = schedules_holder.find_all("tr")
-        if schedules_options is None:
-            raise ValueError("Schedules options not found in holder for De Anza College")
         schedule_data_table = build_schedule_data_table(schedules_options[1:])
 
         logger.info(f"Extracted schedules for {len(schedule_data_table)} courses.")
         return schedule_data_table
-
     except Exception as e:
-        logger.error(f"Error extracting schedules from De Anza College: {traceback.format_exc()}")
+        logger.error(f"Error extracting schedules: {traceback.format_exc()}")
         return {}
 
 def build_schedule_data_table(schedule_rows) -> dict:

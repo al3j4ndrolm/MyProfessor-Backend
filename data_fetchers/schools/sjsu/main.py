@@ -2,8 +2,7 @@
 import sys
 import os
 import logging
-from dotenv import load_dotenv
-from supabase import create_client, Client
+from supabase import Client
 sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))))
 
 # Local Imports
@@ -19,24 +18,20 @@ from database.schools import save_schools_data
 
 logger = logging.getLogger(__name__)
 
-def main() -> None:
+def main(supabase: Client) -> None:
 
     terms_soup = html_url_to_soup(TERMS_BASE_URL)
-    terms_data_table = get_terms(terms_soup)
+    terms_data_list = get_terms(terms_soup)
+    # Save data to database
+    save_schools_data(supabase, SCHOOL_NAME, RMP_CODE, terms_data_list)
 
-    term_codes = [ term[TERM_CODE_KEY] for term in terms_data_table ]
+    term_codes = [ term[TERM_CODE_KEY] for term in terms_data_list ]
     courses_data_table, classes_data_table = get_courses_and_classes(term_codes)
 
     # Save data to database
-    load_dotenv()
-    url = os.getenv("SUPABASE_URL")
-    key = os.getenv("SUPABASE_KEY")
-    supabase = create_client(url, key)
-
-    save_schools_data(supabase, SCHOOL_NAME, RMP_CODE, terms_data_table)
+    logger.info("Start saving data for San Jose State University to database.")
     save_courses_data(supabase, courses_data_table, SCHOOL_NAME)
     save_classes_data(supabase, classes_data_table, SCHOOL_NAME)
-
 
 def get_courses_and_classes(term_codes: list) -> tuple[dict, dict]:
     courses_data_table = {}

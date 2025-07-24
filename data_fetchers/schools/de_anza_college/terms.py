@@ -14,7 +14,7 @@ def get_terms(soup: BeautifulSoup) -> list[dict]:
     Returns [] if the terms fieldset is not found in the soup.
     """
     try:
-        logger.info("Fetching terms for De Anza College")
+        logger.debug("Fetching terms for De Anza College")
 
         terms_fieldset = soup.find("fieldset", id="term-select")
         terms_options = terms_fieldset.find_all("button", type="button")
