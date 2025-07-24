@@ -1,7 +1,6 @@
-from data_fetchers.api.schedules.configs import PROFESSOR_NAME_KEY, HAS_EMAIL_KEY, CLASSES_KEY, CLASS_CRN_KEY, MEETINGS_KEY, TAG_KEY, DAYS_KEY, TIME_KEY, LOCATION_KEY, AVAILABILITY_KEY
-import json
+from data_fetchers.api.schedules.configs import HAS_EMAIL_KEY, CLASSES_KEY, CLASS_CRN_KEY, MEETINGS_KEY, TAG_KEY, DAYS_KEY, TIME_KEY, LOCATION_KEY, AVAILABILITY_KEY
 
-def create_professor_response_data(professor_name: str, has_email: bool) -> dict:
+def create_professor_data(has_email: bool) -> dict:
     """
     Example of return value: {
         "has_email": False,
@@ -25,15 +24,15 @@ def create_professor_response_data(professor_name: str, has_email: bool) -> dict
         CLASSES_KEY: [],
     }
 
-def add_class_to_professor(professor_response_data: dict, class_response_data: dict):
+def add_class_to_professor(professor_data: dict, class_data: dict):
 
-    professor_response_data[CLASSES_KEY].append(class_response_data)
+    professor_data[CLASSES_KEY].append(class_data)
 
-def add_meeting_to_professor(professor_response_data: dict, meeting_response_data: dict):
+def add_meeting_to_class(class_data: dict, meeting_data: dict):
 
-    professor_response_data[CLASSES_KEY][-1][MEETINGS_KEY].append(meeting_response_data)
+    class_data[MEETINGS_KEY].append(meeting_data)
 
-def create_class_response_data(class_crn = "N/A", availability = "N/A") -> dict:
+def create_class_data(class_crn = "N/A", availability = "N/A") -> dict:
     """
     Example of return value: 
                 {
@@ -55,7 +54,7 @@ def create_class_response_data(class_crn = "N/A", availability = "N/A") -> dict:
             AVAILABILITY_KEY: availability,
         }
 
-def create_meeting_data(tag = "", days = "·······", time = "", location = "") -> dict:
+def create_meeting_data(tag = "", days = "·········", time = "", location = "") -> dict:
     """
     Example of return value: {
         "tag": "CLAS",
@@ -78,6 +77,3 @@ def format_days(day_str):
 
     all_days = ['M', 'T', 'W', 'R', 'F', 'S', 'U']
     return ''.join([d if d in day_str else '·' for d in all_days])
-
-if __name__ == "__main__":
-    print(json.dumps(create_professor_response_data("John Doe", False), indent=2))
