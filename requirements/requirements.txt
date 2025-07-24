@@ -2,6 +2,9 @@ beautifulsoup4
 requests
 pytest
 supabase
+<<<<<<< HEAD
 websockets
-coveragecoverage
+coverage
+=======
 websockets
+>>>>>>> 2bc1b5850e62bd7a55151af3b18dce93e85c7290

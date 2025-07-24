@@ -8,6 +8,7 @@ load_dotenv()
 url = os.getenv("SUPABASE_URL")
 key = os.getenv("SUPABASE_KEY")
 
+<<<<<<< HEAD
 courses_table: Client = create_client(url, key).table("courses")
 
 def save_courses_data(courses_data_table: dict, school_name: str):
@@ -17,6 +18,7 @@ def save_courses_data(courses_data_table: dict, school_name: str):
         "school_name": school_name,
         "data": courses_data_table,
     }
+<<<<<<< HEAD
     courses_table.insert(data).execute()
 
 # if __name__ == "__main__":    
