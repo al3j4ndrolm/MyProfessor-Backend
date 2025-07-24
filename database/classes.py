@@ -22,3 +22,4 @@ def get_classes_data(supabase: Client, school: str, term: str, department: str) 
     classes = supabase.table(TABLE_NAME).select("*").eq("school", school).eq("term", term).eq("department", department).execute()
     class_data = classes.data[0]["data"]
     return class_data
+

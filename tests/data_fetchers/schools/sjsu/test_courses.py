@@ -1,16 +1,16 @@
 import os
-import json
 import pytest
 from bs4 import BeautifulSoup
-from data_fetchers.schools.san_jose_state_university import courses
 import ast
 from helpers.soup_getter import html_url_to_soup
-from data_fetchers.schools.san_jose_state_university.school_config import SCHEDULES_BASE_URL
+
+from data_fetchers.schools.sjsu import courses
+from data_fetchers.schools.sjsu.school_config import SCHEDULES_BASE_URL
 
 def get_sample_soup():
     sample_path = os.path.join(
         os.path.dirname(__file__),
-        '..', '..', '..', '..', 'tests', 'test_samples', 'san_jose_state_university', 'schedules_test_sample.html'
+        '..', '..', '..', '..', 'tests', 'test_samples', 'sjsu', 'schedules_test_sample.html'
     )
     with open(sample_path, 'r', encoding='utf-8') as f:
         html = f.read()
@@ -24,7 +24,7 @@ class TestSJSUCourses:
         # Load reference data from file
         reference_path = os.path.join(
             os.path.dirname(__file__),
-            '..', '..', '..', '..', 'tests', 'test_samples', 'san_jose_state_university', 'courses_test_reference.json'
+            '..', '..', '..', '..', 'tests', 'test_samples', 'sjsu', 'courses_test_reference.json'
         )
         with open(reference_path, 'r', encoding='utf-8') as f:
             reference_data = ast.literal_eval(f.read())

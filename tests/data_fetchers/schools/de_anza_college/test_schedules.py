@@ -29,15 +29,12 @@ def get_reference_data():
 class TestDeAnzaSchedules:
     def test_get_schedules(self):
         soup = get_sample_soup()
+        
         result = schedules.get_schedules_per_department(soup)
-
         expected = get_reference_data()
+
         assert result == expected
-
-    def test_verify_data_structure(self):
-        soup = get_sample_soup()
-        result = schedules.get_schedules_per_department(soup)
-
+        # Verify the data structure
         data_verify.verify_data_structure_schedules_per_department(result)
 
 if __name__ == "__main__":

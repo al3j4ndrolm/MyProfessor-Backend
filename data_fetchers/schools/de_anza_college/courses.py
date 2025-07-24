@@ -18,9 +18,11 @@ def get_courses_per_department(department_code: str, soup: BeautifulSoup) -> set
         ...
     }
     """
-
+    courses_elements_holder = soup.find("table", class_="table table-schedule table-hover mix-container")
+    if courses_elements_holder is None:
+        return set()
+    
     try:
-        courses_elements_holder = soup.find("table", class_="table table-schedule table-hover mix-container")
         courses_elements = courses_elements_holder.find_all("tr")[1:]
     except Exception as e:
         logger.error(f"Error getting courses: {e}")
