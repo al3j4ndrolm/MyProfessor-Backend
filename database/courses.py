@@ -18,6 +18,7 @@ def save_courses_data(courses_data_table: dict, school_name: str):
 
     courses_data_table = {dept: list(courses) for dept, courses in courses_data_table.items()}
     data = Course(school=school_name, data=courses_data_table)
+<<<<<<< Updated upstream
     courses_table.insert(data.model_dump()).execute()
 =======
     
