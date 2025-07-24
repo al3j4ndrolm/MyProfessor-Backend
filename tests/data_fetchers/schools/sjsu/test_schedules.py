@@ -1,11 +1,12 @@
 import os
 import pytest
 from bs4 import BeautifulSoup
-from data_fetchers.schools.san_jose_state_university import schedules
 import json
 from tests import data_verify
 from helpers.soup_getter import html_url_to_soup
-from data_fetchers.schools.san_jose_state_university.school_config import SCHEDULES_BASE_URL
+
+from data_fetchers.schools.sjsu import schedules
+from data_fetchers.schools.sjsu.school_config import SCHEDULES_BASE_URL
 
 # Helper to get sample soup from HTML file
 def get_sample_soup():
@@ -30,16 +31,12 @@ class TestSJSUSchedules:
     def test_get_schedules(self):
         soup = html_url_to_soup(SCHEDULES_BASE_URL + "summer-2025.php")
         departments = {"ART"}
+
         result = schedules.get_schedules_all_departments(soup, departments)
-        reference_data = get_reference_data()
+        expected = get_reference_data()
 
-        # Compare the result with the reference data (by keys and values)
-        assert result == reference_data
-
-    def test_verify_data_structure_schedules_all_departments(self):
-        soup = get_sample_soup()
-        result = schedules.get_schedules_all_departments(soup, {"ART"})
-
+        assert result == expected
+        # Verify the data structure
         data_verify.verify_data_structure_schedules_all_departments(result)
 
 if __name__ == "__main__":

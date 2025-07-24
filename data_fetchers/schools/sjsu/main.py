@@ -9,10 +9,10 @@ sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(
 # Local Imports
 from helpers.soup_getter import html_url_to_soup
 from data_fetchers.api.terms.configs import TERM_CODE_KEY
-from data_fetchers.schools.san_jose_state_university.terms import get_terms
-from data_fetchers.schools.san_jose_state_university.courses import update_courses_data_table
-from data_fetchers.schools.san_jose_state_university.schedules import get_schedules_all_departments
-from data_fetchers.schools.san_jose_state_university.school_config import TERMS_BASE_URL, SCHEDULES_BASE_URL, SCHOOL_NAME, RMP_CODE
+from data_fetchers.schools.sjsu.terms import get_terms
+from data_fetchers.schools.sjsu.courses import update_courses_data_table
+from data_fetchers.schools.sjsu.schedules import get_schedules_all_departments
+from data_fetchers.schools.sjsu.school_config import TERMS_BASE_URL, SCHEDULES_BASE_URL, SCHOOL_NAME, RMP_CODE
 from database.courses import save_courses_data
 from database.classes import save_classes_data
 from database.schools import save_schools_data

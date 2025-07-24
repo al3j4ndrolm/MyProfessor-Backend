@@ -1,11 +1,11 @@
 import os
-import json
 import pytest
 from bs4 import BeautifulSoup
-from data_fetchers.schools.san_jose_state_university import courses
 import ast
 from helpers.soup_getter import html_url_to_soup
-from data_fetchers.schools.san_jose_state_university.school_config import SCHEDULES_BASE_URL
+
+from data_fetchers.schools.sjsu import courses
+from data_fetchers.schools.sjsu.school_config import SCHEDULES_BASE_URL
 
 def get_sample_soup():
     sample_path = os.path.join(

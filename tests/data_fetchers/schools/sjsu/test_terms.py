@@ -3,7 +3,7 @@ from bs4 import BeautifulSoup
 import pytest
 import sys
 
-from data_fetchers.schools.san_jose_state_university import terms
+from data_fetchers.schools.sjsu import terms
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))))
 

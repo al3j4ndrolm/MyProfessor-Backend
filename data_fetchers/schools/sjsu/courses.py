@@ -1,6 +1,6 @@
 # Standard library imports
 import logging
-from bs4 import BeautifulSoup, Tag
+from bs4 import BeautifulSoup
 
 logger = logging.getLogger(__name__)
 
