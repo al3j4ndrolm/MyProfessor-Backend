@@ -5,6 +5,7 @@ import sys
 import json
 
 from data_fetchers.schools.de_anza_college import schedules
+from tests import data_verify
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))) )
 
@@ -28,9 +29,16 @@ def get_reference_data():
 class TestDeAnzaSchedules:
     def test_get_schedules(self):
         soup = get_sample_soup()
-        result = schedules.get_schedules(soup)
+        result = schedules.get_schedules_per_department(soup)
+
         expected = get_reference_data()
         assert result == expected
+
+    def test_verify_data_structure(self):
+        soup = get_sample_soup()
+        result = schedules.get_schedules_per_department(soup)
+
+        data_verify.verify_data_structure_schedules_per_department(result)
 
 if __name__ == "__main__":
     pytest.main([__file__]) 

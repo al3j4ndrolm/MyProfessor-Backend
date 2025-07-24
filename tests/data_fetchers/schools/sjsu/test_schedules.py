@@ -3,6 +3,7 @@ import pytest
 from bs4 import BeautifulSoup
 from data_fetchers.schools.san_jose_state_university import schedules
 import json
+from tests import data_verify
 
 # Helper to get sample soup from HTML file
 def get_sample_soup():
@@ -27,7 +28,7 @@ class TestSJSUSchedules:
     def test_get_schedules(self):
         soup = get_sample_soup()
         departments = {"ART"}
-        result = schedules.get_schedules(soup, departments)
+        result = schedules.get_schedules_all_departments(soup, departments)
         reference_data = get_reference_data()
         # Compare the result with the reference data (by keys and values)
         assert len(result) == len(reference_data)
@@ -39,6 +40,12 @@ class TestSJSUSchedules:
                     assert prof in reference_data[department][course]
                     assert prof_data["hasEmail"] == reference_data[department][course][prof]["hasEmail"]
                     assert prof_data["classes"] == reference_data[department][course][prof]["classes"]
+
+    def test_verify_data_structure_schedules_all_departments(self):
+        soup = get_sample_soup()
+        result = schedules.get_schedules_all_departments(soup, {"ART"})
+
+        data_verify.verify_data_structure_schedules_all_departments(result)
 
 if __name__ == "__main__":
     pytest.main([__file__]) 

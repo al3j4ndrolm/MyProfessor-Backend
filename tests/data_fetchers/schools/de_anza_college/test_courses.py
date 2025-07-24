@@ -26,9 +26,9 @@ def get_reference_data():
         return set(json.load(f))
 
 class TestDeAnzaCourses:
-    def test_get_course_names(self):
+    def test_get_courses_per_department(self):
         soup = get_sample_soup()
-        result = courses.get_course_names("PHYS", soup)
+        result = courses.get_courses_per_department("PHYS", soup)
         expected = get_reference_data()
         assert result == expected
 

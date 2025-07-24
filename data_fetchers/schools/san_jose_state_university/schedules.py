@@ -6,14 +6,12 @@ sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(
 
 # Local imports
 from bs4 import BeautifulSoup, Tag
-from data_fetchers.api.schedules.response import create_professor_response_data, create_class_response_data, add_class_to_professor, create_meeting_data, add_meeting_to_professor
+from data_fetchers.api.schedules.response import create_professor_data, create_class_data, add_class_to_professor, create_meeting_data, add_meeting_to_class
 import logging
-from data_fetchers.schools.san_jose_state_university.school_config import SCHEDULES_BASE_URL
-from helpers.soup_getter import html_url_to_soup
 
 logger = logging.getLogger(__name__)
 
-def get_schedules(soup: BeautifulSoup, departments: set) -> dict:
+def get_schedules_all_departments(soup: BeautifulSoup, departments: set) -> dict:
     """
     Fetch the schedules for San Jose State University.
 
@@ -90,21 +88,14 @@ def build_schedules_data_table(schedules_rows: list[Tag], departments: set) -> d
             schedules_data_table[department][course_name] = {}
 
         if professor_name not in schedules_data_table[department][course_name]:
-            schedules_data_table[department][course_name][professor_name] = create_professor_response_data(professor_name, False)
+            schedules_data_table[department][course_name][professor_name] = create_professor_data(False)
 
         professor_data = schedules_data_table[department][course_name][professor_name]
-        class_data = create_class_response_data(class_crn, availability)
+        class_data = create_class_data(class_crn, availability)
         add_class_to_professor(professor_data, class_data)
 
         for days_per_meeting, time_per_meeting, location_per_meeting in zip(days, time, location):
             meeting_data = create_meeting_data(tag = "", days = days_per_meeting, time = time_per_meeting, location = location_per_meeting)
-            add_meeting_to_professor(professor_data, meeting_data)
+            add_meeting_to_class(class_data, meeting_data)
 
     return schedules_data_table
-
-if __name__ == "__main__":
-    import json
-    soup = html_url_to_soup(SCHEDULES_BASE_URL + "summer-2025.php")
-    departments = {"ART"}
-    schedules_data_table = get_schedules(soup, departments)
-    print(json.dumps(schedules_data_table, indent=2))

@@ -4,6 +4,7 @@ import logging
 sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))))
 
 from helpers.soup_getter import html_url_to_soup
+from data_fetchers.api.terms.configs import TERM_CODE_KEY
 from data_fetchers.schools.san_jose_state_university.terms import get_terms
 from data_fetchers.schools.san_jose_state_university.courses import update_courses_data_table
 from data_fetchers.schools.san_jose_state_university.schedules import get_schedules
@@ -17,7 +18,7 @@ def main() -> None:
     terms_data_table = get_terms(terms_soup)
     # TODO: update terms_data_table to database `schools`
 
-    term_codes = [ term["termCode"] for term in terms_data_table ]
+    term_codes = [ term[TERM_CODE_KEY] for term in terms_data_table ]
     courses_data_table, schedules_data_table = get_courses_and_schedules(term_codes)
     # TODO: update courses_data_table to database `courses`
     # TODO: update schedules_data_table to database `schedules`
