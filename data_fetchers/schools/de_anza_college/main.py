@@ -12,7 +12,9 @@ from data_fetchers.schools.de_anza_college.departments import get_departments
 from data_fetchers.schools.de_anza_college.terms import get_terms
 from data_fetchers.schools.de_anza_college.courses import get_courses_per_department
 from data_fetchers.schools.de_anza_college.schedules import get_schedules_per_department
-from data_fetchers.schools.de_anza_college.school_config import TERMS_BASE_URL, SCHEDULES_BASE_URL
+from data_fetchers.schools.de_anza_college.school_config import TERMS_BASE_URL, SCHEDULES_BASE_URL, SCHOOL_NAME
+from database.courses import save_courses_data
+from database.schedules import save_schedules_data
 
 logger = logging.getLogger(__name__)
 
@@ -26,8 +28,8 @@ def main() -> None:
 
     term_codes = [ term[TERM_CODE_KEY] for term in terms_data_table ]
     courses_data_table, schedules_data_table = get_courses_and_schedules(departments, term_codes)
-    # TODO: update courses_data_table to database `courses`
-    # TODO: update schedules_data_table to database `schedules`
+    save_courses_data(courses_data_table, SCHOOL_NAME)
+    save_schedules_data(schedules_data_table, SCHOOL_NAME)
     
 def get_courses_and_schedules(departments: list, term_codes: list) -> tuple[dict, dict]:
     courses_data_table = {}

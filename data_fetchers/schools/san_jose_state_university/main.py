@@ -69,6 +69,3 @@ def get_courses_and_schedules(term_codes: list) -> tuple[dict, dict]:
         schedules_data_table[term_code] = schedules_data
 
     return courses_data_table, schedules_data_table
-
-if __name__ == "__main__":
-    main()
