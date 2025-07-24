@@ -30,7 +30,6 @@ def main() -> None:
     # TODO: update schedules_data_table to database `schedules`
     
 def get_courses_and_schedules(departments: list, term_codes: list) -> tuple[dict, dict]:
-    
     courses_data_table = {}
     schedules_data_table = {term_code: {} for term_code in term_codes}
 
