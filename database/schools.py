@@ -15,3 +15,7 @@ def save_schools_data(supabase: Client, school_name: str, rmp_code: str, terms: 
     
     supabase.table(TABLE_NAME).insert(school.model_dump()).execute()
 
+def get_schools_data(supabase: Client) -> list[dict]:
+    schools = supabase.table(TABLE_NAME).select("*").execute()
+    schools_data = schools.data
+    return schools_data

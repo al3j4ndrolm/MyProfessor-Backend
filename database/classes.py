@@ -18,3 +18,8 @@ def save_classes_data(supabase: Client, classes_data_table: dict, school: str):
             classes = Classes(school=school, department=department, term=term, data=classes_per_department)
             supabase.table(TABLE_NAME).insert(classes.model_dump()).execute()
 
+def get_classes_data(supabase: Client, school: str, term: str, department: str) -> dict:
+    classes = supabase.table(TABLE_NAME).select("*").eq("school", school).eq("term", term).eq("department", department).execute()
+    class_data = classes.data[0]["data"]
+    return class_data
+
