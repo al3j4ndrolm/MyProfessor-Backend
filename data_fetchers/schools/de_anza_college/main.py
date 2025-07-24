@@ -12,8 +12,9 @@ from data_fetchers.schools.de_anza_college.departments import get_departments
 from data_fetchers.schools.de_anza_college.terms import get_terms
 from data_fetchers.schools.de_anza_college.courses import get_courses_per_department
 from data_fetchers.schools.de_anza_college.schedules import get_schedules_per_department
-from data_fetchers.schools.de_anza_college.school_config import TERMS_BASE_URL, SCHEDULES_BASE_URL, SCHOOL_NAME
+from data_fetchers.schools.de_anza_college.school_config import TERMS_BASE_URL, SCHEDULES_BASE_URL, SCHOOL_NAME, RMP_CODE
 from database.courses import save_courses_data
+from database.schools import save_schools_data
 from database.schedules import save_schedules_data
 
 logger = logging.getLogger(__name__)
@@ -22,7 +23,7 @@ def main() -> None:
 
     soup = html_url_to_soup(TERMS_BASE_URL)
     terms_data_table = get_terms(soup)
-    # TODO: update terms_data_table to database `schools`
+    save_schools_data(SCHOOL_NAME, RMP_CODE, terms_data_table)
 
     departments = get_departments(soup)
 
