@@ -27,5 +27,9 @@ def save_courses_data(courses_data_table: dict, school_name: str):
 def get_courses_data(supabase: Client, school_name: str) -> dict:
     courses = supabase.table(TABLE_NAME).select("*").eq("school", school_name).execute()
     courses_data = courses.data[0]["data"]
+<<<<<<< Updated upstream
+    return courses_data
+>>>>>>> Stashed changes
+=======
     return courses_data
 >>>>>>> Stashed changes
