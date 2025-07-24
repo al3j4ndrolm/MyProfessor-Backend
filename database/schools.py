@@ -1,5 +1,6 @@
 from supabase import Client
 from pydantic import BaseModel
+from data_fetchers.api.schools.response import create_schools_data
 
 TABLE_NAME = "schools"
 
@@ -18,4 +19,4 @@ def save_schools_data(supabase: Client, school_name: str, rmp_code: str, terms: 
 def get_schools_data(supabase: Client) -> list[dict]:
     schools = supabase.table(TABLE_NAME).select("*").execute()
     schools_data = schools.data
-    return schools_data
+    return create_schools_data(schools_data)
