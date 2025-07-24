@@ -3,4 +3,5 @@ requests
 pytest
 supabase
 websockets
-coverage
+coveragecoverage
+websockets
