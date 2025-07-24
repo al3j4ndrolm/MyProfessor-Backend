@@ -3,14 +3,14 @@ from bs4 import BeautifulSoup
 import pytest
 import sys
 
-from data_fetchers.schools.san_jose_state_university import terms
+from data_fetchers.schools.sjsu import terms
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))))
 
 def get_sample_soup():
     sample_path = os.path.join(
         os.path.dirname(__file__),
-        '..', '..', '..', '..', 'tests', 'test_samples', 'san_jose_state_university', 'terms_test_sample.html'
+        '..', '..', '..', '..', 'tests', 'test_samples', 'sjsu', 'terms_test_sample.html'
     )
     with open(sample_path, 'r', encoding='utf-8') as f:
         html = f.read()

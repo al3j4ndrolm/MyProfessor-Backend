@@ -1,4 +1,4 @@
-from data_fetchers.api.schedules.configs import HAS_EMAIL_KEY, CLASSES_KEY, CLASS_CRN_KEY, MEETINGS_KEY, TAG_KEY, DAYS_KEY, TIME_KEY, LOCATION_KEY, AVAILABILITY_KEY
+from data_fetchers.api.classes.configs import HAS_EMAIL_KEY, CLASSES_KEY, CLASS_CRN_KEY, MEETINGS_KEY, TAG_KEY, DAYS_KEY, TIME_KEY, LOCATION_KEY, AVAILABILITY_KEY
 
 def create_professor_data(has_email: bool) -> dict:
     """
@@ -28,10 +28,6 @@ def add_class_to_professor(professor_data: dict, class_data: dict):
 
     professor_data[CLASSES_KEY].append(class_data)
 
-def add_meeting_to_class(class_data: dict, meeting_data: dict):
-
-    class_data[MEETINGS_KEY].append(meeting_data)
-
 def create_class_data(class_crn = "N/A", availability = "N/A") -> dict:
     """
     Example of return value: 
@@ -53,6 +49,10 @@ def create_class_data(class_crn = "N/A", availability = "N/A") -> dict:
             MEETINGS_KEY: [],
             AVAILABILITY_KEY: availability,
         }
+
+def add_meeting_to_class(class_data: dict, meeting_data: dict):
+
+    class_data[MEETINGS_KEY].append(meeting_data)
 
 def create_meeting_data(tag = "", days = "·········", time = "", location = "") -> dict:
     """
