@@ -1,11 +1,10 @@
-from fastapi import APIRouter, HTTPException
-from fastapi.responses import JSONResponse
-import requests
-from data_fetchers.api.schools.response import create_schools_data
+from data_fetchers.api.schools.response import create
 from supabase import create_client, Client
 import os
 from dotenv import load_dotenv
+from fastapi import FastAPI, APIRouter
 
+app = FastAPI()
 router = APIRouter()
 
 load_dotenv()
@@ -14,9 +13,8 @@ key = os.getenv("SUPABASE_KEY")
 supabase: Client = create_client(url, key)
 
 @router.get("/schools")
-def schools():
-    schools_data = create_schools_data(supabase)
-    return schools_data
+def schools_endpoint():
+    return create(supabase)
 
 # @router.get("/courses")
 # def courses(
@@ -41,3 +39,6 @@ def schools():
 #     else:
 #         classes_data = get_classes_data(school_name, term, department)
 #         return classes_data
+
+
+app.include_router(router)
