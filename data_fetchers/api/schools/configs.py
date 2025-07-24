@@ -1,0 +1,5 @@
+SCHOOL_NAME_KEY = "schoolName"
+RMP_CODE_KEY = "rmpCode"
+TERMS_KEY = "terms"
+NOTIFICATION_KEY = "notification"
+STATUS_KEY = "status"
