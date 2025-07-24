@@ -6,7 +6,7 @@ sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(
 
 # Local imports
 from bs4 import BeautifulSoup, Tag
-from data_fetchers.api.schedules.response import create_professor_data, create_class_data, add_class_to_professor, create_meeting_data, add_meeting_to_class
+from data_fetchers.api.classes.response import create_professor_data, create_class_data, add_class_to_professor, create_meeting_data, add_meeting_to_class
 import logging
 
 logger = logging.getLogger(__name__)
@@ -17,7 +17,6 @@ def get_schedules_all_departments(soup: BeautifulSoup, departments: set) -> dict
 
     Returns {} if the schedules are not found in the soup.
     """
-
     try:
         schedules_holder = soup.find("table", id="classSchedule")
         if schedules_holder is None:
@@ -65,37 +64,43 @@ def build_schedules_data_table(schedules_rows: list[Tag], departments: set) -> d
             days = schedule_data[7]
             time = schedule_data[8]
             professor_name = schedule_data[9].text.strip()
+            professor_email = schedule_data[9].find("a")["href"].split(":")[1] if schedule_data[9].find("a") is not None else None
             location = schedule_data[10]
 
-            if days.find("br") is not None:
-                lines = [line.strip() for line in time.get_text(separator='\n').split('\n') if line.strip()]
-                locations = location.get_text(separator='\n').split('\n')
+            department = course_name.split(' ')[0]
+            if department not in departments:
+                continue
 
+            class_data = create_class_data(class_crn, availability)
+        
+            if days.find("br") is None:
+                meeting_data = create_meeting_data(
+                    tag = "", 
+                    days = days.text.strip(), 
+                    time = time.text.strip(), 
+                    location = location.text.strip())
+                add_meeting_to_class(class_data, meeting_data)
+            else:
+                lines = [line.strip() for line in time.get_text(separator='\n').split('\n') if line.strip()]
                 days = lines[::2]   # every 0,2,4... line is a day
                 time = lines[1::2]
-                location = locations
-            else:
-                days = [days.text.strip()]
-                time = [time.text.strip()]
-                location = [location.text.strip()]
-        
-        department = course_name.split(' ')[0]
 
-        if department not in departments:
-            continue
+                locations = location.get_text(separator='\n').split('\n')
+
+                for i in range(len(days)):
+                    days_per_meeting = "" if days[i] == "TBA" else days[i]
+                    time_per_meeting = "" if time[i] == "TBA" else time[i]
+                    location_per_meeting = "" if locations[i] == "TBA" else locations[i]
+                    meeting_data = create_meeting_data(tag = "", days = days_per_meeting, time = time_per_meeting, location = location_per_meeting)
+                    add_meeting_to_class(class_data, meeting_data)
 
         if course_name not in schedules_data_table[department]:
             schedules_data_table[department][course_name] = {}
 
         if professor_name not in schedules_data_table[department][course_name]:
-            schedules_data_table[department][course_name][professor_name] = create_professor_data(False)
+            schedules_data_table[department][course_name][professor_name] = create_professor_data(has_email = professor_email is not None)
 
         professor_data = schedules_data_table[department][course_name][professor_name]
-        class_data = create_class_data(class_crn, availability)
         add_class_to_professor(professor_data, class_data)
-
-        for days_per_meeting, time_per_meeting, location_per_meeting in zip(days, time, location):
-            meeting_data = create_meeting_data(tag = "", days = days_per_meeting, time = time_per_meeting, location = location_per_meeting)
-            add_meeting_to_class(class_data, meeting_data)
 
     return schedules_data_table

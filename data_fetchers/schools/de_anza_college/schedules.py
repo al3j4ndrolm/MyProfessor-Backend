@@ -4,8 +4,8 @@ import traceback
 from bs4 import BeautifulSoup
 
 # Local imports
-from data_fetchers.api.schedules.configs import CLASSES_KEY
-from data_fetchers.api.schedules.response import create_class_data, create_meeting_data, create_professor_data, add_class_to_professor, add_meeting_to_class
+from data_fetchers.api.classes.configs import CLASSES_KEY
+from data_fetchers.api.classes.response import create_class_data, create_meeting_data, create_professor_data, add_class_to_professor, add_meeting_to_class
 
 logger = logging.getLogger(__name__)
 
@@ -28,7 +28,7 @@ def get_schedules_per_department(soup: BeautifulSoup) -> dict:
         return schedule_data_table
 
     except Exception as e:
-        logger.error(f"Error extracting schedules: {traceback.format_exc()}")
+        logger.error(f"Error extracting schedules from De Anza College: {traceback.format_exc()}")
         return {}
 
 def build_schedule_data_table(schedule_rows) -> dict:
@@ -37,7 +37,6 @@ def build_schedule_data_table(schedule_rows) -> dict:
     last_professor_name = None
 
     for schedule_row in schedule_rows:
-
         schedule_data = schedule_row.find_all("td")
 
         if len(schedule_data) > 5:
@@ -61,7 +60,6 @@ def build_schedule_data_table(schedule_rows) -> dict:
             time = schedule_data[6].text
             professor_name = schedule_data[7].text
             location = schedule_data[8].text
-            tag = "CLAS"
 
             last_course_name = course_name
             last_professor_name = professor_name
@@ -76,7 +74,7 @@ def build_schedule_data_table(schedule_rows) -> dict:
                 
             professor_data = courses_data_table[course_name][professor_name]
             class_data = create_class_data(class_crn, availability)
-            meeting_data = create_meeting_data(tag, days, time, location)
+            meeting_data = create_meeting_data(tag = "", days = days, time = time, location = location)
             add_meeting_to_class(class_data, meeting_data)
             add_class_to_professor(professor_data, class_data)
         
@@ -93,8 +91,9 @@ def build_schedule_data_table(schedule_rows) -> dict:
             """
             professor_data = courses_data_table[last_course_name][last_professor_name]
             class_data = professor_data[CLASSES_KEY][-1]
+            tag = schedule_data[0].text.strip()
             meeting_data = create_meeting_data(
-                tag = schedule_data[0].text,
+                tag = "" if tag == "CLAS" else tag,
                 days = schedule_data[1].text,
                 time = schedule_data[2].text,
                 location = schedule_data[4].text

@@ -10,7 +10,7 @@ from data_fetchers.schools.san_jose_state_university.school_config import SCHEDU
 def get_sample_soup():
     sample_path = os.path.join(
         os.path.dirname(__file__),
-        '..', '..', '..', '..', 'tests', 'test_samples', 'san_jose_state_university', 'schedules_test_sample.html'
+        '..', '..', '..', '..', 'tests', 'test_samples', 'sjsu', 'schedules_test_sample.html'
     )
     with open(sample_path, 'r', encoding='utf-8') as f:
         html = f.read()
@@ -24,7 +24,7 @@ class TestSJSUCourses:
         # Load reference data from file
         reference_path = os.path.join(
             os.path.dirname(__file__),
-            '..', '..', '..', '..', 'tests', 'test_samples', 'san_jose_state_university', 'courses_test_reference.json'
+            '..', '..', '..', '..', 'tests', 'test_samples', 'sjsu', 'courses_test_reference.json'
         )
         with open(reference_path, 'r', encoding='utf-8') as f:
             reference_data = ast.literal_eval(f.read())

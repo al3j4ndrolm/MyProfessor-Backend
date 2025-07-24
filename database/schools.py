@@ -1,7 +1,7 @@
-from supabase import create_client, Client
-import os
-from dotenv import load_dotenv
+from supabase import Client
 from pydantic import BaseModel
+
+TABLE_NAME = "schools"
 
 class School(BaseModel):
     school: str
@@ -9,15 +9,9 @@ class School(BaseModel):
     terms: dict
     status: int
 
-load_dotenv()
-
-url = os.getenv("SUPABASE_URL")
-key = os.getenv("SUPABASE_KEY")
-
-schools_table: Client = create_client(url, key).table("schools")
-
-def save_schools_data(school_name: str, rmp_code: str, terms: dict):
+def save_schools_data(supabase: Client, school_name: str, rmp_code: str, terms: dict):
 
     school = School(school=school_name, rmp_code=rmp_code, terms=terms, status=0)
-    schools_table.insert(school.model_dump()).execute()
+    
+    supabase.table(TABLE_NAME).insert(school.model_dump()).execute()
 
