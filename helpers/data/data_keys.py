@@ -4,6 +4,7 @@ TERM_CODE_KEY = "termCode"
 
 # Schedules configs
 HAS_EMAIL_KEY = "hasEmail"
+EMAIL_KEY = "email"
 CLASSES_KEY = "classes"
 CLASS_CRN_KEY = "classCrn"
 MEETINGS_KEY = "meetings"
@@ -12,3 +13,9 @@ DAYS_KEY = "days"
 TIME_KEY = "time"
 LOCATION_KEY = "location"
 AVAILABILITY_KEY = "availability"
+
+# Ratings configs
+RATING_KEY = "rating"
+DIFFICULTY_KEY = "difficulty"
+RECOMMEND_KEY = "recommend"
+REVIEW_COUNT_KEY = "reviewCount"

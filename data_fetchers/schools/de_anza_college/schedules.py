@@ -47,7 +47,7 @@ def build_schedule_data_table(schedule_rows) -> dict:
             <td>General Physics I</td>
             <td><span class="days">MTWR···</span></td>
             <td>09:30 AM-10:20 AM</td>
-            <td>Ronald Francis</a></td>
+            <td><a href="/directory/user.html?u=jimenezsamayoaelsa">Elsa Jimenez-Samayoa</a></td>
             <td>S35</td>
             """
             class_crn = schedule_data[0].text
@@ -56,6 +56,7 @@ def build_schedule_data_table(schedule_rows) -> dict:
             days = schedule_data[5].text
             time = schedule_data[6].text
             professor_name = schedule_data[7].text
+            professor_id = schedule_data[7].find("a")["href"].split("=")[1] if schedule_data[7].find("a") is not None else None
             location = schedule_data[8].text
 
             last_course_name = course_name
@@ -67,7 +68,8 @@ def build_schedule_data_table(schedule_rows) -> dict:
 
             # If the professor name is not in the course name, add the professor name to the course name
             if professor_name not in courses_data_table[course_name]:
-                courses_data_table[course_name][professor_name] = data_creators.create_professor_data(False)
+                professor_email = f"{professor_id}@deanza.edu" if professor_id else None
+                courses_data_table[course_name][professor_name] = data_creators.create_professor_data(email = professor_email)
                 
             professor_data = courses_data_table[course_name][professor_name]
             class_data = data_creators.create_class_data(class_crn, availability)

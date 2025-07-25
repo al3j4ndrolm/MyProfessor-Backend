@@ -35,16 +35,18 @@ def create_courses_data(department_name: str, courses_names: set) -> dict:
         department_name: sorted(list(courses_names))
     }
 
-def create_professor_data(has_email: bool) -> dict:
+def create_professor_data(email: str) -> dict:
     """
     Example of return value: 
     {
-        "has_email": False,
+        "hasEmail": False,
+        "email": "example@example.com",
         "classes": [],
     }
     """
     return {
-        data_keys.HAS_EMAIL_KEY: has_email,
+        data_keys.HAS_EMAIL_KEY: email is not None,
+        data_keys.EMAIL_KEY: email,
         data_keys.CLASSES_KEY: [],
     }
 
@@ -95,3 +97,13 @@ def format_days(day_str):
 
     all_days = ['M', 'T', 'W', 'R', 'F', 'S', 'U']
     return ''.join([d if d in day_str else '·' for d in all_days])
+
+def get_professors(classes_data_table: dict) -> set[tuple[str, str, str]]:
+    professors = set()
+    for term_code, classes_all_departments in classes_data_table.items():
+        for department, classes_per_department in classes_all_departments.items():
+            for course_name, classes_per_professor in classes_per_department.items():
+                for professor_name, professor_data in classes_per_professor.items():
+                    professor_data_tuple = (professor_name, professor_data[data_keys.EMAIL_KEY], department)
+                    professors.add(professor_data_tuple)
+    return professors

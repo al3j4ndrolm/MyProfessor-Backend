@@ -13,7 +13,8 @@ def save(supabase: Client, school_name: str, rmp_code: str, terms: list[dict]):
 
     school = School(school=school_name, rmp_code=rmp_code, terms=terms, status=0)
     
-    supabase.table(TABLE_NAME).insert(school.model_dump()).execute()
+    # only update if school already exists
+    supabase.table(TABLE_NAME).upsert(school.model_dump(), on_conflict="school").execute()
 
 def get(supabase: Client) -> list[dict]:
     schools = supabase.table(TABLE_NAME).select("*").execute()
