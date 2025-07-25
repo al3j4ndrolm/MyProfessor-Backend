@@ -1,10 +1,11 @@
+from deprecation import deprecated
 from supabase import Client
 from pydantic import BaseModel
 from typing import Optional
 
 TABLE_NAME = "professors"
 
-class Professors(BaseModel):
+class Professor(BaseModel):
     professor_name: str
     email: Optional[str] = None
     school: str
@@ -14,6 +15,25 @@ class Professors(BaseModel):
     recommend: Optional[int] = None
     review_count: int
 
+# Remove after client migrates to new classes endpoints
+def get_without_email(supabase: Client, school: str, department: str, professor_name: str) -> Optional[Professor]:
+    search_query = supabase.table(TABLE_NAME)\
+        .select("*").eq("professor_name", professor_name)\
+        .eq("school", school)\
+        .eq("department", department)\
+        .execute()
+    
+    return search_query.data[0] if search_query.data else None
+
+def get(supabase: Client, school: str, department: str, professor_name: str, professor_email: str) -> Optional[Professor]:
+    search_query = supabase.table(TABLE_NAME)\
+        .select("*").eq("professor_name", professor_name)\
+        .eq("email", professor_email)\
+        .eq("school", school)\
+        .eq("department", department)\
+        .execute()
+    
+    return search_query.data[0] if search_query.data else None
 
 def save(supabase: Client, professors_data_list: set[tuple[str, str, str]], school: str):
     to_insert = []
@@ -28,7 +48,7 @@ def save(supabase: Client, professors_data_list: set[tuple[str, str, str]], scho
             .execute()
         
         if not search_query.data:
-            professor = Professors(
+            professor = Professor(
                 professor_name = professor_name,
                 email = email,
                 school = school,
@@ -55,7 +75,7 @@ def update_email(supabase: Client, professors_data_list: set[tuple[str, str, str
 
         # only update if professor does not have email
         if search_query.data and search_query.data[0]["email"] is None:
-            professor = Professors(
+            professor = Professor(
                 professor_name = professor_name,
                 email = email,
                 school = school,

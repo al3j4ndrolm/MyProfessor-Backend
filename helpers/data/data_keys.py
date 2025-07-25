@@ -13,3 +13,9 @@ DAYS_KEY = "days"
 TIME_KEY = "time"
 LOCATION_KEY = "location"
 AVAILABILITY_KEY = "availability"
+
+# Ratings configs
+RATING_KEY = "rating"
+DIFFICULTY_KEY = "difficulty"
+RECOMMEND_KEY = "recommend"
+REVIEW_COUNT_KEY = "reviewCount"
