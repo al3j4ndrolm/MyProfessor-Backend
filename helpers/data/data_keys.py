@@ -4,6 +4,7 @@ TERM_CODE_KEY = "termCode"
 
 # Schedules configs
 HAS_EMAIL_KEY = "hasEmail"
+EMAIL_KEY = "email"
 CLASSES_KEY = "classes"
 CLASS_CRN_KEY = "classCrn"
 MEETINGS_KEY = "meetings"

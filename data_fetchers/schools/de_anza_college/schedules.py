@@ -67,7 +67,7 @@ def build_schedule_data_table(schedule_rows) -> dict:
 
             # If the professor name is not in the course name, add the professor name to the course name
             if professor_name not in courses_data_table[course_name]:
-                courses_data_table[course_name][professor_name] = data_creators.create_professor_data(False)
+                courses_data_table[course_name][professor_name] = data_creators.create_professor_data(email = None)
                 
             professor_data = courses_data_table[course_name][professor_name]
             class_data = data_creators.create_class_data(class_crn, availability)
