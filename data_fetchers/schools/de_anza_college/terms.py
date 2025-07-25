@@ -3,7 +3,7 @@ import logging
 from bs4 import BeautifulSoup
 
 # Local imports
-from data_fetchers.api.terms.response import create_term_response_data
+from helpers.data import data_creators
 
 logger = logging.getLogger(__name__)
 
@@ -39,7 +39,7 @@ def build_term_data_list(terms_options) -> list[dict]:
     term_data_list = []
     for term in terms_options:
         value = term.get("value")
-        term_data = create_term_response_data(term.text, value)
+        term_data = data_creators.create_term_response_data(term.text, value)
         term_data_list.append(term_data)
 
     return term_data_list

@@ -12,7 +12,7 @@ from data_fetchers.schools.sjsu.school_config import SCHEDULES_BASE_URL
 def get_sample_soup():
     sample_path = os.path.join(
         os.path.dirname(__file__),
-        '..', '..', '..', '..', 'tests', 'test_samples', 'sjsu', 'schedules_test_sample.html'
+        '..', '..', '..', '..', 'tests', 'test_samples', 'sjsu', 'classes_test_sample.html'
     )
     with open(sample_path, 'r', encoding='utf-8') as f:
         html = f.read()
@@ -22,14 +22,14 @@ def get_sample_soup():
 def get_reference_data():
     reference_path = os.path.join(
         os.path.dirname(__file__),
-        '..', '..', '..', '..', 'tests', 'test_samples', 'sjsu', 'schedules_test_reference.json'
+        '..', '..', '..', '..', 'tests', 'test_samples', 'sjsu', 'classes_test_reference.json'
     )
     with open(reference_path, 'r', encoding='utf-8') as f:
         return json.load(f)
 
 class TestSJSUSchedules:
     def test_get_schedules(self):
-        soup = html_url_to_soup(SCHEDULES_BASE_URL + "summer-2025.php")
+        soup = get_sample_soup()
         departments = {"ART"}
 
         result = schedules.get_schedules_all_departments(soup, departments)

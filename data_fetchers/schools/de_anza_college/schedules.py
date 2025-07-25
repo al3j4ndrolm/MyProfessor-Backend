@@ -4,8 +4,7 @@ import traceback
 from bs4 import BeautifulSoup
 
 # Local imports
-from data_fetchers.api.classes.configs import CLASSES_KEY
-from data_fetchers.api.classes.response import create_class_data, create_meeting_data, create_professor_data, add_class_to_professor, add_meeting_to_class
+from helpers.data import data_keys, data_creators
 
 logger = logging.getLogger(__name__)
 
@@ -68,13 +67,13 @@ def build_schedule_data_table(schedule_rows) -> dict:
 
             # If the professor name is not in the course name, add the professor name to the course name
             if professor_name not in courses_data_table[course_name]:
-                courses_data_table[course_name][professor_name] = create_professor_data(False)
+                courses_data_table[course_name][professor_name] = data_creators.create_professor_data(False)
                 
             professor_data = courses_data_table[course_name][professor_name]
-            class_data = create_class_data(class_crn, availability)
-            meeting_data = create_meeting_data(tag = "", days = days, time = time, location = location)
-            add_meeting_to_class(class_data, meeting_data)
-            add_class_to_professor(professor_data, class_data)
+            class_data = data_creators.create_class_data(class_crn, availability)
+            meeting_data = data_creators.create_meeting_data(tag = "", days = days, time = time, location = location)
+            data_creators.add_meeting_to_class(class_data, meeting_data)
+            data_creators.add_class_to_professor(professor_data, class_data)
         
         # If the schedule data is not 9 elements long, add the meeting to the last visited course name and professor name
         else:
@@ -88,14 +87,14 @@ def build_schedule_data_table(schedule_rows) -> dict:
             <td><em>S17</em></td>
             """
             professor_data = courses_data_table[last_course_name][last_professor_name]
-            class_data = professor_data[CLASSES_KEY][-1]
+            class_data = professor_data[data_keys.CLASSES_KEY][-1]
             tag = schedule_data[0].text.strip()
-            meeting_data = create_meeting_data(
+            meeting_data = data_creators.create_meeting_data(
                 tag = "" if tag == "CLAS" else tag,
                 days = schedule_data[1].text,
                 time = schedule_data[2].text,
                 location = schedule_data[4].text
             )
-            add_meeting_to_class(class_data, meeting_data)
+            data_creators.add_meeting_to_class(class_data, meeting_data)
 
     return courses_data_table
