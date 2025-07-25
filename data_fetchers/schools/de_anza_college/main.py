@@ -18,26 +18,31 @@ from database import courses_db, schools_db, classes_db, professors_db
 
 logger = logging.getLogger(__name__)
 
-def main(supabase: Client) -> None:
+def main(supabase: Client, target_tables: set[str]) -> None:
 
     soup = html_url_to_soup(TERMS_BASE_URL)
     terms_data_list = get_terms(soup)
-    logger.info("Start saving school data to database `schools`.")
-    schools_db.save(supabase, SCHOOL_NAME, RMP_CODE, terms_data_list)
+    if "schools" in target_tables:
+        logger.info("Start saving school data to database `schools`.")
+        schools_db.save(supabase, SCHOOL_NAME, RMP_CODE, terms_data_list)
 
-    departments = get_departments(soup)
-    term_codes = [ term[data_keys.TERM_CODE_KEY] for term in terms_data_list ]
-    courses_data_table, classes_data_table = get_courses_and_classes(departments, term_codes)
+    if "courses" in target_tables or "classes" in target_tables or "professors" in target_tables:
+        departments = get_departments(soup)
+        term_codes = [ term[data_keys.TERM_CODE_KEY] for term in terms_data_list ]
+        courses_data_table, classes_data_table = get_courses_and_classes(departments, term_codes)
 
-    logger.info("Start saving data to database `courses`.")
-    courses_db.save(supabase, courses_data_table, SCHOOL_NAME)
+        if "courses" in target_tables:
+            logger.info("Start saving data to database `courses`.")
+            courses_db.save(supabase, courses_data_table, SCHOOL_NAME)
 
-    logger.info("Start saving data to database `classes`.")
-    classes_db.save(supabase, classes_data_table, SCHOOL_NAME)
+        if "classes" in target_tables:
+            logger.info("Start saving data to database `classes`.")
+            classes_db.save(supabase, classes_data_table, SCHOOL_NAME)
 
-    professors = data_creators.get_professors(classes_data_table)
-    logger.info("Start saving professors data to database `professors`.")
-    professors_db.save(supabase, professors, SCHOOL_NAME)
+        if "professors" in target_tables:
+            professors = data_creators.get_professors(classes_data_table)
+            logger.info("Start saving professors data to database `professors`.")
+            professors_db.save(supabase, professors, SCHOOL_NAME)
     
 def get_courses_and_classes(departments: list, term_codes: list) -> tuple[dict, dict]:
     courses_data_table = {}
