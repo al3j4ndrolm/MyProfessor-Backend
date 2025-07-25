@@ -20,8 +20,14 @@ def save(supabase: Client, professors_data_list: set[tuple[str, str, str]], scho
 
     for professor_name, email, department in professors_data_list:
         # only insert if professor does not exist
-        existing_professor = supabase.table(TABLE_NAME).select("*").eq("professor_name", professor_name).eq("email", email).eq("school", school).eq("department", department).execute()
-        if len(existing_professor.data) == 0:
+        search_query = supabase.table(TABLE_NAME)\
+            .select("*").eq("professor_name", professor_name)\
+            .eq("email", email)\
+            .eq("school", school)\
+            .eq("department", department)\
+            .execute()
+        
+        if not search_query.data:
             professor = Professors(
                 professor_name = professor_name,
                 email = email,
@@ -35,3 +41,33 @@ def save(supabase: Client, professors_data_list: set[tuple[str, str, str]], scho
 
     # insert all professors at once
     supabase.table(TABLE_NAME).insert(to_insert).execute()
+
+def update_email(supabase: Client, professors_data_list: set[tuple[str, str, str]], school: str):
+    to_update = []
+
+    for professor_name, email, department in professors_data_list:
+        
+        search_query = supabase.table(TABLE_NAME)\
+            .select("*").eq("professor_name", professor_name)\
+            .eq("school", school)\
+            .eq("department", department)\
+            .execute()
+
+        # only update if professor does not have email
+        if search_query.data and search_query.data[0]["email"] is None:
+            professor = Professors(
+                professor_name = professor_name,
+                email = email,
+                school = school,
+                department = department,
+                difficulty = search_query.data[0]["difficulty"],
+                rating = search_query.data[0]["rating"],
+                recommend = search_query.data[0]["recommend"],
+                review_count = search_query.data[0]["review_count"]) 
+            to_update.append(professor.model_dump())
+
+    for row in to_update:
+        supabase.table(TABLE_NAME).update(row).eq("professor_name", row["professor_name"])\
+            .eq("school", row["school"])\
+            .eq("department", row["department"])\
+            .execute()
