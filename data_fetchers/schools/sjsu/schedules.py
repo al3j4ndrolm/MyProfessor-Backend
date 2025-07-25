@@ -6,7 +6,7 @@ sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(
 
 # Local imports
 from bs4 import BeautifulSoup, Tag
-from data_fetchers.api.classes.response import create_professor_data, create_class_data, add_class_to_professor, create_meeting_data, add_meeting_to_class
+from helpers.data import data_creators
 import logging
 
 logger = logging.getLogger(__name__)
@@ -69,15 +69,15 @@ def build_schedules_data_table(schedules_rows: list[Tag], departments: set) -> d
             if department not in departments:
                 continue
 
-            class_data = create_class_data(class_crn, availability)
+            class_data = data_creators.create_class_data(class_crn, availability)
         
             if days.find("br") is None:
-                meeting_data = create_meeting_data(
+                meeting_data = data_creators.create_meeting_data(
                     tag = "", 
                     days = days.text.strip(), 
                     time = time.text.strip(), 
                     location = location.text.strip())
-                add_meeting_to_class(class_data, meeting_data)
+                data_creators.add_meeting_to_class(class_data, meeting_data)
             else:
                 lines = [line.strip() for line in time.get_text(separator='\n').split('\n') if line.strip()]
                 days = lines[::2]   # every 0,2,4... line is a day
@@ -89,16 +89,16 @@ def build_schedules_data_table(schedules_rows: list[Tag], departments: set) -> d
                     days_per_meeting = "" if days[i] == "TBA" else days[i]
                     time_per_meeting = "" if time[i] == "TBA" else time[i]
                     location_per_meeting = "" if locations[i] == "TBA" else locations[i]
-                    meeting_data = create_meeting_data(tag = "", days = days_per_meeting, time = time_per_meeting, location = location_per_meeting)
-                    add_meeting_to_class(class_data, meeting_data)
+                    meeting_data = data_creators.create_meeting_data(tag = "", days = days_per_meeting, time = time_per_meeting, location = location_per_meeting)
+                    data_creators.add_meeting_to_class(class_data, meeting_data)
 
         if course_name not in schedules_data_table[department]:
             schedules_data_table[department][course_name] = {}
 
         if professor_name not in schedules_data_table[department][course_name]:
-            schedules_data_table[department][course_name][professor_name] = create_professor_data(has_email = professor_email is not None)
+            schedules_data_table[department][course_name][professor_name] = data_creators.create_professor_data(has_email = professor_email is not None)
 
         professor_data = schedules_data_table[department][course_name][professor_name]
-        add_class_to_professor(professor_data, class_data)
+        data_creators.add_class_to_professor(professor_data, class_data)
 
     return schedules_data_table

@@ -3,7 +3,7 @@ import os
 import sys
 import logging
 from dotenv import load_dotenv
-from supabase import create_client, Client
+from supabase import create_client
 
 # Get the path to the schools directory
 SCHOOLS_DIR = os.path.dirname(os.path.abspath(__file__))

@@ -11,15 +11,18 @@ class Classes(BaseModel):
     term: str
     data: dict
 
-def save_classes_data(supabase: Client, classes_data_table: dict, school: str):
+def save(supabase: Client, classes_data_table: dict, school: str):
     for term, classes_all_departments in classes_data_table.items():
         for department, classes_per_department in classes_all_departments.items():
             
             classes = Classes(school=school, department=department, term=term, data=classes_per_department)
             supabase.table(TABLE_NAME).insert(classes.model_dump()).execute()
 
-def get_classes_data(supabase: Client, school: str, term: str, department: str) -> dict:
+def get(supabase: Client, school: str, term: str, department: str) -> dict:
     classes = supabase.table(TABLE_NAME).select("*").eq("school", school).eq("term", term).eq("department", department).execute()
+    if len(classes.data) == 0:
+        return {}
+    
     class_data = classes.data[0]["data"]
     return class_data
 
