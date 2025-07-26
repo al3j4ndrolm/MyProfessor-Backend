@@ -1,7 +1,7 @@
 from deprecation import deprecated
 from supabase import Client
 
-from database import schools_db, broadcasts_db, professors_db, classes_db
+from database import schools_db, broadcasts_db, professors_db, classes_db, db_keys
 from api import configs
 from helpers.data import data_keys
 
@@ -16,24 +16,27 @@ def response_schools(supabase: Client) -> dict:
     for entry in broadcasts_data:
         broadcast_list.append(_create_broadcast_list(entry))
 
-    return {"schools": school_list, "broadcasts": broadcast_list}
+    return {
+        configs.SCHOOLS_KEY_SCHOOL_LIST: school_list,
+        configs.SCHOOLS_KEY_BROADCASTS: broadcast_list
+    }
 
 def _create_school_list(entry: dict) -> dict:
     return {
-        configs.SCHOOL_NAME_KEY: entry["school"],
-        configs.RMP_CODE_KEY: entry["rmp_code"],
-        configs.TERMS_KEY: entry["terms"],
-        configs.NOTIFICATION_KEY: {"text": entry["notification"]},
-        configs.STATUS_KEY: entry["status"]
+        configs.SCHOOL_NAME_KEY: entry[db_keys.SCHOOL_KEY_SCHOOL_NAME],
+        configs.RMP_CODE_KEY: entry[db_keys.SCHOOL_KEY_RMP_CODE],
+        configs.TERMS_KEY: entry[db_keys.SCHOOL_KEY_TERMS],
+        configs.NOTIFICATION_KEY: {"text": entry[db_keys.SCHOOL_KEY_NOTIFICATION]},
+        configs.STATUS_KEY: entry[db_keys.SCHOOL_KEY_STATUS]
     }
 
 def _create_broadcast_list(entry: dict) -> dict:
     return {
-        configs.BROADCAST_ID_KEY: entry["id"],
-        configs.TEXT_KEY: entry["text"],
-        configs.NEED_UPDATE_KEY: entry["need_update"],
-        configs.MIN_VERSION_KEY: entry["min_version"],
-        configs.PLATFORM_KEY: entry["platform"]
+        configs.BROADCAST_ID_KEY: entry[db_keys.BROADCAST_KEY_ID],
+        configs.TEXT_KEY: entry[db_keys.BROADCAST_KEY_TEXT],
+        configs.NEED_UPDATE_KEY: entry[db_keys.BROADCAST_KEY_NEED_UPDATE],
+        configs.MIN_VERSION_KEY: entry[db_keys.BROADCAST_KEY_MIN_VERSION],
+        configs.PLATFORM_KEY: entry[db_keys.BROADCAST_KEY_PLATFORM]
     }
 
 def response_classes(supabase: Client, school: str, term: str, department: str) -> dict:
@@ -42,12 +45,14 @@ def response_classes(supabase: Client, school: str, term: str, department: str) 
     for course, classes_all_professors in classes_all_courses.items():
         for professor_name, professor_data in classes_all_professors.items():
             professor_email = professor_data[data_keys.EMAIL_KEY]
+            
+            # TODO: instead of getting single professor, get all from the same school and department
             professor_entry = professors_db.get(supabase, school, department, professor_name, professor_email)
             if professor_entry:
-                professor_data[data_keys.RATING_KEY] = professor_entry["rating"]
-                professor_data[data_keys.DIFFICULTY_KEY] = professor_entry["difficulty"]
-                professor_data[data_keys.RECOMMEND_KEY] = professor_entry["recommend"]
-                professor_data[data_keys.REVIEW_COUNT_KEY] = professor_entry["review_count"]
+                professor_data[data_keys.RATING_KEY] = professor_entry[db_keys.PROFESSOR_KEY_RMP_RATING]
+                professor_data[data_keys.DIFFICULTY_KEY] = professor_entry[db_keys.PROFESSOR_KEY_RMP_DIFFICULTY]
+                professor_data[data_keys.RECOMMEND_KEY] = professor_entry[db_keys.PROFESSOR_KEY_RMP_RECOMMEND]
+                professor_data[data_keys.REVIEW_COUNT_KEY] = professor_entry[db_keys.PROFESSOR_KEY_RMP_REVIEWS_COUNT]
             if not professor_data[data_keys.RATING_KEY]:
                 professor_data[data_keys.RATING_KEY] = -0.1
             if not professor_data[data_keys.DIFFICULTY_KEY]:

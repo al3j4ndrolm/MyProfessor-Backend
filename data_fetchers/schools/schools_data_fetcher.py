@@ -5,6 +5,7 @@ import logging
 from dotenv import load_dotenv
 from supabase import create_client
 import argparse
+import traceback
 
 # Get the path to the schools directory
 SCHOOLS_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -79,7 +80,7 @@ for folder in filtered_school_folders:
                 main_module.main(supabase, {"courses", "classes", "professors", "schools"})
             logger.info(f'Finished updating data for {school_name}.\n\n')
         except Exception as e:
-            logger.error(f'Error fetching or updating data for {school_name}: {e}\n\n')
+            logger.error(f'Error fetching or updating data for {school_name}: {traceback.format_exc()}\n\n')
             exit(1)
         finally:
             sys.path.pop(0)

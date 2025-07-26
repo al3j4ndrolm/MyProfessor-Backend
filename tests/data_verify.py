@@ -31,6 +31,8 @@ def verify_data_structure_schedules_per_professor(professor_schedules: dict):
     """
     assert isinstance(professor_schedules["hasEmail"], bool)
     assert isinstance(professor_schedules["classes"], list)
+    if "email" in professor_schedules:
+        assert isinstance(professor_schedules["email"], str)
     for class_schedules in professor_schedules["classes"]:
         verify_data_structure_schedules_per_class(class_schedules)
     

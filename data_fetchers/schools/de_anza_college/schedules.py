@@ -89,7 +89,7 @@ def build_schedule_data_table(schedule_rows) -> dict:
             <td><em>S17</em></td>
             """
             professor_data = courses_data_table[last_course_name][last_professor_name]
-            class_data = professor_data[data_keys.CLASSES_KEY][-1]
+            class_data = professor_data[data_keys.PROFESSOR_CLASSES_KEY][-1]
             tag = schedule_data[0].text.strip()
             meeting_data = data_creators.create_meeting_data(
                 tag = "" if tag == "CLAS" else tag,

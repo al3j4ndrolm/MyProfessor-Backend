@@ -1,7 +1,6 @@
 # Standard library imports
 import sys
 import os
-import logging
 from supabase import Client
 sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))))
 
@@ -13,8 +12,7 @@ from data_fetchers.schools.sjsu.courses import update_courses_data_table
 from data_fetchers.schools.sjsu.schedules import get_schedules_all_departments
 from data_fetchers.schools.sjsu.school_config import TERMS_BASE_URL, SCHEDULES_BASE_URL, SCHOOL_NAME, RMP_CODE
 from database import courses_db, classes_db, schools_db, professors_db
-
-logger = logging.getLogger(__name__)
+from logger import logger  # Import the configured logger instance
 
 def main(supabase: Client, target_tables: set[str]) -> None:
 
@@ -37,9 +35,10 @@ def main(supabase: Client, target_tables: set[str]) -> None:
             classes_db.save(supabase, classes_data_table, SCHOOL_NAME)
 
         if "professors" in target_tables:
-            professors = data_creators.get_professors(classes_data_table)
+            professors_by_department = data_creators.get_professors(classes_data_table)
             logger.info("Start saving professors data to database `professors`.")
-            professors_db.save(supabase, professors, SCHOOL_NAME)
+            for department, professors_data_table in professors_by_department.items():
+                professors_db.save(supabase, professors_data_table, SCHOOL_NAME, department)
 
 def get_courses_and_classes(term_codes: list) -> tuple[dict, dict]:
     courses_data_table = {}

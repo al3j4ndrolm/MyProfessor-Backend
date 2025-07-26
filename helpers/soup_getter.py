@@ -1,11 +1,25 @@
 from bs4 import BeautifulSoup
 import requests
-import logging
 import os
 
-logger = logging.getLogger(__name__)
+from logger import logger
 
 def html_url_to_soup(url):
+    logger.debug(f"Parsing URL: {url}")
+    headers = {
+        "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36"
+    }
+    response = requests.get(url, headers=headers)
+    logger.debug(f"HTTP response status: {response.status_code}")
+    
+    if response.status_code == 200:
+        soup = BeautifulSoup(response.text, "html.parser")
+        return soup
+    else:
+        logger.error(f"Failed to fetch URL {url}: HTTP {response.status_code}")
+        return None
+
+def get_soup_zenrows(url):
     """Convert HTML from URL to BeautifulSoup object"""
     logger.debug(f"Fetching HTML from {url}")
 

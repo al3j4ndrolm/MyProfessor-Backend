@@ -32,8 +32,8 @@ class TestDeAnzaSchedules:
         
         result = schedules.get_schedules_per_department(soup)
         expected = get_reference_data()
-
         assert result == expected
+
         # Verify the data structure
         data_verify.verify_data_structure_schedules_per_department(result)
 
