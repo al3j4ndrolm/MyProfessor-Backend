@@ -33,16 +33,18 @@ def build_term_data_list(terms_options) -> list[dict]:
 
     Example of terms_options:
     [
-        <a href="/schedule/2025-2026/fall">Fall 2025</a>,
-        <a href="/schedule/2025-2026/winter">Winter 2025</a>
+        <a href="/classes/schedules/summer-2025.php" class="gtm-nav--local">Summer 2025</a>,
+        <a href="/classes/schedules/fall-2025.php" class="gtm-nav--local">Fall 2025</a>,
     ]
     """
 
     term_data_list = []
     for term in terms_options:
 
-        value = term.get("href").split("/")[-1]
-        term_data = data_creators.create_term_response_data(term.text, value)
+        term_code = term.get("href").split("/")[-1].strip(".php")
+        term_name = term.text
+
+        term_data = data_creators.create_term_response_data(term_name=term_name, term_code=term_code)
         term_data_list.append(term_data)
 
     return term_data_list

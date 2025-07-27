@@ -35,26 +35,25 @@ def create_courses_data(department_name: str, courses_names: set) -> dict:
         department_name: sorted(list(courses_names))
     }
 
-def create_professor_data(email: str | None) -> dict:
+def create_professor_data(school: str, department: str, professor_name: str, email: str | None) -> dict:
     """
     Example of return value: 
     {
+        "professor_name": "Andrew Yu",
         "hasEmail": False,
         "email": "example@example.com",
         "classes": [],
     }
     """
     professor_data = {
+            # data_keys.PROFESSOR_NAME_KEY: professor_name,
             data_keys.PROFESSOR_HAS_EMAIL_KEY: email is not None,
             data_keys.PROFESSOR_CLASSES_KEY: [],
         }
-    if email:
-        professor_data[data_keys.PROFESSOR_EMAIL_KEY] = email
+    # if email:
+    #     professor_data[data_keys.PROFESSOR_EMAIL_KEY] = email
+
     return professor_data
-
-def add_class_to_professor(professor_data: dict, class_data: dict):
-
-    professor_data[data_keys.PROFESSOR_CLASSES_KEY].append(class_data)
 
 def create_class_data(class_crn = "N/A", availability = "N/A") -> dict:
     """
@@ -71,10 +70,6 @@ def create_class_data(class_crn = "N/A", availability = "N/A") -> dict:
             data_keys.AVAILABILITY_KEY: availability,
         }
 
-def add_meeting_to_class(class_data: dict, meeting_data: dict):
-
-    class_data[data_keys.MEETINGS_KEY].append(meeting_data)
-
 def create_meeting_data(tag = "", days = "·········", time = "", location = "") -> dict:
     """
     Example of return value: 
@@ -88,8 +83,8 @@ def create_meeting_data(tag = "", days = "·········", time = "", locati
     return {
         data_keys.TAG_KEY: tag,
         data_keys.DAYS_KEY: format_days(days),
-        data_keys.TIME_KEY: time,
-        data_keys.LOCATION_KEY: location
+        data_keys.TIME_KEY: time.strip(),
+        data_keys.LOCATION_KEY: location.strip()
     }
 
 def format_days(day_str):
@@ -124,50 +119,51 @@ def get_professors(classes_data_table: dict) -> dict:
 
     return professors_by_department
 
-def get_professor_from_rmp_data(rmp_data: dict) -> dict:
+def typed_rmp_data(rmp_data: dict) -> dict:
     """
     Example of rmp data:
     {
-        "Jian Andrew Yu":{
-            "score":0.988,
-            "professor_name":"Jian Andrew Yu",
-            "link":"/professor/2153406",
-            "department":"Mathematics & Statistics",
-            "rating":"4.4",
-            "reviews_count":"132",
-            "difficulty":"2.7",
-            "recommend":"82"
-        },
-        ...
+        "score":0.988,
+        "link":"/professor/2153406",
+        "rating":"4.4",
+        "reviewCount":"132",
+        "difficulty":"2.7",
+        "recommend":"82"
     }
     """
     
-    def safe_float(value):
-        """Convert value to float, return None if conversion fails"""
-        if value is None or value == "" or value == "N/A":
-            return None
-        try:
-            return float(value)
-        except (ValueError, TypeError):
-            return None
-    
-    def safe_int(value):
-        """Convert value to int, return None if conversion fails"""
-        if value is None or value == "" or value == "N/A":
-            return None
-        try:
-            return int(value)
-        except (ValueError, TypeError):
-            return None
-    
     return {
-        data_keys.PROFESSOR_NAME_KEY: rmp_data["professor_name"],
-        # data_keys.PROFESSOR_EMAIL_KEY: rmp_data["email"],
-        # data_keys.PROFESSOR_DEPARTMENT_KEY: rmp_data["department"],
-        data_keys.PROFESSOR_RATING_KEY: safe_float(rmp_data["rating"]),
-        data_keys.PROFESSOR_REVIEW_COUNT_KEY: safe_int(rmp_data["reviews_count"]),
-        data_keys.PROFESSOR_DIFFICULTY_KEY: safe_float(rmp_data["difficulty"]),
-        data_keys.PROFESSOR_RECOMMEND_KEY: safe_int(rmp_data["recommend"]),
-        data_keys.PROFESSOR_SCORE_KEY: safe_float(rmp_data["score"]),
-        data_keys.PROFESSOR_LINK_KEY: rmp_data["link"]
+        data_keys.PROFESSOR_RATING_KEY: safe_float(rmp_data[data_keys.PROFESSOR_RATING_KEY]),
+        data_keys.PROFESSOR_REVIEW_COUNT_KEY: safe_int(rmp_data[data_keys.PROFESSOR_REVIEW_COUNT_KEY]),
+        data_keys.PROFESSOR_DIFFICULTY_KEY: safe_float(rmp_data[data_keys.PROFESSOR_DIFFICULTY_KEY]),
+        data_keys.PROFESSOR_RECOMMEND_KEY: safe_int(rmp_data[data_keys.PROFESSOR_RECOMMEND_KEY]),
+        data_keys.PROFESSOR_SCORE_KEY: safe_float(rmp_data[data_keys.PROFESSOR_SCORE_KEY]),
+        data_keys.PROFESSOR_LINK_KEY: rmp_data[data_keys.PROFESSOR_LINK_KEY]
     }
+
+def create_professor_identifier(professor_name: str, professor_email: str) -> str:
+    return f"{professor_name} email:{professor_email}"
+
+def parse_professor_identifier(professor_identifier: str) -> tuple[str, str]:
+    professor_name, professor_email = professor_identifier.split(" email:")
+    professor_name = professor_name.strip()
+    professor_email = professor_email.strip(")")
+    return professor_name, professor_email
+
+def safe_float(value):
+    """Convert value to float, return None if conversion fails"""
+    if value is None or value == "" or value == "N/A":
+        return None
+    try:
+        return float(value)
+    except (ValueError, TypeError):
+        return None
+
+def safe_int(value):
+    """Convert value to int, return None if conversion fails"""
+    if value is None or value == "" or value == "N/A":
+        return None
+    try:
+        return int(value)
+    except (ValueError, TypeError):
+        return None

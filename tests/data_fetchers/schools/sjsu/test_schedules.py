@@ -32,12 +32,13 @@ class TestSJSUSchedules:
         soup = get_sample_soup()
         departments = {"ART"}
 
-        result = schedules.get_schedules_all_departments(soup, departments)
+        result = schedules.get_classes_per_department(soup, departments)
         expected = get_reference_data()
+        print(result)
 
         assert result == expected
         # Verify the data structure
-        data_verify.verify_data_structure_schedules_all_departments(result)
+        data_verify.verify_data_structure_classes_all_departments(result)
 
 if __name__ == "__main__":
     pytest.main([__file__]) 

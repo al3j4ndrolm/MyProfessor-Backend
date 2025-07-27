@@ -30,12 +30,11 @@ class TestDeAnzaSchedules:
     def test_get_schedules(self):
         soup = get_sample_soup()
         
-        result = schedules.get_schedules_per_department(soup)
+        result = schedules.get_classes_per_department(soup, "PHYS")
         expected = get_reference_data()
         assert result == expected
-
         # Verify the data structure
-        data_verify.verify_data_structure_schedules_per_department(result)
+        data_verify.verify_data_structure_classes_per_department(result)
 
 if __name__ == "__main__":
     pytest.main([__file__]) 

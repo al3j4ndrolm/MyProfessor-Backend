@@ -44,23 +44,24 @@ def response_classes(supabase: Client, school: str, term: str, department: str) 
 
     for course, classes_all_professors in classes_all_courses.items():
         for professor_name, professor_data in classes_all_professors.items():
-            professor_email = professor_data[data_keys.EMAIL_KEY]
+            professor_email = professor_data[data_keys.PROFESSOR_EMAIL_KEY]
             
             # TODO: instead of getting single professor, get all from the same school and department
             professor_entry = professors_db.get(supabase, school, department, professor_name, professor_email)
             if professor_entry:
-                professor_data[data_keys.RATING_KEY] = professor_entry[db_keys.PROFESSOR_KEY_RMP_RATING]
-                professor_data[data_keys.DIFFICULTY_KEY] = professor_entry[db_keys.PROFESSOR_KEY_RMP_DIFFICULTY]
-                professor_data[data_keys.RECOMMEND_KEY] = professor_entry[db_keys.PROFESSOR_KEY_RMP_RECOMMEND]
-                professor_data[data_keys.REVIEW_COUNT_KEY] = professor_entry[db_keys.PROFESSOR_KEY_RMP_REVIEWS_COUNT]
-            if not professor_data[data_keys.RATING_KEY]:
-                professor_data[data_keys.RATING_KEY] = -0.1
-            if not professor_data[data_keys.DIFFICULTY_KEY]:
-                professor_data[data_keys.DIFFICULTY_KEY] = 5.1
-            if not professor_data[data_keys.RECOMMEND_KEY]:
-                professor_data[data_keys.RECOMMEND_KEY] = -1
-            if not professor_data[data_keys.REVIEW_COUNT_KEY]:
-                professor_data[data_keys.REVIEW_COUNT_KEY] = 0
-            del professor_data[data_keys.EMAIL_KEY]
+                professor_data[data_keys.PROFESSOR_RATING_KEY] = professor_entry[db_keys.KEY_RMP_RATING]
+                professor_data[data_keys.PROFESSOR_DIFFICULTY_KEY] = professor_entry[db_keys.KEY_RMP_DIFFICULTY]
+                professor_data[data_keys.PROFESSOR_RECOMMEND_KEY] = professor_entry[db_keys.KEY_RMP_RECOMMEND]
+                professor_data[data_keys.PROFESSOR_REVIEW_COUNT_KEY] = professor_entry[db_keys.KEY_RMP_REVIEWS_COUNT]
+            if data_keys.PROFESSOR_RATING_KEY not in professor_data:
+                professor_data[data_keys.PROFESSOR_RATING_KEY] = -0.1
+            if data_keys.PROFESSOR_DIFFICULTY_KEY not in professor_data:
+                professor_data[data_keys.PROFESSOR_DIFFICULTY_KEY] = 5.1
+            if data_keys.PROFESSOR_RECOMMEND_KEY not in professor_data:
+                professor_data[data_keys.PROFESSOR_RECOMMEND_KEY] = -1
+            if data_keys.PROFESSOR_REVIEW_COUNT_KEY not in professor_data:
+                professor_data[data_keys.PROFESSOR_REVIEW_COUNT_KEY] = 0
+            
+            del professor_data[data_keys.PROFESSOR_EMAIL_KEY]
 
     return classes_all_courses

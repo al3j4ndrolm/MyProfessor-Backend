@@ -23,6 +23,7 @@ KEY_RMP_RECOMMEND = "rmp_recommend"
 KEY_RMP_REVIEWS_COUNT = "rmp_reviews_count"
 KEY_RMP_SCORE = "rmp_score"
 KEY_RMP_LINK = "rmp_link"
+KEY_UPDATED_AT = "updated_at"
 
 # table `classes`
 CLASSES_KEY_SCHOOL = "school"
