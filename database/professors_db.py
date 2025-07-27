@@ -2,6 +2,10 @@ from deprecation import deprecated
 from supabase import Client
 from pydantic import BaseModel
 from typing import Optional
+from datetime import datetime, timedelta
+from database import db_keys
+from helpers.data import data_keys
+from logger import logger
 
 TABLE_NAME = "professors"
 
@@ -10,84 +14,139 @@ class Professor(BaseModel):
     email: Optional[str] = None
     school: str
     department: str
-    difficulty: Optional[float] = None
-    rating: Optional[float] = None
-    recommend: Optional[int] = None
-    review_count: int
+    rmp_difficulty: Optional[float] = None
+    rmp_rating: Optional[float] = None
+    rmp_recommend: Optional[int] = None
+    rmp_reviews_count: Optional[int] = None
+    rmp_score: Optional[float] = None
+    rmp_link: Optional[str] = None
+    updated_at: str
 
-# Remove after client migrates to new classes endpoints
-def get_without_email(supabase: Client, school: str, department: str, professor_name: str) -> Optional[Professor]:
-    search_query = supabase.table(TABLE_NAME)\
-        .select("*").eq("professor_name", professor_name)\
-        .eq("school", school)\
-        .eq("department", department)\
-        .execute()
+def get_one_entry(supabase: Client, school: str, department: str, professor_name: str, professor_email: str) -> Optional[Professor]:
+    search_query = select_one_query(supabase, school, department, professor_name, professor_email)
     
     return search_query.data[0] if search_query.data else None
 
-def get(supabase: Client, school: str, department: str, professor_name: str, professor_email: str) -> Optional[Professor]:
-    search_query = supabase.table(TABLE_NAME)\
-        .select("*").eq("professor_name", professor_name)\
-        .eq("email", professor_email)\
-        .eq("school", school)\
-        .eq("department", department)\
-        .execute()
-    
-    return search_query.data[0] if search_query.data else None
+def save_one_entry(supabase: Client, school: str, department: str, professor_name: str, professor_email: str, rmp_data: dict):
+    search_query = select_one_query(supabase, school, department, professor_name, professor_email)
+    if not search_query.data:
+        _add_one_entry(supabase, school, department, professor_name, professor_email, rmp_data)
+    else:
+        professor = Professor(
+            professor_name = professor_name,
+            email = professor_email,
+            school = school,
+            department = department,
+            rmp_difficulty = rmp_data[data_keys.PROFESSOR_DIFFICULTY_KEY],
+            rmp_rating = rmp_data[data_keys.PROFESSOR_RATING_KEY],
+            rmp_recommend = rmp_data[data_keys.PROFESSOR_RECOMMEND_KEY],
+            rmp_reviews_count = rmp_data[data_keys.PROFESSOR_REVIEW_COUNT_KEY],
+            rmp_score = rmp_data[data_keys.PROFESSOR_SCORE_KEY],
+            rmp_link = rmp_data[data_keys.PROFESSOR_LINK_KEY],
+            updated_at = datetime.now().isoformat()) 
+        
+        supabase.table(TABLE_NAME).update(professor.model_dump())\
+            .eq(db_keys.KEY_PROFESSOR_NAME, professor_name)\
+            .eq(db_keys.KEY_EMAIL, professor_email)\
+            .eq(db_keys.KEY_SCHOOL, school)\
+            .eq(db_keys.KEY_DEPARTMENT, department)\
+            .execute()
 
-def save(supabase: Client, professors_data_list: set[tuple[str, str, str]], school: str):
+def _add_one_entry(supabase: Client, school: str, department: str, professor_name: str, professor_email: str, rmp_data: dict):
+    # new professor added from fetching school data
+    professor = Professor(
+        professor_name = professor_name,
+        email = professor_email,
+        school = school,
+        department = department,
+        rmp_difficulty = rmp_data[data_keys.PROFESSOR_DIFFICULTY_KEY],
+        rmp_rating = rmp_data[data_keys.PROFESSOR_RATING_KEY],
+        rmp_recommend = rmp_data[data_keys.PROFESSOR_RECOMMEND_KEY],
+        rmp_reviews_count = rmp_data[data_keys.PROFESSOR_REVIEW_COUNT_KEY],
+        rmp_score = rmp_data[data_keys.PROFESSOR_SCORE_KEY],
+        rmp_link = rmp_data[data_keys.PROFESSOR_LINK_KEY],
+        updated_at = datetime.now().isoformat()) 
+    supabase.table(TABLE_NAME).insert(professor.model_dump()).execute()
+
+def select_one_query(supabase: Client, school: str, department: str, professor_name: str, professor_email: str) -> Optional[Professor]:
+    return supabase.table(TABLE_NAME)\
+        .select("*")\
+        .eq(db_keys.KEY_PROFESSOR_NAME, professor_name)\
+        .eq(db_keys.KEY_EMAIL, professor_email)\
+        .eq(db_keys.KEY_SCHOOL, school)\
+        .eq(db_keys.KEY_DEPARTMENT, department)\
+        .execute()
+
+def should_update(professor_entry: dict) -> bool:
+    if db_keys.KEY_UPDATED_AT not in professor_entry:
+        return True
+    if professor_entry[db_keys.KEY_UPDATED_AT] is None:
+        return True
+    
+    updated_at = datetime.fromisoformat(professor_entry[db_keys.KEY_UPDATED_AT])
+    # Make both datetimes naive for comparison
+    if updated_at.tzinfo is not None:
+        updated_at = updated_at.replace(tzinfo=None)
+    return updated_at < datetime.now() - timedelta(days=30)
+
+# TODO: Remove after client migrates to new classes endpoints
+def save(supabase: Client, professors_data_table: dict, school: str, department: str):
     to_insert = []
 
-    for professor_name, email, department in professors_data_list:
+    for professor_tuple, professor_data in professors_data_table.items():
         # only insert if professor does not exist
-        search_query = supabase.table(TABLE_NAME)\
-            .select("*").eq("professor_name", professor_name)\
-            .eq("email", email)\
-            .eq("school", school)\
-            .eq("department", department)\
-            .execute()
+        professor_name, professor_email = professor_tuple
+        search_query = select_one_query(supabase, school, department, professor_name, professor_email)
         
         if not search_query.data:
+            # new professor added from fetching school data
             professor = Professor(
                 professor_name = professor_name,
-                email = email,
+                email = professor_email,
                 school = school,
                 department = department,
-                difficulty = None,
-                rating = None,
-                recommend = None,
-                review_count = 0) 
+                rmp_difficulty = professor_data[data_keys.PROFESSOR_DIFFICULTY_KEY],
+                rmp_rating = professor_data[data_keys.PROFESSOR_RATING_KEY],
+                rmp_recommend = professor_data[data_keys.PROFESSOR_RECOMMEND_KEY],
+                rmp_reviews_count = professor_data[data_keys.PROFESSOR_REVIEW_COUNT_KEY],
+                rmp_score = professor_data[data_keys.PROFESSOR_SCORE_KEY],
+                rmp_link = professor_data[data_keys.PROFESSOR_LINK_KEY],
+                updated_at = datetime.now().isoformat()) 
             to_insert.append(professor.model_dump())
 
     # insert all professors at once
     supabase.table(TABLE_NAME).insert(to_insert).execute()
 
-def update_email(supabase: Client, professors_data_list: set[tuple[str, str, str]], school: str):
-    to_update = []
-
-    for professor_name, email, department in professors_data_list:
-        
-        search_query = supabase.table(TABLE_NAME)\
-            .select("*").eq("professor_name", professor_name)\
-            .eq("school", school)\
-            .eq("department", department)\
+# TODO: Remove after client migrates to new classes endpoints
+def update(supabase: Client, professors_data_list: list[dict]):
+    logger.info(f"Saving {len(professors_data_list)} professors in database `{TABLE_NAME}`.")
+    for professor in professors_data_list:
+        # Use all identifying fields to ensure correct row is updated
+        supabase.table(TABLE_NAME).update(professor)\
+            .eq(db_keys.KEY_PROFESSOR_NAME, professor[db_keys.KEY_PROFESSOR_NAME])\
+            .eq(db_keys.KEY_SCHOOL, professor[db_keys.KEY_SCHOOL])\
+            .eq(db_keys.KEY_DEPARTMENT, professor[db_keys.KEY_DEPARTMENT])\
+            .eq(db_keys.KEY_EMAIL, professor[db_keys.KEY_EMAIL])\
             .execute()
 
-        # only update if professor does not have email
-        if search_query.data and search_query.data[0]["email"] is None:
-            professor = Professor(
-                professor_name = professor_name,
-                email = email,
-                school = school,
-                department = department,
-                difficulty = search_query.data[0]["difficulty"],
-                rating = search_query.data[0]["rating"],
-                recommend = search_query.data[0]["recommend"],
-                review_count = search_query.data[0]["review_count"]) 
-            to_update.append(professor.model_dump())
+# TODO: Remove after client migrates to new classes endpoints
+def get_without_email(supabase: Client, school: str, department: str, professor_name: str) -> Optional[Professor]:
+    search_query = supabase.table(TABLE_NAME)\
+        .select("*").eq(db_keys.KEY_PROFESSOR_NAME, professor_name)\
+        .eq(db_keys.KEY_SCHOOL, school)\
+        .eq(db_keys.KEY_DEPARTMENT, department)\
+        .execute()
+    
+    return search_query.data[0] if search_query.data else None
 
-    for row in to_update:
-        supabase.table(TABLE_NAME).update(row).eq("professor_name", row["professor_name"])\
-            .eq("school", row["school"])\
-            .eq("department", row["department"])\
-            .execute()
+# TODO: Remove after client migrates to new classes endpoints
+def get_all(supabase: Client, school: str, department: str) -> dict:
+    search_query = supabase.table(TABLE_NAME)\
+        .select("*").eq(db_keys.KEY_SCHOOL, school)\
+        .eq(db_keys.KEY_DEPARTMENT, department)\
+        .execute()
+    
+    if search_query.data:
+        return {professor[db_keys.KEY_PROFESSOR_NAME]: professor for professor in search_query.data}
+    else:
+        return {}

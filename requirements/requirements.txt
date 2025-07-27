@@ -4,3 +4,4 @@ pytest
 supabase
 websockets
 coverage
+jellyfish

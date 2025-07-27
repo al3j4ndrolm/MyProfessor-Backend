@@ -1,48 +1,48 @@
 {
-  "ART":{
-     "ART 175":{
-        "Esteban Garcia Bravo / Esteban Garcia Bravo":{
-           "hasEmail":true,
-           "classes":[
-              {
-                 "classCrn":"31413",
-                 "meetings":[
-                    {
-                       "tag":"",
-                       "days":"·T·R···",
-                       "time":"12:00PM-06:00PM",
-                       "location":"ART241 "
-                    },
-                    {
-                       "tag":"",
-                       "days":"·······",
-                       "time":"",
-                       "location":" HYBRID"
-                    }
-                 ],
-                 "availability":"1"
-              }
-           ]
-        }
-     },
-     "ART 178":{
-        "Esteban Garcia Bravo":{
-           "hasEmail":true,
-           "classes":[
-              {
-                 "classCrn":"31654",
-                 "meetings":[
-                    {
-                       "tag":"",
-                       "days":"·T·····",
-                       "time":"TBA",
-                       "location":"ONLINE"
-                    }
-                 ],
-                 "availability":"0"
-              }
-           ]
-        }
-     }
-  }
+   "ART":{
+      "ART 175":{
+         "Esteban Garcia Bravo email:esteban.garciabravo@sjsu.edu":{
+            "hasEmail":true,
+            "classes":[
+               {
+                  "classCrn":"31413",
+                  "meetings":[
+                     {
+                        "tag":"",
+                        "days":"·T·R···",
+                        "time":"12:00PM-06:00PM",
+                        "location":"ART241"
+                     },
+                     {
+                        "tag":"",
+                        "days":"·T·····",
+                        "time":"TBA",
+                        "location":"HYBRID"
+                     }
+                  ],
+                  "availability":"1"
+               }
+            ]
+         }
+      },
+      "ART 178":{
+         "Esteban Garcia Bravo email:esteban.garciabravo@sjsu.edu":{
+            "hasEmail":true,
+            "classes":[
+               {
+                  "classCrn":"31654",
+                  "meetings":[
+                     {
+                        "tag":"",
+                        "days":"·T·····",
+                        "time":"TBA",
+                        "location":"ONLINE"
+                     }
+                  ],
+                  "availability":"0"
+               }
+            ]
+         }
+      }
+   }
 }

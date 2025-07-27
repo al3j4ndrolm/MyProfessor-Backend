@@ -35,24 +35,25 @@ def create_courses_data(department_name: str, courses_names: set) -> dict:
         department_name: sorted(list(courses_names))
     }
 
-def create_professor_data(email: str) -> dict:
+def create_professor_data(school: str, department: str, professor_name: str, email: str | None) -> dict:
     """
     Example of return value: 
     {
+        "professor_name": "Andrew Yu",
         "hasEmail": False,
         "email": "example@example.com",
         "classes": [],
     }
     """
-    return {
-        data_keys.HAS_EMAIL_KEY: email is not None,
-        data_keys.EMAIL_KEY: email,
-        data_keys.CLASSES_KEY: [],
-    }
+    professor_data = {
+            # data_keys.PROFESSOR_NAME_KEY: professor_name,
+            data_keys.PROFESSOR_HAS_EMAIL_KEY: email is not None,
+            data_keys.PROFESSOR_CLASSES_KEY: [],
+        }
+    # if email:
+    #     professor_data[data_keys.PROFESSOR_EMAIL_KEY] = email
 
-def add_class_to_professor(professor_data: dict, class_data: dict):
-
-    professor_data[data_keys.CLASSES_KEY].append(class_data)
+    return professor_data
 
 def create_class_data(class_crn = "N/A", availability = "N/A") -> dict:
     """
@@ -69,10 +70,6 @@ def create_class_data(class_crn = "N/A", availability = "N/A") -> dict:
             data_keys.AVAILABILITY_KEY: availability,
         }
 
-def add_meeting_to_class(class_data: dict, meeting_data: dict):
-
-    class_data[data_keys.MEETINGS_KEY].append(meeting_data)
-
 def create_meeting_data(tag = "", days = "·········", time = "", location = "") -> dict:
     """
     Example of return value: 
@@ -86,8 +83,8 @@ def create_meeting_data(tag = "", days = "·········", time = "", locati
     return {
         data_keys.TAG_KEY: tag,
         data_keys.DAYS_KEY: format_days(days),
-        data_keys.TIME_KEY: time,
-        data_keys.LOCATION_KEY: location
+        data_keys.TIME_KEY: time.strip(),
+        data_keys.LOCATION_KEY: location.strip()
     }
 
 def format_days(day_str):
@@ -98,12 +95,75 @@ def format_days(day_str):
     all_days = ['M', 'T', 'W', 'R', 'F', 'S', 'U']
     return ''.join([d if d in day_str else '·' for d in all_days])
 
-def get_professors(classes_data_table: dict) -> set[tuple[str, str, str]]:
-    professors = set()
+def get_professors(classes_data_table: dict) -> dict:
+    """
+    classes_data_table is:
+        a dict of term_code 
+            to dict of department 
+                to dict of course_name 
+                    to dict of professor_name to professor_data
+    """
+    professors_by_department = {}
     for term_code, classes_all_departments in classes_data_table.items():
         for department, classes_per_department in classes_all_departments.items():
-            for course_name, classes_per_professor in classes_per_department.items():
-                for professor_name, professor_data in classes_per_professor.items():
-                    professor_data_tuple = (professor_name, professor_data[data_keys.EMAIL_KEY], department)
-                    professors.add(professor_data_tuple)
-    return professors
+            
+            professors_by_department[department] = professors_by_department.get(department, {})
+            for course_name, classes_per_course in classes_per_department.items():
+                for professor_name, professor_data in classes_per_course.items():
+                    email = professor_data[data_keys.PROFESSOR_EMAIL_KEY]
+                    professors_by_department[department][(professor_name, email)] = {
+                            data_keys.PROFESSOR_NAME_KEY: professor_name,
+                            data_keys.PROFESSOR_EMAIL_KEY: email,
+                            data_keys.PROFESSOR_DEPARTMENT_KEY: department
+                        }
+
+    return professors_by_department
+
+def typed_rmp_data(rmp_data: dict) -> dict:
+    """
+    Example of rmp data:
+    {
+        "score":0.988,
+        "link":"/professor/2153406",
+        "rating":"4.4",
+        "reviewCount":"132",
+        "difficulty":"2.7",
+        "recommend":"82"
+    }
+    """
+    
+    return {
+        data_keys.PROFESSOR_RATING_KEY: safe_float(rmp_data[data_keys.PROFESSOR_RATING_KEY]),
+        data_keys.PROFESSOR_REVIEW_COUNT_KEY: safe_int(rmp_data[data_keys.PROFESSOR_REVIEW_COUNT_KEY]),
+        data_keys.PROFESSOR_DIFFICULTY_KEY: safe_float(rmp_data[data_keys.PROFESSOR_DIFFICULTY_KEY]),
+        data_keys.PROFESSOR_RECOMMEND_KEY: safe_int(rmp_data[data_keys.PROFESSOR_RECOMMEND_KEY]),
+        data_keys.PROFESSOR_SCORE_KEY: safe_float(rmp_data[data_keys.PROFESSOR_SCORE_KEY]),
+        data_keys.PROFESSOR_LINK_KEY: rmp_data[data_keys.PROFESSOR_LINK_KEY]
+    }
+
+def create_professor_identifier(professor_name: str, professor_email: str) -> str:
+    return f"{professor_name} email:{professor_email}"
+
+def parse_professor_identifier(professor_identifier: str) -> tuple[str, str]:
+    professor_name, professor_email = professor_identifier.split(" email:")
+    professor_name = professor_name.strip()
+    professor_email = professor_email.strip(")")
+    return professor_name, professor_email
+
+def safe_float(value):
+    """Convert value to float, return None if conversion fails"""
+    if value is None or value == "" or value == "N/A":
+        return None
+    try:
+        return float(value)
+    except (ValueError, TypeError):
+        return None
+
+def safe_int(value):
+    """Convert value to int, return None if conversion fails"""
+    if value is None or value == "" or value == "N/A":
+        return None
+    try:
+        return int(value)
+    except (ValueError, TypeError):
+        return None

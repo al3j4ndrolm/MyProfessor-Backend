@@ -6,12 +6,13 @@ sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(
 
 # Local imports
 from bs4 import BeautifulSoup, Tag
-from helpers.data import data_creators
+from helpers.data import data_creators, data_keys
+from data_fetchers.schools.sjsu.school_config import SCHOOL_NAME
 import logging
 
 logger = logging.getLogger(__name__)
 
-def get_schedules_all_departments(soup: BeautifulSoup, departments: set) -> dict:
+def get_classes_per_department(soup: BeautifulSoup, departments: set) -> dict:
     """
     Fetch the schedules for San Jose State University.
 
@@ -22,17 +23,17 @@ def get_schedules_all_departments(soup: BeautifulSoup, departments: set) -> dict
     try:
         schedules_holder = soup.find("table", id="classSchedule")
         schedules_options = schedules_holder.find_all("tr")[1:]
-        schedules_data_table = build_schedules_data_table(schedules_options, departments)
+        classes_data_table = build_classes_data_table(schedules_options, departments)
 
-        logger.info(f"Extracted schedules for {len(schedules_data_table)} departments.")
-        return schedules_data_table
+        logger.info(f"Extracted schedules for {len(classes_data_table)} departments.")
+        return classes_data_table
     except Exception as e:
         logger.error(f"Error getting schedules for San Jose State University: {traceback.format_exc()}")
         return {}
 
-def build_schedules_data_table(schedules_rows: list[Tag], departments: set) -> dict:
+def build_classes_data_table(schedules_rows: list[Tag], departments: set) -> dict:
 
-    schedules_data_table = {department: {} for department in departments}
+    classes_data_table = {department: {} for department in departments}
 
     for schedule_row in schedules_rows:
         schedule_data = schedule_row.find_all("td")
@@ -61,9 +62,9 @@ def build_schedules_data_table(schedules_rows: list[Tag], departments: set) -> d
             availability = schedule_data[12].text.strip()
             days = schedule_data[7]
             time = schedule_data[8]
-            professor_name = schedule_data[9].text.strip()
-            professor_email = schedule_data[9].find("a")["href"].split(":")[1] if schedule_data[9].find("a") is not None else None
             location = schedule_data[10]
+            professor_name = schedule_data[9].find("a").text.strip() if schedule_data[9].find("a") is not None else schedule_data[9].text.strip()
+            professor_email = schedule_data[9].find("a")["href"].split(":")[1] if schedule_data[9].find("a") is not None else None
 
             department = course_name.split(' ')[0]
             if department not in departments:
@@ -74,12 +75,12 @@ def build_schedules_data_table(schedules_rows: list[Tag], departments: set) -> d
             if days.find("br") is None:
                 meeting_data = data_creators.create_meeting_data(
                     tag = "", 
-                    days = days.text.strip(), 
-                    time = time.text.strip(), 
-                    location = location.text.strip())
-                data_creators.add_meeting_to_class(class_data, meeting_data)
+                    days = days.text, 
+                    time = time.text, 
+                    location = location.text)
+                class_data[data_keys.MEETINGS_KEY].append(meeting_data)
             else:
-                lines = [line.strip() for line in time.get_text(separator='\n').split('\n') if line.strip()]
+                lines = [line for line in time.get_text(separator='\n').split('\n') if line.strip()]
                 days = lines[::2]   # every 0,2,4... line is a day
                 time = lines[1::2]
 
@@ -90,15 +91,21 @@ def build_schedules_data_table(schedules_rows: list[Tag], departments: set) -> d
                     time_per_meeting = "" if time[i] == "TBA" else time[i]
                     location_per_meeting = "" if locations[i] == "TBA" else locations[i]
                     meeting_data = data_creators.create_meeting_data(tag = "", days = days_per_meeting, time = time_per_meeting, location = location_per_meeting)
-                    data_creators.add_meeting_to_class(class_data, meeting_data)
+                    class_data[data_keys.MEETINGS_KEY].append(meeting_data)
 
-        if course_name not in schedules_data_table[department]:
-            schedules_data_table[department][course_name] = {}
+        if course_name not in classes_data_table[department]:
+            classes_data_table[department][course_name] = {}
 
-        if professor_name not in schedules_data_table[department][course_name]:
-            schedules_data_table[department][course_name][professor_name] = data_creators.create_professor_data(email = professor_email)
+        professor_identifier = data_creators.create_professor_identifier(professor_name, professor_email)
+        if professor_name not in classes_data_table[department][course_name]:
+            professor_data = data_creators.create_professor_data(
+                school = SCHOOL_NAME,
+                department = department,
+                professor_name = professor_name,
+                email = professor_email
+            )
+            classes_data_table[department][course_name][professor_identifier] = professor_data
 
-        professor_data = schedules_data_table[department][course_name][professor_name]
-        data_creators.add_class_to_professor(professor_data, class_data)
+        classes_data_table[department][course_name][professor_identifier][data_keys.PROFESSOR_CLASSES_KEY].append(class_data)
 
-    return schedules_data_table
+    return classes_data_table

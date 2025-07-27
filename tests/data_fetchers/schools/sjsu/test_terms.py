@@ -22,8 +22,8 @@ class TestSJSUTerms:
         result = terms.get_terms(soup)
         # The expected result is based on the first two <a> tags in the first <ul class="nested vertical menu">
         expected = [
-            {"termName": "Summer 2025", "termCode": "summer-2025.php"},
-            {"termName": "Fall 2025", "termCode": "fall-2025.php"}
+            {"termName": "Summer 2025", "termCode": "summer-2025"},
+            {"termName": "Fall 2025", "termCode": "fall-2025"}
         ]
         assert result == expected
 

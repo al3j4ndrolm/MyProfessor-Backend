@@ -9,7 +9,8 @@ from pydantic import BaseModel
 
 # Local imports
 from api import response
-from database import courses_db, classes_db, professors_db
+from database import courses_db, classes_db, professors_db, db_keys
+from helpers.data import data_creators
 
 # Initialize FastAPI app and router
 app = FastAPI()
@@ -46,7 +47,23 @@ def classes_get(
     elif department is None:
         raise HTTPException(status_code=400, detail="Missing department")
     else:
-        return response.response_classes(supabase, school, term, department)
+        # return response.response_classes(supabase, school, term, department)
+        return classes_db.get(supabase, school, term, department)
+
+class ReportsErrorsPostRequest(BaseModel):
+    critical: bool
+    details: str
+    platform: str
+    build: str
+    version: str
+    recipient_email: str
+
+# TODO: Implement
+@router.post("/reports/errors")
+def reports_errors_post(
+    body: ReportsErrorsPostRequest = Body(...)
+):
+    pass
 
 # Remove after client migrates to new classes endpoints
 class ClassesPostRequest(BaseModel):
@@ -68,7 +85,15 @@ def classes_post(
     elif not body.department:
         raise HTTPException(status_code=400, detail="Missing department in request body")
 
-    return classes_db.get(supabase, body.school, body.term, body.department)
+    classes_data = classes_db.get(supabase, body.school, body.term, body.department)
+    return_data = {}
+    for course_code, classes_one_course in classes_data.items():
+        return_data[course_code] = {}
+        for professor_identifier, professor_data in classes_one_course.items():
+            professor_name, professor_email = data_creators.parse_professor_identifier(professor_identifier)
+            return_data[course_code][professor_name] = professor_data
+            
+    return return_data
 
 # Remove after client migrates to new classes endpoints
 class ProfessorsPostRequest(BaseModel):
@@ -91,19 +116,26 @@ def ratings_post(
 
     response = {}
     for professor_name in body.professors:
-        professor_data = professors_db.get_without_email(supabase, body.school, body.department, professor_name)
+        professor_entry = professors_db.get_without_email(supabase, body.school, body.department, professor_name)
+        if professor_entry:
+            rating = professor_entry[db_keys.KEY_RMP_RATING] if professor_entry[db_keys.KEY_RMP_RATING] is not None else -0.1
+            difficulty = professor_entry[db_keys.KEY_RMP_DIFFICULTY] if professor_entry[db_keys.KEY_RMP_DIFFICULTY] is not None else 5.1
+            recommend = professor_entry[db_keys.KEY_RMP_RECOMMEND] if professor_entry[db_keys.KEY_RMP_RECOMMEND] is not None else -1
+            review_count = professor_entry[db_keys.KEY_RMP_REVIEWS_COUNT] if professor_entry[db_keys.KEY_RMP_REVIEWS_COUNT] is not None else 0
 
-        rating = professor_data["rating"] if professor_data and professor_data["rating"] else -0.1
-        difficulty = professor_data["difficulty"] if professor_data and professor_data["difficulty"] else 5.1
-        recommend = professor_data["recommend"] if professor_data and professor_data["recommend"] else -1
-        review_count = professor_data["review_count"] if professor_data and professor_data["review_count"] else 0
-
-        response[professor_name] = {
-            "overallRating": rating,
-            "difficulty": difficulty,
-            "wouldTakeAgain": recommend,
-            "ratingsQuantity": review_count
-        }
+            response[professor_name] = {
+                "overallRating": rating,
+                "difficulty": difficulty,
+                "wouldTakeAgain": recommend,
+                "ratingsQuantity": review_count
+            }
+        else:
+            response[professor_name] = {
+                "overallRating": -0.1,
+                "difficulty": 5.1,
+                "wouldTakeAgain": -1,
+                "ratingsQuantity": 0
+            }
 
     return response
 
