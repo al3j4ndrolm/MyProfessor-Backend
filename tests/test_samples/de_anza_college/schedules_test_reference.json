@@ -1,6 +1,6 @@
 {
    "PHYS 2A":{
-      "Ronald Francis (francisronald@deanza.edu)":{
+      "Ronald Francis email:francisronald@deanza.edu":{
          "classes":[
             {
                "classCrn":"25051",
@@ -43,7 +43,7 @@
       }
    },
    "PHYS 4A":{
-      "Eduardo Luna (lunaeduardo@deanza.edu)":{
+      "Eduardo Luna email:lunaeduardo@deanza.edu":{
          "classes":[
             {
                "classCrn":"02076",
@@ -96,7 +96,7 @@
          ],
          "hasEmail":true
       },
-      "Kasra Khazeni (khazenikasra@deanza.edu)":{
+      "Kasra Khazeni email:khazenikasra@deanza.edu":{
          "classes":[
             {
                "classCrn":"25893",
@@ -149,7 +149,7 @@
          ],
          "hasEmail":true
       },
-      "STAFF, M (None)":{
+      "STAFF, M email:None":{
          "classes":[
             {
                "classCrn":"25354",
@@ -202,7 +202,7 @@
          ],
          "hasEmail":false
       },
-      "Ramin Alizadeh (alizadehramin@deanza.edu)":{
+      "Ramin Alizadeh email:alizadehramin@deanza.edu":{
          "classes":[
             {
                "classCrn":"02078",
@@ -245,7 +245,7 @@
       }
    },
    "PHYS 4B":{
-      "Zuleyha Yuksek (yuksekzuleyha@deanza.edu)":{
+      "Zuleyha Yuksek email:yuksekzuleyha@deanza.edu":{
          "classes":[
             {
                "classCrn":"02081",
@@ -298,7 +298,7 @@
          ],
          "hasEmail":true
       },
-      "Ronald Francis (francisronald@deanza.edu)":{
+      "Ronald Francis email:francisronald@deanza.edu":{
          "classes":[
             {
                "classCrn":"28256",
@@ -327,7 +327,7 @@
          ],
          "hasEmail":true
       },
-      "Kasra Khazeni (khazenikasra@deanza.edu)":{
+      "Kasra Khazeni email:khazenikasra@deanza.edu":{
          "classes":[
             {
                "classCrn":"26677",
@@ -370,7 +370,7 @@
       }
    },
    "PHYS 4C":{
-      "Megan Ulbricht (ulbrichtmegan@deanza.edu)":{
+      "Megan Ulbricht email:ulbrichtmegan@deanza.edu":{
          "classes":[
             {
                "classCrn":"28850",
@@ -395,7 +395,7 @@
       }
    },
    "PHYS 10":{
-      "David Laubner (laubnerdavid@deanza.edu)":{
+      "David Laubner email:laubnerdavid@deanza.edu":{
          "classes":[
             {
                "classCrn":"28258",
@@ -414,7 +414,7 @@
       }
    },
    "PHYS 50":{
-      "Eduardo Luna (lunaeduardo@deanza.edu)":{
+      "Eduardo Luna email:lunaeduardo@deanza.edu":{
          "classes":[
             {
                "classCrn":"21249",
@@ -431,7 +431,7 @@
          ],
          "hasEmail":true
       },
-      "Zuleyha Yuksek (yuksekzuleyha@deanza.edu)":{
+      "Zuleyha Yuksek email:yuksekzuleyha@deanza.edu":{
          "classes":[
             {
                "classCrn":"02085",
@@ -448,7 +448,7 @@
          ],
          "hasEmail":true
       },
-      "STAFF, M (None)":{
+      "STAFF, M email:None":{
          "classes":[
             {
                "classCrn":"02086",
@@ -465,7 +465,7 @@
          ],
          "hasEmail":false
       },
-      "Alireza Naddaf (naddafali@deanza.edu)":{
+      "Alireza Naddaf email:naddafali@deanza.edu":{
          "classes":[
             {
                "classCrn":"22424",
@@ -484,7 +484,7 @@
       }
    },
    "PHYS 77":{
-      "STAFF, M (None)":{
+      "STAFF, M email:None":{
          "classes":[
             {
                "classCrn":"28259",

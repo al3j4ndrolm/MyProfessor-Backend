@@ -22,7 +22,7 @@ def verify_data_structure_classes_per_course(classes_per_course: dict):
     """
     for professor_identifier, professor_data in classes_per_course.items():
         assert isinstance(professor_identifier, str)
-        assert " (" in professor_identifier
+        assert " email:" in professor_identifier
         assert isinstance(professor_data, dict)
         verify_data_structure_classes_per_professor(professor_data)
 
