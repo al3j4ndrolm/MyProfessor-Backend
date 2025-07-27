@@ -97,7 +97,7 @@ def build_classes_data_table(schedules_rows: list[Tag], departments: set) -> dic
             classes_data_table[department][course_name] = {}
 
         professor_identifier = data_creators.create_professor_identifier(professor_name, professor_email)
-        if professor_name not in classes_data_table[department][course_name]:
+        if professor_identifier not in classes_data_table[department][course_name]:
             professor_data = data_creators.create_professor_data(
                 school = SCHOOL_NAME,
                 department = department,

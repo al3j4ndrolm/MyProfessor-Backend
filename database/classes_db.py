@@ -20,7 +20,7 @@ def save_one_entry(supabase: Client, data: dict, school: str, term: str, departm
             
     if not search_query.data:
         supabase.table(TABLE_NAME).insert(classes.model_dump()).execute()
-    elif search_query.data[0][db_keys.CLASSES_KEY_DATA] != classes.model_dump():
+    elif search_query.data[0][db_keys.CLASSES_KEY_DATA] != data:
         _update_one_entry(supabase, classes)
 
 def save(supabase: Client, classes_data_table: dict, school: str):
@@ -34,7 +34,7 @@ def save(supabase: Client, classes_data_table: dict, school: str):
             
             if not search_query.data:
                 to_insert.append(classes.model_dump())
-            elif search_query.data[0][db_keys.CLASSES_KEY_DATA] != classes.model_dump():
+            elif search_query.data[0][db_keys.CLASSES_KEY_DATA] != data:
                 _update_one_entry(supabase, classes)
 
         if to_insert:
