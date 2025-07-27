@@ -2,7 +2,7 @@
 SCHOOLS_KEY_SCHOOL_LIST = "schools"
 SCHOOLS_KEY_BROADCASTS = "broadcasts"
 SCHOOL_NAME_KEY = "schoolName"
-RMP_CODE_KEY = "rmpCode"
+RMP_CODE_KEY = "schoolRmpCode"
 TERMS_KEY = "terms"
 NOTIFICATION_KEY = "notification"
 STATUS_KEY = "status"
