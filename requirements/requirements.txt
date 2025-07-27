@@ -6,3 +6,4 @@ websockets
 coverage
 jellyfish
 uvicorn
+fastapi
