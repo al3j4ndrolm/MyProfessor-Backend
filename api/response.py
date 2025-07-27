@@ -36,7 +36,8 @@ def _create_broadcast_list(entry: dict) -> dict:
         configs.TEXT_KEY: entry[db_keys.BROADCAST_KEY_TEXT],
         configs.NEED_UPDATE_KEY: entry[db_keys.BROADCAST_KEY_NEED_UPDATE],
         configs.MIN_VERSION_KEY: entry[db_keys.BROADCAST_KEY_MIN_VERSION],
-        configs.PLATFORM_KEY: entry[db_keys.BROADCAST_KEY_PLATFORM]
+        configs.PLATFORM_KEY: entry[db_keys.BROADCAST_KEY_PLATFORM],
+        "school": "" # TODO: Remove this after client migrates to new classes endpoints
     }
 
 def response_classes(supabase: Client, school: str, term: str, department: str) -> dict:
