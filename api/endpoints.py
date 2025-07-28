@@ -30,7 +30,7 @@ def courses_get(
     school: str = None
 ):
     if school is None:
-        raise HTTPException(status_code=400, detail="Missing school name")
+        raise HTTPException(status_code=400)
     else:
         return courses_db.get(supabase, school)
 
@@ -41,11 +41,11 @@ def classes_get(
     department: str = None
 ):
     if school is None:
-        raise HTTPException(status_code=400, detail="Missing school name")
+        raise HTTPException(status_code=400)
     elif term is None:
-        raise HTTPException(status_code=400, detail="Missing term")
+        raise HTTPException(status_code=400)
     elif department is None:
-        raise HTTPException(status_code=400, detail="Missing department")
+        raise HTTPException(status_code=400)
     else:
         return classes_db.get_one_entry(supabase, school, term, department)
 
@@ -82,11 +82,11 @@ def classes_post(
 ):
     # Validate required fields
     if not body.school:
-        raise HTTPException(status_code=400, detail="Missing school name in request body")
+        raise HTTPException(status_code=400)
     elif not body.term:
-        raise HTTPException(status_code=400, detail="Missing term in request body")
+        raise HTTPException(status_code=400)
     elif not body.department:
-        raise HTTPException(status_code=400, detail="Missing department in request body")
+        raise HTTPException(status_code=400)
 
     classes_data = classes_db.get_one_entry(supabase, body.school, body.term, body.department)
     
@@ -112,11 +112,11 @@ def ratings_post(
     body: ProfessorsPostRequest = Body(...)
 ):
     if not body.school:
-        raise HTTPException(status_code=400, detail="Missing school name in request body")
+        raise HTTPException(status_code=400)
     elif not body.department:
-        raise HTTPException(status_code=400, detail="Missing department in request body")
+        raise HTTPException(status_code=400)
     elif not body.professors:
-        raise HTTPException(status_code=400, detail="Missing professor names in request body")
+        raise HTTPException(status_code=400)
 
     response = {}
     for professor_name in body.professors:
