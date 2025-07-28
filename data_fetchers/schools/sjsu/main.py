@@ -6,7 +6,7 @@ sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(
 
 # Local Imports
 from helpers.soup_getter import html_url_to_soup
-from helpers.data import data_keys, data_creators
+from helpers.data import data_keys
 from data_fetchers.schools.sjsu.terms import get_terms
 from data_fetchers.schools.sjsu.courses import update_courses_data_table
 from data_fetchers.schools.sjsu.schedules import get_classes_per_department

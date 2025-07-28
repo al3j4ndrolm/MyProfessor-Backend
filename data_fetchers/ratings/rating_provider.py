@@ -12,12 +12,9 @@ def get_ratings_and_merge(supabase: Client, classes_one_department: dict, school
             professor_name, professor_email = data_creators.parse_professor_identifier(professor_identifier)
             rmp_data = get_rating_data(supabase, school, department_code, professor_name, professor_email, rmp_code)
             if rmp_data:
-                professor_data[data_keys.PROFESSOR_RATING_KEY] = rmp_data[data_keys.PROFESSOR_RATING_KEY]
-                professor_data[data_keys.PROFESSOR_DIFFICULTY_KEY] = rmp_data[data_keys.PROFESSOR_DIFFICULTY_KEY]
-                professor_data[data_keys.PROFESSOR_RECOMMEND_KEY] = rmp_data[data_keys.PROFESSOR_RECOMMEND_KEY]
-                professor_data[data_keys.PROFESSOR_REVIEW_COUNT_KEY] = rmp_data[data_keys.PROFESSOR_REVIEW_COUNT_KEY]
+                professor_data.update(rmp_data)
 
-def get_rating_data(supabase: Client, school: str, department: str, professor_name: str, professor_email: str, rmp_code: str) -> dict | None:
+def get_rating_data(supabase: Client, school: str, department: str, professor_name: str, professor_email: str, rmp_code: str) -> dict:
     """
     Example of rmp_data:
     {
@@ -49,15 +46,33 @@ def get_rating_data(supabase: Client, school: str, department: str, professor_na
             data_keys.PROFESSOR_RECOMMEND_KEY: professor_entry[db_keys.KEY_RMP_RECOMMEND]
         }
 
-    logger.debug(f"Searching for professor {professor_name} in RMP ...")
-    rmp_data = get_rmp_data(professor_name, rmp_code)
-    if rmp_data:
-        logger.info(f"Saving professor {professor_name} in `professors` table.")
-        professors_db.save_one_entry(supabase, school, department, professor_name, professor_email, rmp_data)
-        del rmp_data[data_keys.PROFESSOR_LINK_KEY]
-        del rmp_data[data_keys.PROFESSOR_SCORE_KEY]
-        
-        return rmp_data
+    logger.debug(f"Not found, searching for professor {professor_name} in RMP ...")
     
-    logger.debug(f"No professor {professor_name} found in RMP.")
-    return None
+    if is_staff(professor_name): # if the professor is a staff, we don't need to fetch the rating data
+        rmp_data = None
+    else:
+        rmp_data = get_rmp_data(professor_name, rmp_code)
+    
+    if not rmp_data:
+        logger.debug(f"No professor {professor_name} found in RMP.")
+        rmp_data = {
+            data_keys.PROFESSOR_LINK_KEY: None,
+            data_keys.PROFESSOR_SCORE_KEY: None,
+            data_keys.PROFESSOR_RATING_KEY: None,
+            data_keys.PROFESSOR_REVIEW_COUNT_KEY: None,
+            data_keys.PROFESSOR_DIFFICULTY_KEY: None,
+            data_keys.PROFESSOR_RECOMMEND_KEY: None
+        }
+    
+    logger.info(f"Saving professor {professor_name} in `professors` table.")
+    professors_db.save_one_entry(supabase, school, department, professor_name, professor_email, rmp_data)
+    del rmp_data[data_keys.PROFESSOR_LINK_KEY]
+    del rmp_data[data_keys.PROFESSOR_SCORE_KEY]
+    return rmp_data
+
+def is_staff(professor_name: str) -> bool:
+    name_lower = professor_name.lower().strip()
+    return (
+        name_lower == "staff" or 
+        name_lower.startswith("staff,")
+    )
