@@ -65,7 +65,7 @@ def reports_errors_post(
     pass
 
 # TODO: Remove after client migrates to new classes endpoints
-@router.get("/schools")
+@router.get("/schools/")
 def schools_get():
     return response.response_schools(supabase)
 
