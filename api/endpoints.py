@@ -49,7 +49,7 @@ def classes_get(
     else:
         return classes_db.get_one_entry(supabase, school, term, department)
 
-class ReportsPostRequest(BaseModel):
+class ReportsErrorsPostRequest(BaseModel):
     critical: bool
     details: str
     platform: str
@@ -57,10 +57,9 @@ class ReportsPostRequest(BaseModel):
     version: str
     recipient_email: str
 
-# TODO: Implement
-@router.post("/reports/errors")
+@router.post("/reports/errors/")
 def reports_errors_post(
-    body: ReportsPostRequest = Body(...)
+    body: ReportsErrorsPostRequest = Body(...)
 ):
     reports_db.save(supabase, body, is_error=True)
 

@@ -32,3 +32,13 @@ CLASSES_KEY_DATA = "data"
 # table `courses`
 COURSES_KEY_SCHOOL = "school"
 COURSES_KEY_DATA = "data"
+
+# table `reports`
+REPORTS_KEY_VERSION = "version"
+REPORTS_KEY_CREATED_AT = "created_at"
+REPORTS_KEY_RECIPIENT_EMAIL = "recipient_email"
+REPORTS_KEY_CRITICAL = "critical"
+REPORTS_KEY_DETAILS = "details"
+REPORTS_KEY_PLATFORM = "platform"
+REPORTS_KEY_BUILD = "build"
+REPORTS_KEY_IS_ERROR = "is_error"
