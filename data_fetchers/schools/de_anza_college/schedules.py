@@ -66,12 +66,7 @@ def build_classes_data_table(schedule_rows: list[Tag], department_code: str) -> 
 
             # If the professor name is not in the course name, add the professor name to the course name
             if professor_identifier not in classes_data_table[course_name]:
-                professor_data = data_creators.create_professor_data(
-                    school = SCHOOL_NAME,
-                    department = department_code,
-                    professor_name = professor_name,
-                    email = professor_email
-                )
+                professor_data = data_creators.create_professor_data(email = professor_email)
                 classes_data_table[course_name][professor_identifier] = professor_data
 
             class_data = _get_class_data(schedule_tags)

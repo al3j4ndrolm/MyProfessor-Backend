@@ -23,24 +23,7 @@ def save_one_entry(supabase: Client, data: dict, school: str, term: str, departm
     elif search_query.data[0][db_keys.CLASSES_KEY_DATA] != data:
         _update_one_entry(supabase, classes)
 
-def save(supabase: Client, classes_data_table: dict, school: str):
-    for term, classes_all_departments in classes_data_table.items():
-        to_insert = []
-        
-        for department, data in classes_all_departments.items():
-            classes = Classes(school=school, department=department, term=term, data=data, updated_at=datetime.now().isoformat())
-           
-            search_query = _select_query(supabase, school, term, department)
-            
-            if not search_query.data:
-                to_insert.append(classes.model_dump())
-            elif search_query.data[0][db_keys.CLASSES_KEY_DATA] != data:
-                _update_one_entry(supabase, classes)
-
-        if to_insert:
-            supabase.table(TABLE_NAME).insert(to_insert).execute()
-
-def get(supabase: Client, school: str, term: str, department: str) -> dict:
+def get_one_entry(supabase: Client, school: str, term: str, department: str) -> dict | None:
     classes = _select_query(supabase, school, term, department)
     if len(classes.data) == 0:
         return {}

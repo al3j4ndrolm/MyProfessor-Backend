@@ -8,9 +8,7 @@ SCHOOL_KEY_NOTIFICATION = "notification"
 # table `broadcasts`
 BROADCAST_KEY_ID = "id"
 BROADCAST_KEY_TEXT = "text"
-BROADCAST_KEY_NEED_UPDATE = "need_update"
 BROADCAST_KEY_MIN_VERSION = "min_version"
-BROADCAST_KEY_PLATFORM = "platform"
 
 # table `professors`
 KEY_PROFESSOR_NAME = "professor_name"

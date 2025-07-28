@@ -39,7 +39,7 @@ def build_term_data_list(terms_options) -> list[dict]:
     term_data_list = []
     for term in terms_options:
         value = term.get("value")
-        term_data = data_creators.create_term_response_data(term.text, value)
+        term_data = data_creators.create_term_data(term.text, value)
         term_data_list.append(term_data)
 
     return term_data_list

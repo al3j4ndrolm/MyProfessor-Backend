@@ -1,12 +1,15 @@
 from supabase import create_client, Client
-from database import schools_db, courses_db, classes_db, professors_db
+from database import schools_db, courses_db, professors_db
 from helpers.data import data_keys
-from helpers.data.data_creators import get_professors, typed_rmp_data
+from helpers.data.data_creators import typed_rmp_data
 from data_fetchers.ratings.rmp import get_rmp_data
 from database import db_keys
 from logger import logger
 from dotenv import load_dotenv
 import os
+
+# Last updated: 2025-07-24
+# TODO: Remove after all data in database is fixed
 
 def main(supabase: Client):
     schools = schools_db.get(supabase)
@@ -30,10 +33,30 @@ def main(supabase: Client):
             
             logger.info(f"Fetching RMP data for {len(professor_entries)} professors in {school_name} - {department}...")
             # Call RMP for this school/department
-            rmp_data_table = get_rmp_data(list(professor_entries.keys()), rmp_code)
+            rmp_data_table = get_rmp_data_table(list(professor_entries.keys()), rmp_code)
             
             _update_professors(supabase, professor_entries, rmp_data_table)
             logger.info(f"Updated {len(rmp_data_table)} professors in {school_name} - {department}.")
+
+def get_rmp_data_table(professors_names: list[str], rmp_code: str) -> dict:
+    """
+    Example of return value:
+    {
+        "Andrew Yu": { ... },
+        ...
+    }
+    """
+
+    logger.info(f"Getting rmp data for {len(professors_names)} professors...")
+
+    professors_rmp_data_table = {}
+    for professor_name in professors_names:
+        rmp_data = get_rmp_data(professor_name, rmp_code)
+        if rmp_data:
+            professors_rmp_data_table[professor_name] = rmp_data
+
+    logger.info(f"Found {len(professors_rmp_data_table)} professors.")
+    return professors_rmp_data_table
 
 def _update_professors(supabase: Client, professor_entries: dict, rmp_data_table: dict):
     to_update = []
