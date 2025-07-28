@@ -30,7 +30,7 @@ def courses_get(
     school: str = None
 ):
     if school is None:
-        raise HTTPException(status_code=400, detail="Missing school name")
+        raise HTTPException(status_code=400)
     else:
         return courses_db.get(supabase, school)
 
@@ -40,12 +40,8 @@ def classes_get(
     term: str = None,
     department: str = None
 ):
-    if school is None:
-        raise HTTPException(status_code=400, detail="Missing school name")
-    elif term is None:
-        raise HTTPException(status_code=400, detail="Missing term")
-    elif department is None:
-        raise HTTPException(status_code=400, detail="Missing department")
+    if school is None or term is None or department is None:
+        raise HTTPException(status_code=400)
     else:
         return classes_db.get_one_entry(supabase, school, term, department)
 
@@ -80,13 +76,8 @@ class ClassesPostRequest(BaseModel):
 def classes_post(
     body: ClassesPostRequest = Body(...)
 ):
-    # Validate required fields
-    if not body.school:
-        raise HTTPException(status_code=400, detail="Missing school name in request body")
-    elif not body.term:
-        raise HTTPException(status_code=400, detail="Missing term in request body")
-    elif not body.department:
-        raise HTTPException(status_code=400, detail="Missing department in request body")
+    if not body.school or not body.term or not body.department:
+        raise HTTPException(status_code=400)
 
     classes_data = classes_db.get_one_entry(supabase, body.school, body.term, body.department)
     
@@ -111,12 +102,8 @@ class ProfessorsPostRequest(BaseModel):
 def ratings_post(
     body: ProfessorsPostRequest = Body(...)
 ):
-    if not body.school:
-        raise HTTPException(status_code=400, detail="Missing school name in request body")
-    elif not body.department:
-        raise HTTPException(status_code=400, detail="Missing department in request body")
-    elif not body.professors:
-        raise HTTPException(status_code=400, detail="Missing professor names in request body")
+    if not body.school or not body.department or not body.professors:
+        raise HTTPException(status_code=400)
 
     response = {}
     for professor_name in body.professors:
