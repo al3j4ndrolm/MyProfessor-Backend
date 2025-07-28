@@ -25,7 +25,7 @@ supabase: Client = create_client(url, key)
 def start_get():
     return response.response_start(supabase)
 
-@router.get("/courses")
+@router.get("/courses/")
 def courses_get(
     school: str = None
 ):
@@ -34,7 +34,7 @@ def courses_get(
     else:
         return courses_db.get(supabase, school)
 
-@router.get("/classes")
+@router.get("/classes/")
 def classes_get(
     school: str = None,
     term: str = None,
@@ -65,7 +65,7 @@ def reports_errors_post(
     pass
 
 # TODO: Remove after client migrates to new classes endpoints
-@router.get("/schools")
+@router.get("/schools/")
 def schools_get():
     return response.response_schools(supabase)
 
@@ -77,7 +77,7 @@ class ClassesPostRequest(BaseModel):
 
 # TODO: Remove after client migrates to new classes endpoints
 @deprecated
-@router.post("/professors/schedules")
+@router.post("/professors/schedules/")
 def classes_post(
     body: ClassesPostRequest = Body(...)
 ):
@@ -108,7 +108,7 @@ class ProfessorsPostRequest(BaseModel):
 
 # TODO: Remove after client migrates to new classes endpoints
 @deprecated
-@router.post("/professors/ratings")
+@router.post("/professors/ratings/")
 def ratings_post(
     body: ProfessorsPostRequest = Body(...)
 ):
