@@ -6,28 +6,11 @@ import jellyfish
 # Local Imports
 from helpers.soup_getter import html_url_to_soup
 from helpers.data import data_keys, data_creators
-from data_fetchers.ratings.configs import BASE_URL, SIMILARITY_THRESHOLD
 from logger import logger
 
-def get_rmp_data_table(professors_names: list[str], rmp_code: str) -> dict:
-    """
-    Example of return value:
-    {
-        "Andrew Yu": { ... },
-        ...
-    }
-    """
+BASE_URL = "https://www.ratemyprofessors.com/search/professors/"
 
-    logger.info(f"Getting rmp data for {len(professors_names)} professors...")
-
-    professors_rmp_data_table = {}
-    for professor_name in professors_names:
-        rmp_data = get_rmp_data(professor_name, rmp_code)
-        if rmp_data:
-            professors_rmp_data_table[professor_name] = rmp_data
-
-    logger.info(f"Found {len(professors_rmp_data_table)} professors.")
-    return professors_rmp_data_table
+SIMILARITY_THRESHOLD = 0.8
 
 def get_rmp_data(professor_name: str, rmp_code: str) -> dict | None:
     """
@@ -67,14 +50,14 @@ def get_rmp_data(professor_name: str, rmp_code: str) -> dict | None:
     del rmp_data['professor_element']
     del rmp_data['rmp_name']
 
-    return data_creators.typed_rmp_data(rmp_data)
+    return data_creators.process_rmp_data(rmp_data)
 
 def _get_potential_matches(soup: BeautifulSoup) -> list[Tag]:
 
     ratings_holder = soup.find('div', class_=re.compile(r'^SearchResultsPage__StyledResultsWrapper'))
 
     if ratings_holder is None:
-        logger.debug("No results found.")
+        logger.debug("No result section found, maybe website has changed.")
         return []
 
     try:

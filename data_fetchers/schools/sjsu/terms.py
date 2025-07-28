@@ -44,7 +44,7 @@ def build_term_data_list(terms_options) -> list[dict]:
         term_code = term.get("href").split("/")[-1].strip(".php")
         term_name = term.text
 
-        term_data = data_creators.create_term_response_data(term_name=term_name, term_code=term_code)
+        term_data = data_creators.create_term_data(term_name=term_name, term_code=term_code)
         term_data_list.append(term_data)
 
     return term_data_list

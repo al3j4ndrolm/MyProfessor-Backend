@@ -21,9 +21,9 @@ url = os.getenv("SUPABASE_URL")
 key = os.getenv("SUPABASE_KEY")
 supabase: Client = create_client(url, key)
 
-@router.get("/schools")
-def schools_get():
-    return response.response_schools(supabase)
+@router.get("/start")
+def start_get():
+    return response.response_start(supabase)
 
 @router.get("/courses")
 def courses_get(
@@ -47,8 +47,7 @@ def classes_get(
     elif department is None:
         raise HTTPException(status_code=400, detail="Missing department")
     else:
-        # return response.response_classes(supabase, school, term, department)
-        return classes_db.get(supabase, school, term, department)
+        return classes_db.get_one_entry(supabase, school, term, department)
 
 class ReportsErrorsPostRequest(BaseModel):
     critical: bool
@@ -65,13 +64,18 @@ def reports_errors_post(
 ):
     pass
 
-# Remove after client migrates to new classes endpoints
+# TODO: Remove after client migrates to new classes endpoints
+@router.get("/schools")
+def schools_get():
+    return response.response_schools(supabase)
+
+# TODO: Remove after client migrates to new classes endpoints
 class ClassesPostRequest(BaseModel):
     school: str
     term: str
     department: str
 
-# Remove after client migrates to new classes endpoints
+# TODO: Remove after client migrates to new classes endpoints
 @deprecated
 @router.post("/professors/schedules")
 def classes_post(
@@ -85,7 +89,8 @@ def classes_post(
     elif not body.department:
         raise HTTPException(status_code=400, detail="Missing department in request body")
 
-    classes_data = classes_db.get(supabase, body.school, body.term, body.department)
+    classes_data = classes_db.get_one_entry(supabase, body.school, body.term, body.department)
+    
     return_data = {}
     for course_code, classes_one_course in classes_data.items():
         return_data[course_code] = {}
@@ -95,13 +100,13 @@ def classes_post(
             
     return return_data
 
-# Remove after client migrates to new classes endpoints
+# TODO: Remove after client migrates to new classes endpoints
 class ProfessorsPostRequest(BaseModel):
     school: str
     department: str
     professors: list[str]
 
-# Remove after client migrates to new classes endpoints
+# TODO: Remove after client migrates to new classes endpoints
 @deprecated
 @router.post("/professors/ratings")
 def ratings_post(

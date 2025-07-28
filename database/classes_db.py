@@ -16,39 +16,22 @@ class Classes(BaseModel):
 
 def save_one_entry(supabase: Client, data: dict, school: str, term: str, department: str):
     classes = Classes(school=school, department=department, term=term, data=data, updated_at=datetime.now().isoformat())
-    search_query = _select_query(supabase, school, term, department)
+    search_query = select_query(supabase, school, term, department)
             
     if not search_query.data:
         supabase.table(TABLE_NAME).insert(classes.model_dump()).execute()
     elif search_query.data[0][db_keys.CLASSES_KEY_DATA] != data:
         _update_one_entry(supabase, classes)
 
-def save(supabase: Client, classes_data_table: dict, school: str):
-    for term, classes_all_departments in classes_data_table.items():
-        to_insert = []
-        
-        for department, data in classes_all_departments.items():
-            classes = Classes(school=school, department=department, term=term, data=data, updated_at=datetime.now().isoformat())
-           
-            search_query = _select_query(supabase, school, term, department)
-            
-            if not search_query.data:
-                to_insert.append(classes.model_dump())
-            elif search_query.data[0][db_keys.CLASSES_KEY_DATA] != data:
-                _update_one_entry(supabase, classes)
-
-        if to_insert:
-            supabase.table(TABLE_NAME).insert(to_insert).execute()
-
-def get(supabase: Client, school: str, term: str, department: str) -> dict:
-    classes = _select_query(supabase, school, term, department)
+def get_one_entry(supabase: Client, school: str, term: str, department: str) -> dict | None:
+    classes = select_query(supabase, school, term, department)
     if len(classes.data) == 0:
         return {}
     
     class_data = classes.data[0][db_keys.CLASSES_KEY_DATA]
     return class_data
 
-def _select_query(supabase: Client, school: str, term: str, department: str) -> dict:
+def select_query(supabase: Client, school: str, term: str, department: str) -> dict:
     return supabase.table(TABLE_NAME)\
         .select("*")\
         .eq(db_keys.CLASSES_KEY_SCHOOL, school)\
@@ -63,3 +46,10 @@ def _update_one_entry(supabase: Client, classes: Classes):
         .eq(db_keys.CLASSES_KEY_TERM, classes.term)\
         .execute()
 
+
+# This function is used in update scripts only
+def select_all_for_school(supabase: Client, school: str) -> dict:
+    return supabase.table(TABLE_NAME)\
+        .select("*")\
+        .eq(db_keys.CLASSES_KEY_SCHOOL, school)\
+        .execute()
