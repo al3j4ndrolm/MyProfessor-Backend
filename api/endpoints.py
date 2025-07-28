@@ -9,7 +9,7 @@ from pydantic import BaseModel
 
 # Local imports
 from api import response
-from database import courses_db, classes_db, professors_db, db_keys
+from database import courses_db, classes_db, professors_db, db_keys, reports_db
 from helpers.data import data_creators
 
 # Initialize FastAPI app and router
@@ -57,12 +57,11 @@ class ReportsErrorsPostRequest(BaseModel):
     version: str
     recipient_email: str
 
-# TODO: Implement
-@router.post("/reports/errors")
+@router.post("/reports/errors/")
 def reports_errors_post(
     body: ReportsErrorsPostRequest = Body(...)
 ):
-    pass
+    reports_db.save(supabase, body, is_error=True)
 
 # TODO: Remove after client migrates to new classes endpoints
 @router.get("/schools/")
@@ -143,5 +142,7 @@ def ratings_post(
             }
 
     return response
+
+
 
 app.include_router(router)
