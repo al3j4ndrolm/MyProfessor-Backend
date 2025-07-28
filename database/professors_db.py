@@ -20,7 +20,6 @@ class Professor(BaseModel):
     rmp_reviews_count: Optional[int] = None
     rmp_score: Optional[float] = None
     rmp_link: Optional[str] = None
-    updated_at: str
 
 def get_one_entry(supabase: Client, school: str, department: str, professor_name: str, professor_email: str) -> Optional[Professor]:
     search_query = _select_one_query(supabase, school, department, professor_name, professor_email)
@@ -42,9 +41,8 @@ def save_one_entry(supabase: Client, school: str, department: str, professor_nam
             rmp_recommend = rmp_data[data_keys.PROFESSOR_RECOMMEND_KEY],
             rmp_reviews_count = rmp_data[data_keys.PROFESSOR_REVIEW_COUNT_KEY],
             rmp_score = rmp_data[data_keys.PROFESSOR_SCORE_KEY],
-            rmp_link = rmp_data[data_keys.PROFESSOR_LINK_KEY],
-            updated_at = datetime.now().isoformat()) 
-        
+            rmp_link = rmp_data[data_keys.PROFESSOR_LINK_KEY]
+        )
         supabase.table(TABLE_NAME).update(professor.model_dump())\
             .eq(db_keys.KEY_PROFESSOR_NAME, professor_name)\
             .eq(db_keys.KEY_EMAIL, professor_email)\
@@ -65,7 +63,7 @@ def _add_one_entry(supabase: Client, school: str, department: str, professor_nam
         rmp_reviews_count = rmp_data[data_keys.PROFESSOR_REVIEW_COUNT_KEY],
         rmp_score = rmp_data[data_keys.PROFESSOR_SCORE_KEY],
         rmp_link = rmp_data[data_keys.PROFESSOR_LINK_KEY],
-        updated_at = datetime.now().isoformat()) 
+    )
     supabase.table(TABLE_NAME).insert(professor.model_dump()).execute()
 
 def _select_one_query(supabase: Client, school: str, department: str, professor_name: str, professor_email: str) -> Optional[Professor]:

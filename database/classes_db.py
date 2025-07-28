@@ -1,7 +1,4 @@
-from supabase import create_client, Client
-import os
-from datetime import datetime
-from dotenv import load_dotenv
+from supabase import Client
 from pydantic import BaseModel
 from database import db_keys
 
@@ -12,10 +9,9 @@ class Classes(BaseModel):
     department: str
     term: str
     data: dict
-    updated_at: str
 
 def save_one_entry(supabase: Client, data: dict, school: str, term: str, department: str):
-    classes = Classes(school=school, department=department, term=term, data=data, updated_at=datetime.now().isoformat())
+    classes = Classes(school=school, department=department, term=term, data=data)
     search_query = select_query(supabase, school, term, department)
             
     if not search_query.data:
