@@ -44,7 +44,7 @@ def _create_school(entry: dict) -> dict:
         configs.SCHOOL_NAME_KEY: entry[db_keys.SCHOOL_KEY_SCHOOL_NAME],
         configs.RMP_CODE_KEY: entry[db_keys.SCHOOL_KEY_RMP_CODE],
         configs.TERMS_KEY: entry[db_keys.SCHOOL_KEY_TERMS],
-        configs.NOTIFICATION_KEY: entry[db_keys.SCHOOL_KEY_NOTIFICATION],
+        configs.NOTIFICATION_KEY: {"text": entry[db_keys.SCHOOL_KEY_NOTIFICATION]},
         configs.STATUS_KEY: entry[db_keys.SCHOOL_KEY_STATUS]
     }
 
