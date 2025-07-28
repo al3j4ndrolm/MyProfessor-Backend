@@ -1,7 +1,7 @@
 from supabase import create_client, Client
 from database import schools_db, courses_db, professors_db
 from helpers.data import data_keys
-from helpers.data.data_creators import typed_rmp_data
+from helpers.data import data_creators
 from data_fetchers.ratings.rmp import get_rmp_data
 from database import db_keys
 from logger import logger
@@ -62,7 +62,7 @@ def _update_professors(supabase: Client, professor_entries: dict, rmp_data_table
     to_update = []
     
     for professor_name, professor_data in rmp_data_table.items():
-        professor_data = typed_rmp_data(professor_data)
+        professor_data = data_creators.process_rmp_data(professor_data)
         professor_entry = professor_entries[professor_name].copy()
 
         professor_entry[db_keys.KEY_RMP_DIFFICULTY] = professor_data[data_keys.PROFESSOR_DIFFICULTY_KEY]

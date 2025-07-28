@@ -50,7 +50,7 @@ def get_rmp_data(professor_name: str, rmp_code: str) -> dict | None:
     del rmp_data['professor_element']
     del rmp_data['rmp_name']
 
-    return data_creators.typed_rmp_data(rmp_data)
+    return data_creators.process_rmp_data(rmp_data)
 
 def _get_potential_matches(soup: BeautifulSoup) -> list[Tag]:
 

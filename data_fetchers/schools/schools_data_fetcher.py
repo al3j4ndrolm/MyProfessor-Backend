@@ -41,7 +41,7 @@ parser.add_argument(
 args = parser.parse_args()
 
 if args.tables:
-    target_tables = set([t.strip() for t in args.update.split(",") if t.strip()])
+    target_tables = set([t.strip() for t in args.tables.split(",") if t.strip()])
     logger.info(f"Target tables specified: {target_tables}")
 else:
     target_tables = {"courses", "classes", "professors", "schools"}
