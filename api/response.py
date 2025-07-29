@@ -1,9 +1,8 @@
-from deprecation import deprecated
 from supabase import Client
 
-from database import schools_db, broadcasts_db, professors_db, classes_db, db_keys
+from database import schools_db, broadcasts_db, classes_db, db_keys
 from api import configs
-from helpers.data import data_keys
+from helpers.data import data_creators
 
 def response_start(supabase: Client) -> dict:
     
@@ -63,13 +62,23 @@ def _create_broadcast_old(entry: dict) -> dict:
         configs.BROADCAST_MIN_VERSION_KEY: entry[db_keys.BROADCAST_KEY_MIN_VERSION],
     }
 
-def _create_my_collection_sync_response(entry: dict) -> dict:
+def create_my_collection_sync_response(supabase: Client, entries: list[dict]) -> dict:
+
+    return_data = {}
+
+    for entry in entries:
+        classes_data = classes_db.get_one_entry(supabase, entry[db_keys.MY_COLLECTION_SYNC_KEY_SCHOOL], entry[db_keys.MY_COLLECTION_SYNC_KEY_TERM], entry[db_keys.MY_COLLECTION_SYNC_KEY_DEPARTMENT])
+        for course_code, classes_one_course in classes_data.items():
+            return_data[course_code] = {}
+        for professor_identifier, professor_data in classes_one_course.items():
+            professor_name = data_creators.parse_professor_identifier(professor_identifier)[0]
+            return_data[course_code][professor_name] = professor_data
+            
     return {
         configs.MY_COLLECTION_SYNC_KEY_SCHOOL: entry[db_keys.MY_COLLECTION_SYNC_KEY_SCHOOL],
         configs.MY_COLLECTION_SYNC_KEY_TERM: entry[db_keys.MY_COLLECTION_SYNC_KEY_TERM],
         configs.MY_COLLECTION_SYNC_KEY_DEPARTMENT: entry[db_keys.MY_COLLECTION_SYNC_KEY_DEPARTMENT],
         configs.MY_COLLECTION_SYNC_KEY_PROFESSOR_NAME: entry[db_keys.MY_COLLECTION_SYNC_KEY_PROFESSOR_NAME],
-        configs.MY_COLLECTION_SYNC_KEY_PROFESSOR_EMAIL: entry[db_keys.MY_COLLECTION_SYNC_KEY_PROFESSOR_EMAIL],
         configs.MY_COLLECTION_SYNC_KEY_COURSE_CODE: entry[db_keys.MY_COLLECTION_SYNC_KEY_COURSE_CODE],
-        configs.MY_COLLECTION_SYNC_KEY_CLASSES: entry[db_keys.MY_COLLECTION_SYNC_KEY_CLASSES],
+        configs.MY_COLLECTION_SYNC_KEY_CLASSES: return_data
     }
