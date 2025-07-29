@@ -63,3 +63,13 @@ def _create_broadcast_old(entry: dict) -> dict:
         configs.BROADCAST_MIN_VERSION_KEY: entry[db_keys.BROADCAST_KEY_MIN_VERSION],
     }
 
+def _create_my_collection_sync_response(entry: dict) -> dict:
+    return {
+        configs.MY_COLLECTION_SYNC_KEY_SCHOOL: entry[db_keys.MY_COLLECTION_SYNC_KEY_SCHOOL],
+        configs.MY_COLLECTION_SYNC_KEY_TERM: entry[db_keys.MY_COLLECTION_SYNC_KEY_TERM],
+        configs.MY_COLLECTION_SYNC_KEY_DEPARTMENT: entry[db_keys.MY_COLLECTION_SYNC_KEY_DEPARTMENT],
+        configs.MY_COLLECTION_SYNC_KEY_PROFESSOR_NAME: entry[db_keys.MY_COLLECTION_SYNC_KEY_PROFESSOR_NAME],
+        configs.MY_COLLECTION_SYNC_KEY_PROFESSOR_EMAIL: entry[db_keys.MY_COLLECTION_SYNC_KEY_PROFESSOR_EMAIL],
+        configs.MY_COLLECTION_SYNC_KEY_COURSE_CODE: entry[db_keys.MY_COLLECTION_SYNC_KEY_COURSE_CODE],
+        configs.MY_COLLECTION_SYNC_KEY_CLASSES: entry[db_keys.MY_COLLECTION_SYNC_KEY_CLASSES],
+    }

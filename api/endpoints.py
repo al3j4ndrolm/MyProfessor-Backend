@@ -6,6 +6,7 @@ import os
 from dotenv import load_dotenv
 from fastapi import FastAPI, APIRouter, Body
 from pydantic import BaseModel
+from typing import List, Union
 
 # Local imports
 from api import response
@@ -137,6 +138,22 @@ def ratings_post(
 
     return response
 
+class MyCollectionSyncRequest(BaseModel):
+    school: str
+    term: str
+    department: str
+    professor_name: str
+    professor_email: str
+    course_code: str
+    classes: list[str]
+    class_credit: str
+
+@router.post("/mycollection/sync/")
+@router.post("/mycollection/sync")
+def my_collection_sync(
+    body: list[MyCollectionSyncRequest] = Body(...) # We expect to receive a list of MyCollectionSyncRequest objects we are going to sync
+):
+    pass
 
 
 app.include_router(router)
