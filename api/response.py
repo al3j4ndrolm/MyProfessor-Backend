@@ -1,8 +1,7 @@
 from supabase import Client
 
-from database import schools_db, broadcasts_db, classes_db, db_keys
+from database import schools_db, broadcasts_db, db_keys
 from api import configs
-from helpers.data import data_creators
 
 def response_start(supabase: Client) -> dict:
     
@@ -44,7 +43,8 @@ def _create_school(entry: dict) -> dict:
         configs.RMP_CODE_KEY: entry[db_keys.SCHOOL_KEY_RMP_CODE],
         configs.TERMS_KEY: entry[db_keys.SCHOOL_KEY_TERMS],
         configs.NOTIFICATION_KEY: {"text": entry[db_keys.SCHOOL_KEY_NOTIFICATION]},
-        configs.STATUS_KEY: entry[db_keys.SCHOOL_KEY_STATUS]
+        configs.STATUS_KEY: entry[db_keys.SCHOOL_KEY_STATUS],
+        configs.UPDATED_AT_KEY: entry[db_keys.SCHOOL_KEY_UPDATED_AT]
     }
 
 def _create_broadcast(entry: dict) -> dict:

@@ -7,6 +7,8 @@ RMP_CODE_KEY = "schoolRmpCode"
 TERMS_KEY = "terms"
 NOTIFICATION_KEY = "notification"
 STATUS_KEY = "status"
+UPDATED_AT_KEY = "updatedAt"
+SCHOOL_KEY_UPDATED_AT = "updated_at"
 
 BROADCAST_ID_KEY = "broadcastId"
 BROADCAST_TEXT_KEY = "text"
