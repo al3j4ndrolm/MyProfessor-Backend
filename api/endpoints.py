@@ -138,20 +138,4 @@ def ratings_post(
 
     return response
 
-class MyCollectionSyncRequest(BaseModel):
-    school: str
-    term: str
-    department: str
-    professor_name: str
-    course_code: str
-    classes: list[str]
-
-@router.post("/mycollection/sync/")
-@router.post("/mycollection/sync")
-def my_collection_sync(
-    body: list[MyCollectionSyncRequest] = Body(...) # We expect to receive a list of MyCollectionSyncRequest objects we are going to sync
-):
-    return response.create_my_collection_sync_response(supabase, body)
-
-
 app.include_router(router)
