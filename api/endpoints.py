@@ -21,7 +21,7 @@ url = os.getenv("SUPABASE_URL")
 key = os.getenv("SUPABASE_KEY")
 supabase: Client = create_client(url, key)
 
-@router.get("/start")
+@router.get("/start/")
 def start_get():
     return response.response_start(supabase)
 
