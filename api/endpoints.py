@@ -6,7 +6,6 @@ import os
 from dotenv import load_dotenv
 from fastapi import FastAPI, APIRouter, Body
 from pydantic import BaseModel
-from typing import List, Union
 
 # Local imports
 from api import response

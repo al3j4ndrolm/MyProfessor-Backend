@@ -44,7 +44,7 @@ def _create_school(entry: dict) -> dict:
         configs.TERMS_KEY: entry[db_keys.SCHOOL_KEY_TERMS],
         configs.NOTIFICATION_KEY: {"text": entry[db_keys.SCHOOL_KEY_NOTIFICATION]},
         configs.STATUS_KEY: entry[db_keys.SCHOOL_KEY_STATUS],
-        configs.UPDATED_AT_KEY: entry[db_keys.SCHOOL_KEY_UPDATED_AT]
+        configs.SCHOOL_KEY_UPDATED_AT: entry[db_keys.KEY_UPDATED_AT]
     }
 
 def _create_broadcast(entry: dict) -> dict:
