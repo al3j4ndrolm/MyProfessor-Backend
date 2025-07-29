@@ -40,3 +40,7 @@ REPORTS_KEY_DETAILS = "details"
 REPORTS_KEY_PLATFORM = "platform"
 REPORTS_KEY_BUILD = "build"
 REPORTS_KEY_IS_ERROR = "is_error"
+
+
+# for all tables
+KEY_UPDATED_AT = "updated_at"
