@@ -25,6 +25,3 @@ DAYS_KEY = "days"
 TIME_KEY = "time"
 LOCATION_KEY = "location"
 AVAILABILITY_KEY = "availability"
-
-# RMP configs
-
