@@ -8,6 +8,7 @@ PROFESSOR_HAS_EMAIL_KEY = "hasEmail"
 PROFESSOR_EMAIL_KEY = "email"
 PROFESSOR_CLASSES_KEY = "classes"
 PROFESSOR_DEPARTMENT_KEY = "department"
+PROFESSOR_RMP_DATA_KEY = "rmpData"
 
 PROFESSOR_RATING_KEY = "rating"
 PROFESSOR_DIFFICULTY_KEY = "difficulty"
@@ -26,4 +27,4 @@ LOCATION_KEY = "location"
 AVAILABILITY_KEY = "availability"
 
 # RMP configs
-RMP_DATA_KEY = "rmp_data"
+
