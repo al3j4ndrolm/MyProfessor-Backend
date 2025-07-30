@@ -36,7 +36,11 @@ def select_query(supabase: Client, school: str, term: str, department: str) -> d
         .execute()
 
 def _update_one_entry(supabase: Client, classes: Classes):
-    supabase.table(TABLE_NAME).update(classes.model_dump())\
+    # Only update the data field, let Supabase handle updated_at automatically
+    update_data = {
+        db_keys.CLASSES_KEY_DATA: classes.data
+    }
+    supabase.table(TABLE_NAME).update(update_data)\
         .eq(db_keys.CLASSES_KEY_SCHOOL, classes.school)\
         .eq(db_keys.CLASSES_KEY_DEPARTMENT, classes.department)\
         .eq(db_keys.CLASSES_KEY_TERM, classes.term)\

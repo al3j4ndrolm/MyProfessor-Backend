@@ -1,9 +1,7 @@
-from deprecation import deprecated
 from supabase import Client
 
-from database import schools_db, broadcasts_db, professors_db, classes_db, db_keys
+from database import schools_db, broadcasts_db, db_keys
 from api import configs
-from helpers.data import data_keys
 
 def response_start(supabase: Client) -> dict:
     
@@ -42,10 +40,10 @@ def response_schools(supabase: Client) -> dict:
 def _create_school(entry: dict) -> dict:
     return {
         configs.SCHOOL_NAME_KEY: entry[db_keys.SCHOOL_KEY_SCHOOL_NAME],
-        configs.RMP_CODE_KEY: entry[db_keys.SCHOOL_KEY_RMP_CODE],
         configs.TERMS_KEY: entry[db_keys.SCHOOL_KEY_TERMS],
         configs.NOTIFICATION_KEY: {"text": entry[db_keys.SCHOOL_KEY_NOTIFICATION]},
-        configs.STATUS_KEY: entry[db_keys.SCHOOL_KEY_STATUS]
+        configs.STATUS_KEY: entry[db_keys.SCHOOL_KEY_STATUS],
+        configs.SCHOOL_KEY_UPDATED_AT: entry[db_keys.KEY_UPDATED_AT]
     }
 
 def _create_broadcast(entry: dict) -> dict:
@@ -62,4 +60,3 @@ def _create_broadcast_old(entry: dict) -> dict:
         configs.BROADCAST_NEED_UPDATE_KEY: entry[db_keys.BROADCAST_KEY_MIN_VERSION] is not None,
         configs.BROADCAST_MIN_VERSION_KEY: entry[db_keys.BROADCAST_KEY_MIN_VERSION],
     }
-

@@ -58,10 +58,10 @@ def get_rating_data(supabase: Client, school: str, department: str, professor_na
         rmp_data = {
             data_keys.PROFESSOR_LINK_KEY: None,
             data_keys.PROFESSOR_SCORE_KEY: None,
-            data_keys.PROFESSOR_RATING_KEY: None,
-            data_keys.PROFESSOR_REVIEW_COUNT_KEY: None,
-            data_keys.PROFESSOR_DIFFICULTY_KEY: None,
-            data_keys.PROFESSOR_RECOMMEND_KEY: None
+            data_keys.PROFESSOR_RATING_KEY: -0.1,
+            data_keys.PROFESSOR_REVIEW_COUNT_KEY: 0,
+            data_keys.PROFESSOR_DIFFICULTY_KEY: 5.1,
+            data_keys.PROFESSOR_RECOMMEND_KEY: -1
         }
     
     logger.info(f"Saving professor {professor_name} in `professors` table.")

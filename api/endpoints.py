@@ -137,6 +137,4 @@ def ratings_post(
 
     return response
 
-
-
 app.include_router(router)
