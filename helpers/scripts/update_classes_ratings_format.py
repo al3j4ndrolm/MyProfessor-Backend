@@ -40,14 +40,13 @@ def main(supabase: Client):
             logger.info(f"Finished processing department {department_code} in term {term_code}.")
             get_ratings_and_merge(supabase, classes_per_department, school_name, rmp_code, department_code)
             
-            # Clean up duplicate keys after get_ratings_and_merge
             for course_code, classes_per_course in classes_per_department.items():
                 for professor_identifier, professor_data in classes_per_course.items():
-                    # Remove duplicate keys from top level if rmpData exists
                     if 'rmpData' in professor_data:
                         for key in ['rating', 'recommend', 'difficulty', 'reviewCount']:
                             if key in professor_data:
                                 del professor_data[key]
+                        logger.info(f"Finished cleaning old rating keys for department {department_code} in term {term_code}.")
             
             classes_db.save_one_entry(supabase, classes_per_department, school_name, term_code, department_code)
             logger.info(f"Updated classes data for {term_code} - {department_code}.")
