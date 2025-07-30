@@ -54,7 +54,6 @@ class ReportsErrorsPostRequest(BaseModel):
     platform: str
     build: str
     version: str
-    recipient_email: str
 
 @router.post("/reports/errors/")
 @router.post("/reports/errors")
