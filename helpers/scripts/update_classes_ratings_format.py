@@ -20,7 +20,7 @@ from data_fetchers.ratings.rating_provider import get_ratings_and_merge
 from logger import logger
 
 def main(supabase: Client):
-    schools = schools_db.get(supabase, status=SchoolStatus.SUPPORTED.value)
+    schools = schools_db.get(supabase, status=SchoolStatus.UNKNOWN.value)
     
     for school_entry in schools:
         logger.info(f"Updating data fixing for {school_entry[db_keys.SCHOOL_KEY_SCHOOL_NAME]}")
@@ -36,32 +36,18 @@ def main(supabase: Client):
             logger.info(f"Processing department {department_code} in term {term_code} ...")
             
             classes_per_department = classes_entry[db_keys.CLASSES_KEY_DATA]
-
+            get_ratings_and_merge(supabase, classes_per_department, school_name, rmp_code, department_code)
+            
             for course_code, classes_per_course in classes_per_department.items():
                 for professor_identifier, professor_data in classes_per_course.items():
-                    professor_name, professor_email = data_creators.parse_professor_identifier(professor_identifier)
-                    need_update = not data_keys.PROFESSOR_RECOMMEND_KEY in professor_data\
-                            or professor_data[data_keys.PROFESSOR_RECOMMEND_KEY] is None
-                    if need_update:
-                        logger.info(f"Found buggy professor {professor_name} in `professors` table.")
-
-                        # professor_entry = professors_db.get_one_entry(supabase, school_name, department_code, professor_name, professor_email)
-                        # if professor_entry is None or professor_entry[db_keys.KEY_RMP_RECOMMEND] is None:
-                        #     logger.info(f"Found buggy professor {professor_name} in `professors` table.")
-
-                        rmp_data = {
-                            data_keys.PROFESSOR_RATING_KEY: -0.1,
-                            data_keys.PROFESSOR_REVIEW_COUNT_KEY: 0,
-                            data_keys.PROFESSOR_DIFFICULTY_KEY: 5.1,
-                            data_keys.PROFESSOR_RECOMMEND_KEY: -1
-                        }
-                        professor_data.update(rmp_data)
-                        # professors_db.save_one_entry(supabase, school_name, department_code, professor_name, professor_email, rmp_data)      
-            # logger.info(f"Finished processing department {department_code} in term {term_code}.")
-            # get_ratings_and_merge(supabase, classes_per_department, school_name, rmp_code, department_code)
-            if need_update:
-                classes_db.save_one_entry(supabase, classes_per_department, school_name, term_code, department_code)
-                logger.info(f"Updated classes data for {term_code} - {department_code}.")
+                    if 'rmpData' in professor_data:
+                        for key in ['rating', 'recommend', 'difficulty', 'reviewCount']:
+                            if key in professor_data:
+                                del professor_data[key]
+                        logger.info(f"Finished cleaning old rating keys for department {department_code} in term {term_code}.")
+            
+            classes_db.save_one_entry(supabase, classes_per_department, school_name, term_code, department_code)
+            logger.info(f"Updated classes data for {term_code} - {department_code}.")
         logger.info(f"Updated classes data for {school_name}.")
 
 if __name__ == "__main__":
