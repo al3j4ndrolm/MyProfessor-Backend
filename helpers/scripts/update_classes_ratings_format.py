@@ -36,8 +36,6 @@ def main(supabase: Client):
             logger.info(f"Processing department {department_code} in term {term_code} ...")
             
             classes_per_department = classes_entry[db_keys.CLASSES_KEY_DATA]
-
-            logger.info(f"Finished processing department {department_code} in term {term_code}.")
             get_ratings_and_merge(supabase, classes_per_department, school_name, rmp_code, department_code)
             
             for course_code, classes_per_course in classes_per_department.items():
