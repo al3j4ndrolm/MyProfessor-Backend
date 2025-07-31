@@ -52,3 +52,47 @@ def verify_data_structure_per_meeting(meeting: dict):
     assert isinstance(meeting["days"], str)
     assert isinstance(meeting["time"], str)
     assert isinstance(meeting["location"], str)
+
+def verify_data_structure_courses_set(courses_set: set):
+    """
+    Verify the structure of courses set.
+    Each course should be in format "COURSE_CODE - Course Title"
+    """
+    
+    for course in courses_set:
+        assert isinstance(course, str)
+        assert " - " in course, f"Course '{course}' should contain ' - ' separator"
+        
+        # Split by " - " to get course code and title
+        parts = course.split(" - ", 1)
+        assert len(parts) == 2, f"Course '{course}' should have exactly one ' - ' separator"
+        
+        course_code = parts[0].strip()
+        course_title = parts[1].strip()
+        
+        # Verify course code is not empty
+        assert course_code, f"Course code should not be empty in '{course}'"
+        
+        # Verify course title is not empty
+        assert course_title, f"Course title should not be empty in '{course}'"
+        
+        # Verify course code format (should contain department code and number)
+        assert " " in course_code, f"Course code '{course_code}' should contain space between department and number"
+
+def verify_data_structure_courses_map(courses_map: dict):
+    """
+    Verify the structure of courses map.
+    Each key should be a course code and each value should be a list of course strings.
+    Each course string should be in format "COURSE_CODE - Course Title"
+    """
+    assert isinstance(courses_map, dict)
+    
+    for course_code, courses_list in courses_map.items():
+        # Verify course code is a string
+        assert isinstance(course_code, str)
+        assert course_code, f"Course code should not be empty"
+        
+        # Verify courses_list is a list
+        assert isinstance(courses_list, set) 
+        verify_data_structure_courses_set(courses_list)
+

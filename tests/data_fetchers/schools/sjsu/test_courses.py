@@ -6,6 +6,7 @@ from helpers.soup_getter import html_url_to_soup
 
 from data_fetchers.schools.sjsu import courses
 from data_fetchers.schools.sjsu.school_config import SCHEDULES_BASE_URL
+from tests import data_verify
 
 def get_sample_soup():
     sample_path = os.path.join(
@@ -33,7 +34,9 @@ class TestSJSUCourses:
 
         for department, _ in result.items():
             assert result[department] == set(reference_data[department])
-
+        
+        # Verify the data structure
+        data_verify.verify_data_structure_courses_map(result)
 
 if __name__ == "__main__":
     pytest.main([__file__]) 
