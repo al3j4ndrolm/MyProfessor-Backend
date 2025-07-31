@@ -3,7 +3,7 @@ from supabase import Client
 from database import schools_db, broadcasts_db, db_keys
 from api import configs
 
-def response_start(supabase: Client) -> dict:
+def response_start(supabase: Client, client_data: dict, user_data: dict) -> dict:
     
     school_list = []
     schools_data = schools_db.get_supported(supabase)

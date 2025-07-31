@@ -21,12 +21,25 @@ url = os.getenv("SUPABASE_URL")
 key = os.getenv("SUPABASE_KEY")
 supabase: Client = create_client(url, key)
 
-@router.get("/start/")
-@router.get("/start")
-def start_get():
-    return response.response_start(supabase)
+class StartPostRequest(BaseModel):
+    client_data: dict
+    user_data: dict
 
-@router.get("/courses/")
+@router.post("/start")
+def start_post(
+    body: StartPostRequest = Body(...)
+):
+    if not body.client_data or not body.user_data:
+        raise HTTPException(status_code=400)
+
+    if body.client_data.get("build_type") is None or body.client_data.get("platform") is None:
+        raise HTTPException(status_code=400)
+
+    if body.user_data.get("is_new_user") is None:
+        raise HTTPException(status_code=400)
+    
+    return response.response_start(supabase, body.client_data, body.user_data)
+
 @router.get("/courses")
 def courses_get(
     school: str = None
@@ -36,7 +49,6 @@ def courses_get(
     else:
         return courses_db.get(supabase, school)
 
-@router.get("/classes/")
 @router.get("/classes")
 def classes_get(
     school: str = None,
@@ -55,7 +67,6 @@ class ReportsErrorsPostRequest(BaseModel):
     build: str
     version: str
 
-@router.post("/reports/errors/")
 @router.post("/reports/errors")
 def reports_errors_post(
     body: ReportsErrorsPostRequest = Body(...)
