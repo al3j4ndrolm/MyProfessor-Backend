@@ -6,7 +6,7 @@ import time, requests
 from bs4 import BeautifulSoup
 
 # we are going to pass a list of department codes and a term code to update the courses set
-def update_courses_set_per_term(department_codes: list[str], term_code: str, courses_set: set) -> set:
+def update_courses_set_per_term(department_codes: str, term_code: str, courses_set: set) -> set:
     """
     Example of return value:
     {
