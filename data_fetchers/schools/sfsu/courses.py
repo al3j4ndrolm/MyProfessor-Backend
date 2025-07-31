@@ -37,7 +37,7 @@ def update_courses_set_per_term(department_code: str, term_code: str, courses_se
             params={"_": int(time.time() * 1000)}
         )
     except Exception as e:
-        logger.error(f"Error getting JSON for {department_codes} set per term {term_code}: {e}")
+        logger.error(f"Error getting JSON for {department_code} set per term {term_code}: {e}")
 
     try:
         data = r.json()
@@ -49,6 +49,6 @@ def update_courses_set_per_term(department_code: str, term_code: str, courses_se
             a    = soup.find("a")
             courses_set.add(a.text.strip().split(" [")[0] + " - " + row[2])
     except Exception as e:
-        logger.error(f"Error getting data for {department_codes} set per term {term_code}: {e}")
+        logger.error(f"Error getting data for {department_code} set per term {term_code}: {e}")
     
     return courses_set
