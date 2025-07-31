@@ -42,7 +42,6 @@ def update_courses_set_per_department(department_code: str, term_code: str, cour
 
     # ———————————
     # 3) turn each aaData row into a nice dict
-    courses_set = set()
     for row in data["aaData"]:
         # row[0] is the <a>HTML, row[1] = Type, row[2] = Title, etc.
         soup = BeautifulSoup(row[0], "html.parser")
