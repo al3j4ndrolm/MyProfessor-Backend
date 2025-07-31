@@ -1,8 +1,8 @@
 SCHOOL_NAME = "De Anza College"
 
-RMP_CODE = "1967"
+RMP_CODE = "880"
 
-TERMS_BASE_URL = "https://www.deanza.edu/schedule/"
+TERMS_BASE_URL = "https://webapps.sfsu.edu/public/classservices/classsearch"
 
-SCHEDULES_BASE_URL = "https://www.deanza.edu/schedule/listings.html?"
+SCHEDULES_BASE_URL = "https://webapps.sfsu.edu/public/classservices/classsearch/results?search"
 
