@@ -33,13 +33,7 @@ def update_courses_set_per_department(department_code: str, term_code: str, cour
         params={"_": int(time.time() * 1000)}
     )
 
-    # debug
-    print(r.status_code, r.headers.get("content-type"))
-    print(r.text[:200])
-
     data = r.json()
-    print("rows:", len(data["aaData"]))
-
     # ———————————
     # 3) turn each aaData row into a nice dict
     for row in data["aaData"]:
