@@ -25,9 +25,3 @@ def get_departments(soup: BeautifulSoup) -> list[dict]:
 
     except Exception as e:
         logger.error(f"Error extracting departments: {e}")
-    
-if __name__ == "__main__":
-    with open("tests/test_samples/sfsu/terms_test_sample.html", "r") as file:
-        soup = BeautifulSoup(file, "html.parser")
-        departments = get_departments(soup)
-        print(departments)
