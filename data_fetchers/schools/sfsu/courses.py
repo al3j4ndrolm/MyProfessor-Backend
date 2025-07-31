@@ -5,7 +5,7 @@ from logger import logger
 import time, requests
 from bs4 import BeautifulSoup
 
-# we are going to pass a list of department codes and a term code to update the courses set
+# we are going to pass the session data and the courses set to update
 def update_courses_set_per_term(session_data: dict, courses_set: set) -> set:
     
     try:
