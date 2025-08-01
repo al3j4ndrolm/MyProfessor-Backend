@@ -1,0 +1,55 @@
+from supabase import Client
+from pydantic import BaseModel
+from database import db_keys
+
+TABLE_NAME = "classes"
+
+class Classes(BaseModel):
+    school: str
+    department: str
+    term: str
+    data: dict
+
+def save_one_entry(supabase: Client, data: dict, school: str, term: str, department: str):
+    classes = Classes(school=school, department=department, term=term, data=data)
+    search_query = select_query(supabase, school, term, department)
+            
+    if not search_query.data:
+        supabase.table(TABLE_NAME).insert(classes.model_dump()).execute()
+    elif search_query.data[0][db_keys.CLASSES_KEY_DATA] != data:
+        _update_one_entry(supabase, classes)
+
+def get_one_entry(supabase: Client, school: str, term: str, department: str) -> dict | None:
+    classes = select_query(supabase, school, term, department)
+    if len(classes.data) == 0:
+        return {}
+    
+    class_data = classes.data[0][db_keys.CLASSES_KEY_DATA]
+    return class_data
+
+def select_query(supabase: Client, school: str, term: str, department: str) -> dict:
+    return supabase.table(TABLE_NAME)\
+        .select("*")\
+        .eq(db_keys.CLASSES_KEY_SCHOOL, school)\
+        .eq(db_keys.CLASSES_KEY_TERM, term)\
+        .eq(db_keys.CLASSES_KEY_DEPARTMENT, department)\
+        .execute()
+
+def _update_one_entry(supabase: Client, classes: Classes):
+    # Only update the data field, let Supabase handle updated_at automatically
+    update_data = {
+        db_keys.CLASSES_KEY_DATA: classes.data
+    }
+    supabase.table(TABLE_NAME).update(update_data)\
+        .eq(db_keys.CLASSES_KEY_SCHOOL, classes.school)\
+        .eq(db_keys.CLASSES_KEY_DEPARTMENT, classes.department)\
+        .eq(db_keys.CLASSES_KEY_TERM, classes.term)\
+        .execute()
+
+
+# This function is used in update scripts only
+def select_all_for_school(supabase: Client, school: str) -> dict:
+    return supabase.table(TABLE_NAME)\
+        .select("*")\
+        .eq(db_keys.CLASSES_KEY_SCHOOL, school)\
+        .execute()

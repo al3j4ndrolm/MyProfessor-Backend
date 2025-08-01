@@ -1,40 +1,52 @@
 from bs4 import BeautifulSoup
 import requests
-import logging
+import os
 
-logger = logging.getLogger(__name__)
+from logger import logger
+
+def parse_html(html_content):
+    """Convert HTML string to BeautifulSoup object for parsing"""
+    return BeautifulSoup(html_content, "html.parser")
 
 def html_url_to_soup(url):
-    """Convert HTML from URL to BeautifulSoup object"""
-    logger.info(f"Fetching HTML from {url}")
-    
-    # Headers to mimic a real browser and avoid 403 errors
+    logger.debug(f"Parsing URL: {url}")
     headers = {
-        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
-        'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8',
-        'Accept-Language': 'en-US,en;q=0.9',
-        'Accept-Encoding': 'gzip, deflate, br',
-        'Connection': 'keep-alive',
-        'Upgrade-Insecure-Requests': '1',
+        "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36"
     }
+    response = requests.get(url, headers=headers)
+    logger.debug(f"HTTP response status: {response.status_code}")
     
-    try:
-        response = requests.get(url, headers=headers, timeout=30)
-        logger.info(f"Response status code: {response.status_code}")
-        
-        # Check if we got a 403 error
-        if response.status_code == 403:
-            logger.error(f"403 Forbidden error accessing {url}")
-            logger.error("This might be due to bot detection or missing required headers")
-            raise Exception(f"403 Forbidden: Access denied to {url}")
-        
-        # Check for other error status codes
-        if response.status_code != 200:
-            logger.error(f"HTTP {response.status_code} error accessing {url}")
-            raise Exception(f"HTTP {response.status_code} error accessing {url}")
-        
-        return BeautifulSoup(response.content, 'html.parser')
-        
-    except requests.exceptions.RequestException as e:
-        logger.error(f"Request failed for {url}: {e}")
-        raise
+    if response.status_code == 200:
+        soup = BeautifulSoup(response.text, "html.parser")
+        return soup
+    else:
+        logger.error(f"Failed to fetch URL {url}: HTTP {response.status_code}")
+        return None
+
+def get_soup_zenrows(url):
+    """Convert HTML from URL to BeautifulSoup object"""
+    logger.debug(f"Fetching HTML from {url}")
+
+    headers = {
+        "User-Agent": (
+            "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
+            "AppleWebKit/537.36 (KHTML, like Gecko) "
+            "Chrome/115.0.0.0 Safari/537.36"
+        )
+    }
+    ZENROWS_API_KEY = os.getenv('ZENROWS_API_KEY')
+    zenrows_url = 'https://api.zenrows.com/v1/'
+
+    session = requests.Session()
+    session.headers.update(headers)
+
+    url = url
+    params = {
+        'url': url,
+        'apikey': ZENROWS_API_KEY,
+    }
+    response = requests.get(zenrows_url, params=params)
+    if response.status_code != 200:
+        logger.error(f"Response status code: {response.status_code}")
+        response.raise_for_status()
+    return BeautifulSoup(response.text, "html.parser")
