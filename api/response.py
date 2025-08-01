@@ -1,3 +1,4 @@
+from storage3._sync import client
 from supabase import Client
 
 from database import schools_db, broadcasts_db, db_keys
@@ -6,7 +7,7 @@ from api import configs
 def response_start(supabase: Client, client_data: dict, user_data: dict) -> dict:
     
     school_list = []
-    schools_data = schools_db.get_supported(supabase)
+    schools_data = schools_db.get_supported(supabase, client_data.get("build_type"))
     for entry in schools_data:
         school_list.append(_create_school(entry))
     

@@ -54,8 +54,8 @@ def get_courses_and_classes(departments: list, term_codes: list) -> tuple[dict, 
             department_soup = html_url_to_soup(f"{SCHEDULES_BASE_URL}dept={department_code}&t={term_code}")
 
             logger.debug(f"Getting schedules for {department_code} in {term_code} ...")
-            department_schedules = get_classes_per_department(department_soup, department_code)
-            classes_data_table[term_code][department_code] = department_schedules
+            classes_per_department = get_classes_per_department(department_soup, department_code)
+            classes_data_table[term_code][department_code] = classes_per_department
 
             logger.debug(f"Extracting courses for {department_code} in {term_code} ...")
             courses_per_term = get_courses_per_department(department_code, department_soup)
