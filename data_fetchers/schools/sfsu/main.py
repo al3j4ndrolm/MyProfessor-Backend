@@ -1,5 +1,14 @@
+import sys
+import os
+import time
+import requests
+
+# Add the project root to the Python path for imports
+project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..', '..'))
+if project_root not in sys.path:
+    sys.path.insert(0, project_root)
+
 from logger import logger
-import time, requests
 
 def get_session_data(department_code: str, term_code: str):
 

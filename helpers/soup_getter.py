@@ -4,6 +4,10 @@ import os
 
 from logger import logger
 
+def parse_html(html_content):
+    """Convert HTML string to BeautifulSoup object for parsing"""
+    return BeautifulSoup(html_content, "html.parser")
+
 def html_url_to_soup(url):
     logger.debug(f"Parsing URL: {url}")
     headers = {
