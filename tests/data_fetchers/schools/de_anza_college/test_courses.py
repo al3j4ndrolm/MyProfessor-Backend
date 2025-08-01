@@ -1,36 +1,34 @@
 import os
-from bs4 import BeautifulSoup
 import pytest
 import sys
-import json
 
 from data_fetchers.schools.de_anza_college import courses
+from tests.data_fetchers.schools.base_test import BaseSchoolTest
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))) )
 
-def get_sample_soup():
-    sample_path = os.path.join(
-        os.path.dirname(__file__),
-        '..', '..', '..', '..', 'tests', 'test_samples', 'de_anza_college', 'schedules_test_sample.html'
-    )
-    with open(sample_path, 'r', encoding='utf-8') as f:
-        html = f.read()
-    return BeautifulSoup(html, 'html.parser')
-
-def get_reference_data():
-    reference_path = os.path.join(
-        os.path.dirname(__file__),
-        '..', '..', '..', '..', 'tests', 'test_samples', 'de_anza_college', 'courses_test_reference.json'
-    )
-    with open(reference_path, 'r', encoding='utf-8') as f:
-        return set(json.load(f))
-
-class TestDeAnzaCourses:
+class TestDeAnzaCourses(BaseSchoolTest):
+    @property
+    def school_name(self):
+        return "de_anza_college"
+    
+    @property
+    def test_type(self):
+        return "courses"
+    
     def test_get_courses_per_department(self):
-        soup = get_sample_soup()
-        result = courses.get_courses_per_department("PHYS", soup)
-        expected = get_reference_data()
-        assert result == expected
+        """Test getting courses for PHYS department"""
+        soup = self.load_test_html_data("schedules_test_sample.html")
+        
+        def run_test():
+            result = courses.get_courses_per_department("PHYS", soup)
+            return sorted(list(result))
+        
+        # Run test with automatic result saving and data loading
+        result = self.run_test_with_result_saving(run_test)
+        
+        # Additional verification
+        assert isinstance(result, list)
 
 if __name__ == "__main__":
     pytest.main([__file__]) 

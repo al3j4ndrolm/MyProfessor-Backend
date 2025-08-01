@@ -51,32 +51,32 @@ def build_classes_data_table(schedule_rows: list[Tag], department_code: str) -> 
             <td><a href="/directory/user.html?u=jimenezsamayoaelsa">Elsa Jimenez-Samayoa</a></td>
             <td>S35</td>
             """
-            course_name = schedule_tags[1].text
+            course_code = schedule_tags[1].text
             professor_name = schedule_tags[7].text
             professor_id = schedule_tags[7].find("a")["href"].split("=")[1] if schedule_tags[7].find("a") is not None else None
             professor_email = f"{professor_id}@deanza.edu" if professor_id else None
             professor_identifier = data_creators.create_professor_identifier(professor_name, professor_email)
 
-            last_course_name = course_name
+            last_course_code = course_code
             last_professor_identifier = professor_identifier
 
             # If the course name is not in the schedule data list, add it
-            if course_name not in classes_data_table:
-                classes_data_table[course_name] = {}
+            if course_code not in classes_data_table:
+                classes_data_table[course_code] = {}
 
             # If the professor name is not in the course name, add the professor name to the course name
-            if professor_identifier not in classes_data_table[course_name]:
+            if professor_identifier not in classes_data_table[course_code]:
                 professor_data = data_creators.create_professor_data(email = professor_email)
-                classes_data_table[course_name][professor_identifier] = professor_data
+                classes_data_table[course_code][professor_identifier] = professor_data
 
             class_data = _get_class_data(schedule_tags)
-            classes_data_table[course_name][professor_identifier][data_keys.PROFESSOR_CLASSES_KEY].append(class_data)
+            classes_data_table[course_code][professor_identifier][data_keys.PROFESSOR_CLASSES_KEY].append(class_data)
         
         else:
             # In case the row is not a class but a meeting, add the meeting to the last visited class
             meeting_data = _get_meeting_data(schedule_tags)
 
-            professor_data = classes_data_table[last_course_name][last_professor_identifier]
+            professor_data = classes_data_table[last_course_code][last_professor_identifier]
             class_data = professor_data[data_keys.PROFESSOR_CLASSES_KEY][-1]
             class_data[data_keys.MEETINGS_KEY].append(meeting_data)
 

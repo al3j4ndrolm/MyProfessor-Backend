@@ -6,7 +6,7 @@ from database import db_keys
 TABLE_NAME = "schools"
 
 class SchoolStatus(IntEnum):
-    UNKNOWN = 0
+    FETCHING = 0
     READY = 1
     SUPPORTED = 2
     MAINTENANCE = 3
@@ -21,15 +21,14 @@ class School(BaseModel):
 def save(supabase: Client, school_name: str, rmp_code: str, terms: list[dict]):
     select_query = supabase.table(TABLE_NAME).select("*").eq(db_keys.SCHOOL_KEY_SCHOOL_NAME, school_name).execute()
     if select_query.data:
-        school = select_query.data[0]
-        school.status = SchoolStatus.READY.value
-        school.rmp_code = rmp_code
-        school.terms = terms
+        school_entry = select_query.data[0]
+        school_entry[db_keys.SCHOOL_KEY_STATUS] = SchoolStatus.FETCHING.value
+        school_entry[db_keys.SCHOOL_KEY_RMP_CODE] = rmp_code
+        school_entry[db_keys.SCHOOL_KEY_TERMS] = terms
+        supabase.table(TABLE_NAME).update(school_entry).eq(db_keys.SCHOOL_KEY_SCHOOL_NAME, school_name).execute()
     else:
-        school = School(school=school_name, rmp_code=rmp_code, terms=terms, status=SchoolStatus.READY.value, notification="")
-
-    # only update if school already exists
-    supabase.table(TABLE_NAME).upsert(school.model_dump(), on_conflict=db_keys.SCHOOL_KEY_SCHOOL_NAME).execute()
+        school = School(school=school_name, rmp_code=rmp_code, terms=terms, status=SchoolStatus.FETCHING.value, notification="")
+        supabase.table(TABLE_NAME).upsert(school.model_dump(), on_conflict=db_keys.SCHOOL_KEY_SCHOOL_NAME).execute()
 
 def set_status(supabase: Client, school_name: str, status: int):
     supabase.table(TABLE_NAME).update({db_keys.SCHOOL_KEY_STATUS: status})\

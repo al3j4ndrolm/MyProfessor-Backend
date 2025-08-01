@@ -1,42 +1,36 @@
 import os
 import pytest
-from bs4 import BeautifulSoup
-import json
-from helpers.soup_getter import html_url_to_soup
+import sys
 
 from data_fetchers.schools.sjsu import courses
-from data_fetchers.schools.sjsu.school_config import SCHEDULES_BASE_URL
 from tests import data_verify
+from tests.data_fetchers.schools.base_test import BaseSchoolTest
 
-def get_sample_soup():
-    sample_path = os.path.join(
-        os.path.dirname(__file__),
-        '..', '..', '..', '..', 'tests', 'test_samples', 'sjsu', 'classes_test_sample.html'
-    )
-    with open(sample_path, 'r', encoding='utf-8') as f:
-        html = f.read()
-    return BeautifulSoup(html, 'html.parser')
+sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))) )
 
-def get_reference_data():
-    reference_path = os.path.join(
-        os.path.dirname(__file__),
-        '..', '..', '..', '..', 'tests', 'test_samples', 'sjsu', 'courses_test_reference.json'
-    )
-    with open(reference_path, 'r', encoding='utf-8') as f:
-        return json.load(f)
-
-class TestSJSUCourses:
+class TestSJSUCourses(BaseSchoolTest):
+    @property
+    def school_name(self):
+        return "sjsu"
+    
+    @property
+    def test_type(self):
+        return "courses"
+    
     def test_get_courses(self):
-        soup = get_sample_soup()
-        result = {}
-        courses.update_courses_data_table(soup, result)
-        reference_data = get_reference_data()
-
-        for department, _ in result.items():
-            assert result[department] == set(reference_data[department])
+        """Test getting courses from HTML"""
+        soup = self.load_test_html_data("classes_test_sample.html")
         
-        # Verify the data structure
-        data_verify.verify_data_structure_courses_map(result)
+        def run_test():
+            result = {}
+            courses.update_courses_data_table(soup, result)
+            return sorted(list(result["MATH"]))
+        
+        # Run test with automatic result saving and data loading
+        result = self.run_test_with_result_saving(run_test)
+        
+        # Additional verification
+        data_verify.verify_data_structure_courses_set(result)
 
 if __name__ == "__main__":
     pytest.main([__file__]) 

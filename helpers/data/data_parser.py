@@ -1,0 +1,1 @@
+DAY_MAP  = {"Mo":"M","Tu":"T","We":"W","Th":"R","Fr":"F","Sa":"S","Su":"U"}
