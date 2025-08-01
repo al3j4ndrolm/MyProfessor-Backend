@@ -6,7 +6,7 @@ from unittest.mock import Mock, patch
 # Add the parent directory to the path so we can import our modules
 sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
 
-from database.schools_db import get_supported, get, SchoolStatus
+from database.schools_db import get, SchoolStatus
 from database import db_keys
 
 # Test data constants
@@ -19,78 +19,6 @@ TEST_TERMS = [
 
 class TestSchoolsDB:
     """Test class for schools_db functions"""
-    
-    def test_get_supported_dev_build(self):
-        """Test that get_supported returns both SUPPORTED and TESTING schools when passed those statuses"""
-        
-        # Mock the supabase client
-        mock_supabase = Mock()
-        
-        # Mock the get function to return test data
-        with patch('database.schools_db.get') as mock_get:
-            mock_get.return_value = [
-                {"school": "Test School 1", "status": SchoolStatus.SUPPORTED.value},
-                {"school": "Test School 2", "status": SchoolStatus.TESTING.value}
-            ]
-            
-            # Call get_supported with dev statuses
-            result = get_supported(mock_supabase, [SchoolStatus.SUPPORTED.value, SchoolStatus.TESTING.value])
-            
-            # Verify get was called with correct statuses
-            mock_get.assert_called_once_with(mock_supabase, statuses=[SchoolStatus.SUPPORTED.value, SchoolStatus.TESTING.value])
-            
-            # Verify result
-            assert len(result) == 2
-            assert result[0]["school"] == "Test School 1"
-            assert result[1]["school"] == "Test School 2"
-    
-    def test_get_supported_prod_build(self):
-        """Test that get_supported returns only SUPPORTED schools when passed that status"""
-        
-        # Mock the supabase client
-        mock_supabase = Mock()
-        
-        # Mock the get function to return test data
-        with patch('database.schools_db.get') as mock_get:
-            mock_get.return_value = [
-                {"school": "Test School 1", "status": SchoolStatus.SUPPORTED.value}
-            ]
-            
-            # Call get_supported with prod statuses
-            result = get_supported(mock_supabase, [SchoolStatus.SUPPORTED.value])
-            
-            # Verify get was called with correct statuses (only SUPPORTED)
-            mock_get.assert_called_once_with(mock_supabase, statuses=[SchoolStatus.SUPPORTED.value])
-            
-            # Verify result
-            assert len(result) == 1
-            assert result[0]["school"] == "Test School 1"
-            assert result[0]["status"] == SchoolStatus.SUPPORTED.value
-    
-    def test_get_supported_other_build_types(self):
-        """Test that get_supported returns only SUPPORTED schools when passed that status"""
-        
-        # Mock the supabase client
-        mock_supabase = Mock()
-        
-        # Test various non-dev build types
-        build_types = ["production", "staging", "release", "main", "master", "live"]
-        
-        for build_type in build_types:
-            with patch('database.schools_db.get') as mock_get:
-                mock_get.return_value = [
-                    {"school": "Test School", "status": SchoolStatus.SUPPORTED.value}
-                ]
-                
-                # Call get_supported with non-dev statuses
-                result = get_supported(mock_supabase, [SchoolStatus.SUPPORTED.value])
-                
-                # Verify get was called with only SUPPORTED status
-                mock_get.assert_called_once_with(mock_supabase, statuses=[SchoolStatus.SUPPORTED.value])
-                
-                # Verify result
-                assert len(result) == 1
-                assert result[0]["status"] == SchoolStatus.SUPPORTED.value
     
     def test_get_function_with_multiple_statuses(self):
         """Test that get function correctly filters by multiple statuses"""
@@ -116,12 +44,12 @@ class TestSchoolsDB:
         mock_in.execute.return_value = mock_response
         
         # Call get function with multiple statuses
-        result = get(mock_supabase, [SchoolStatus.SUPPORTED.value, SchoolStatus.TESTING.value])
+        result = get(mock_supabase, [SchoolStatus.SUPPORTED, SchoolStatus.TESTING])
         
         # Verify the query was built correctly
         mock_supabase.table.assert_called_once_with("schools")
         mock_table.select.assert_called_once_with("*")
-        mock_select.in_.assert_called_once_with(db_keys.SCHOOL_KEY_STATUS, [SchoolStatus.SUPPORTED.value, SchoolStatus.TESTING.value])
+        mock_select.in_.assert_called_once_with(db_keys.SCHOOL_KEY_STATUS, [SchoolStatus.SUPPORTED, SchoolStatus.TESTING])
         mock_in.execute.assert_called_once()
         
         # Verify result contains only schools with specified statuses
@@ -153,12 +81,12 @@ class TestSchoolsDB:
         mock_in.execute.return_value = mock_response
         
         # Call get function with single status
-        result = get(mock_supabase, [SchoolStatus.SUPPORTED.value])
+        result = get(mock_supabase, [SchoolStatus.SUPPORTED])
         
         # Verify the query was built correctly
         mock_supabase.table.assert_called_once_with("schools")
         mock_table.select.assert_called_once_with("*")
-        mock_select.in_.assert_called_once_with(db_keys.SCHOOL_KEY_STATUS, [SchoolStatus.SUPPORTED.value])
+        mock_select.in_.assert_called_once_with(db_keys.SCHOOL_KEY_STATUS, [SchoolStatus.SUPPORTED])
         mock_in.execute.assert_called_once()
         
         # Verify result
@@ -185,7 +113,7 @@ class TestSchoolsDB:
         mock_in.execute.return_value = mock_response
         
         # Call get function
-        result = get(mock_supabase, [SchoolStatus.SUPPORTED.value])
+        result = get(mock_supabase, [SchoolStatus.SUPPORTED])
         
         # Verify result is empty list
         assert result == []
