@@ -35,12 +35,8 @@ def set_status(supabase: Client, school_name: str, status: int):
     supabase.table(TABLE_NAME).update({db_keys.SCHOOL_KEY_STATUS: status})\
         .eq(db_keys.SCHOOL_KEY_SCHOOL_NAME, school_name).execute()
 
-def get_supported(supabase: Client, build_type: str) -> list[dict]:
-
-    if build_type == "dev":
-        return get(supabase, statuses = [SchoolStatus.SUPPORTED.value, SchoolStatus.TESTING.value])
-    else:
-        return get(supabase, statuses = [SchoolStatus.SUPPORTED.value])
+def get_supported(supabase: Client, statuses: list[int]) -> list[dict]:
+    return get(supabase, statuses=statuses)
 
 def get(supabase: Client, statuses: list[int]) -> list[dict]:
     schools = supabase.table(TABLE_NAME).select("*").in_(db_keys.SCHOOL_KEY_STATUS, statuses).execute()

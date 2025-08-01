@@ -21,7 +21,7 @@ class TestSchoolsDB:
     """Test class for schools_db functions"""
     
     def test_get_supported_dev_build(self):
-        """Test that get_supported returns both SUPPORTED and TESTING schools for dev build"""
+        """Test that get_supported returns both SUPPORTED and TESTING schools when passed those statuses"""
         
         # Mock the supabase client
         mock_supabase = Mock()
@@ -33,8 +33,8 @@ class TestSchoolsDB:
                 {"school": "Test School 2", "status": SchoolStatus.TESTING.value}
             ]
             
-            # Call get_supported with dev build type
-            result = get_supported(mock_supabase, "dev")
+            # Call get_supported with dev statuses
+            result = get_supported(mock_supabase, [SchoolStatus.SUPPORTED.value, SchoolStatus.TESTING.value])
             
             # Verify get was called with correct statuses
             mock_get.assert_called_once_with(mock_supabase, statuses=[SchoolStatus.SUPPORTED.value, SchoolStatus.TESTING.value])
@@ -45,7 +45,7 @@ class TestSchoolsDB:
             assert result[1]["school"] == "Test School 2"
     
     def test_get_supported_prod_build(self):
-        """Test that get_supported returns only SUPPORTED schools for prod build"""
+        """Test that get_supported returns only SUPPORTED schools when passed that status"""
         
         # Mock the supabase client
         mock_supabase = Mock()
@@ -56,8 +56,8 @@ class TestSchoolsDB:
                 {"school": "Test School 1", "status": SchoolStatus.SUPPORTED.value}
             ]
             
-            # Call get_supported with prod build type
-            result = get_supported(mock_supabase, "prod")
+            # Call get_supported with prod statuses
+            result = get_supported(mock_supabase, [SchoolStatus.SUPPORTED.value])
             
             # Verify get was called with correct statuses (only SUPPORTED)
             mock_get.assert_called_once_with(mock_supabase, statuses=[SchoolStatus.SUPPORTED.value])
@@ -68,7 +68,7 @@ class TestSchoolsDB:
             assert result[0]["status"] == SchoolStatus.SUPPORTED.value
     
     def test_get_supported_other_build_types(self):
-        """Test that get_supported returns only SUPPORTED schools for any non-dev build type"""
+        """Test that get_supported returns only SUPPORTED schools when passed that status"""
         
         # Mock the supabase client
         mock_supabase = Mock()
@@ -82,8 +82,8 @@ class TestSchoolsDB:
                     {"school": "Test School", "status": SchoolStatus.SUPPORTED.value}
                 ]
                 
-                # Call get_supported with non-dev build type
-                result = get_supported(mock_supabase, build_type)
+                # Call get_supported with non-dev statuses
+                result = get_supported(mock_supabase, [SchoolStatus.SUPPORTED.value])
                 
                 # Verify get was called with only SUPPORTED status
                 mock_get.assert_called_once_with(mock_supabase, statuses=[SchoolStatus.SUPPORTED.value])
