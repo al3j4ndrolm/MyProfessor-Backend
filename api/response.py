@@ -1,19 +1,22 @@
+from storage3._sync import client
 from supabase import Client
 
 from database import schools_db, broadcasts_db, db_keys
+from database.schools_db import SchoolStatus
 from api import configs
 
 def response_start(supabase: Client, client_data: dict, user_data: dict) -> dict:
     
-    school_list = []
-    schools_data = schools_db.get_supported(supabase)
-    for entry in schools_data:
-        school_list.append(_create_school(entry))
-    
-    broadcast_list = []
-    broadcasts_data = broadcasts_db.get(supabase)
-    for entry in broadcasts_data:
-        broadcast_list.append(_create_broadcast(entry))
+
+    if client_data.get("build_type") == "dev":
+        schools_data = schools_db.get(supabase, [SchoolStatus.SUPPORTED, SchoolStatus.TESTING])
+    elif client_data.get("build_type") == "prod":
+        schools_data = schools_db.get(supabase, [SchoolStatus.SUPPORTED])
+    else:
+        schools_data = schools_db.get(supabase, [])
+
+    school_list = [_create_school(entry) for entry in schools_data]
+    broadcast_list = [_create_broadcast(entry) for entry in broadcasts_db.get_active(supabase)]
 
     return {
         configs.SCHOOLS_KEY_SCHOOL_LIST: school_list,
