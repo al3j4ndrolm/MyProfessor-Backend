@@ -1,43 +1,36 @@
 import os
 import pytest
-from bs4 import BeautifulSoup
-import json
-from tests import data_verify
-from helpers.soup_getter import html_url_to_soup
+import sys
 
 from data_fetchers.schools.sjsu import schedules
-from data_fetchers.schools.sjsu.school_config import SCHEDULES_BASE_URL
+from tests import data_verify
+from tests.data_fetchers.schools.base_test import BaseSchoolTest
 
-# Helper to get sample soup from HTML file
-def get_sample_soup():
-    sample_path = os.path.join(
-        os.path.dirname(__file__),
-        '..', '..', '..', '..', 'tests', 'test_samples', 'sjsu', 'classes_test_sample.html'
-    )
-    with open(sample_path, 'r', encoding='utf-8') as f:
-        html = f.read()
-    return BeautifulSoup(html, 'html.parser')
+sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))) )
 
-# Helper to get reference data from JSON file
-def get_reference_data():
-    reference_path = os.path.join(
-        os.path.dirname(__file__),
-        '..', '..', '..', '..', 'tests', 'test_samples', 'sjsu', 'classes_test_reference.json'
-    )
-    with open(reference_path, 'r', encoding='utf-8') as f:
-        return json.load(f)
-
-class TestSJSUSchedules:
+class TestSJSUSchedules(BaseSchoolTest):
+    @property
+    def school_name(self):
+        return "sjsu"
+    
+    @property
+    def test_type(self):
+        return "classes"
+    
     def test_get_schedules(self):
-        soup = get_sample_soup()
+        """Test getting schedules for ART department"""
+        soup = self.load_test_html_data("classes_test_sample.html")
         departments = {"ART"}
-
-        result = schedules.get_classes_per_department(soup, departments)
-        expected = get_reference_data()
-        print(result)
-
-        assert result == expected
-        # Verify the data structure
+        
+        def run_test():
+            result = schedules.get_classes_per_department(soup, departments)
+            return result
+        
+        # Run test with automatic result saving and data loading
+        result = self.run_test_with_result_saving(run_test)
+        
+        # Additional verification
+        assert isinstance(result, dict)
         data_verify.verify_data_structure_classes_all_departments(result)
 
 if __name__ == "__main__":
