@@ -1,8 +1,9 @@
-import logging
+# Standard library imports
 from bs4 import BeautifulSoup
-from data_fetchers.api.terms.response import create_term_response_data
 
-logger = logging.getLogger(__name__)
+# Local imports
+from helpers.data import data_creators
+from logger import logger
 
 def get_terms(soup: BeautifulSoup):
     """
@@ -38,8 +39,7 @@ def get_terms(soup: BeautifulSoup):
             if not term_code or not term_name:
                 continue
                 
-            # Create term response data
-            term_data = create_term_response_data(term_name, term_code)
+            term_data = data_creators.create_term_data(term_name, term_code)
             terms_data.append(term_data)
             
         logger.info(f"Extracted {len(terms_data)} terms from Foothill College")

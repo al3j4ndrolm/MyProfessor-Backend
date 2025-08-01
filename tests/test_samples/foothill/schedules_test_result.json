@@ -1,0 +1,690 @@
+{
+  "Section: ACTG": {
+    "TORRETTO, JOE email:None": {
+      "hasEmail": false,
+      "classes": [
+        {
+          "classCrn": "20487",
+          "meetings": [
+            {
+              "tag": "",
+              "days": "M·W····",
+              "time": "MW 10:00 AM-12:15 PM",
+              "location": "3206"
+            }
+          ],
+          "availability": "Open"
+        }
+      ]
+    },
+    "GOPAL, SUBHA email:None": {
+      "hasEmail": false,
+      "classes": [
+        {
+          "classCrn": "20795",
+          "meetings": [
+            {
+              "tag": "",
+              "days": "·T·····",
+              "time": "TTh 10:00 AM-11:50 AM",
+              "location": "5602"
+            }
+          ],
+          "availability": "Open"
+        },
+        {
+          "classCrn": "20413",
+          "meetings": [
+            {
+              "tag": "",
+              "days": "·T·····",
+              "time": "TBA",
+              "location": "Online"
+            }
+          ],
+          "availability": "Open"
+        },
+        {
+          "classCrn": "20201",
+          "meetings": [
+            {
+              "tag": "",
+              "days": "·T·····",
+              "time": "TBA",
+              "location": "Online"
+            }
+          ],
+          "availability": "Open"
+        },
+        {
+          "classCrn": "20202",
+          "meetings": [
+            {
+              "tag": "",
+              "days": "·T·····",
+              "time": "TBA",
+              "location": "Online"
+            }
+          ],
+          "availability": "Open"
+        }
+      ]
+    },
+    "WANG-NAVA, JOSE email:None": {
+      "hasEmail": false,
+      "classes": [
+        {
+          "classCrn": "20004",
+          "meetings": [
+            {
+              "tag": "",
+              "days": "·T·····",
+              "time": "TBA",
+              "location": "Online"
+            }
+          ],
+          "availability": "Open"
+        },
+        {
+          "classCrn": "20587",
+          "meetings": [
+            {
+              "tag": "",
+              "days": "·T·····",
+              "time": "TBA",
+              "location": "Online"
+            }
+          ],
+          "availability": "Open"
+        },
+        {
+          "classCrn": "20200",
+          "meetings": [
+            {
+              "tag": "",
+              "days": "·T·····",
+              "time": "TBA",
+              "location": "Online"
+            }
+          ],
+          "availability": "Waitlist"
+        },
+        {
+          "classCrn": "20210",
+          "meetings": [
+            {
+              "tag": "",
+              "days": "·T·····",
+              "time": "TBA",
+              "location": "Online"
+            }
+          ],
+          "availability": "Open"
+        }
+      ]
+    },
+    "JAMA, FILSUN email:None": {
+      "hasEmail": false,
+      "classes": [
+        {
+          "classCrn": "20003",
+          "meetings": [
+            {
+              "tag": "",
+              "days": "·T·····",
+              "time": "TBA",
+              "location": "Online"
+            }
+          ],
+          "availability": "Waitlist"
+        },
+        {
+          "classCrn": "20002",
+          "meetings": [
+            {
+              "tag": "",
+              "days": "·T·····",
+              "time": "TBA",
+              "location": "Online"
+            }
+          ],
+          "availability": "Open"
+        },
+        {
+          "classCrn": "20837",
+          "meetings": [
+            {
+              "tag": "",
+              "days": "·T·····",
+              "time": "TTh 10:00 AM-11:50 AM",
+              "location": "5613"
+            }
+          ],
+          "availability": "Open"
+        }
+      ]
+    },
+    "BENSON, BEN email:None": {
+      "hasEmail": false,
+      "classes": [
+        {
+          "classCrn": "20256",
+          "meetings": [
+            {
+              "tag": "",
+              "days": "·T·····",
+              "time": "TBA",
+              "location": "Online"
+            }
+          ],
+          "availability": "Open"
+        },
+        {
+          "classCrn": "20005",
+          "meetings": [
+            {
+              "tag": "",
+              "days": "·T·····",
+              "time": "TBA",
+              "location": "Online"
+            }
+          ],
+          "availability": "Waitlist"
+        }
+      ]
+    },
+    "NGUYEN, LONG email:None": {
+      "hasEmail": false,
+      "classes": [
+        {
+          "classCrn": "20808",
+          "meetings": [
+            {
+              "tag": "",
+              "days": "·T·····",
+              "time": "TBA",
+              "location": "Online"
+            }
+          ],
+          "availability": "Open"
+        },
+        {
+          "classCrn": "21590",
+          "meetings": [
+            {
+              "tag": "",
+              "days": "·T·····",
+              "time": "TBA",
+              "location": "Online"
+            }
+          ],
+          "availability": "Open"
+        }
+      ]
+    },
+    "USMANI, UROOSA email:None": {
+      "hasEmail": false,
+      "classes": [
+        {
+          "classCrn": "20109",
+          "meetings": [
+            {
+              "tag": "",
+              "days": "·T·····",
+              "time": "TBA",
+              "location": "Online"
+            }
+          ],
+          "availability": "Open"
+        },
+        {
+          "classCrn": "20588",
+          "meetings": [
+            {
+              "tag": "",
+              "days": "·T·····",
+              "time": "TBA",
+              "location": "Online"
+            }
+          ],
+          "availability": "Open"
+        }
+      ]
+    },
+    "BENSON, LLOYD email:None": {
+      "hasEmail": false,
+      "classes": [
+        {
+          "classCrn": "20116",
+          "meetings": [
+            {
+              "tag": "",
+              "days": "·T·····",
+              "time": "TBA",
+              "location": "Online"
+            }
+          ],
+          "availability": "Open"
+        },
+        {
+          "classCrn": "20596",
+          "meetings": [
+            {
+              "tag": "",
+              "days": "·T·····",
+              "time": "TBA",
+              "location": "Online"
+            }
+          ],
+          "availability": "Open"
+        }
+      ]
+    },
+    "FISH, OLGA email:None": {
+      "hasEmail": false,
+      "classes": [
+        {
+          "classCrn": "20287",
+          "meetings": [
+            {
+              "tag": "",
+              "days": "·T·····",
+              "time": "TBA",
+              "location": "Online"
+            }
+          ],
+          "availability": "Open"
+        },
+        {
+          "classCrn": "21201",
+          "meetings": [
+            {
+              "tag": "",
+              "days": "·T·····",
+              "time": "TBA",
+              "location": "Online"
+            }
+          ],
+          "availability": "Open"
+        }
+      ]
+    },
+    "FAKOOR, FARIMA email:None": {
+      "hasEmail": false,
+      "classes": [
+        {
+          "classCrn": "20623",
+          "meetings": [
+            {
+              "tag": "",
+              "days": "·T·····",
+              "time": "TBA",
+              "location": "Online"
+            }
+          ],
+          "availability": "Waitlist"
+        },
+        {
+          "classCrn": "20008",
+          "meetings": [
+            {
+              "tag": "",
+              "days": "·T·····",
+              "time": "TBA",
+              "location": "Online"
+            }
+          ],
+          "availability": "Open"
+        }
+      ]
+    },
+    "ARDIZZONE, ARTHUR email:None": {
+      "hasEmail": false,
+      "classes": [
+        {
+          "classCrn": "20440",
+          "meetings": [
+            {
+              "tag": "",
+              "days": "·T·····",
+              "time": "TBA",
+              "location": "Online"
+            }
+          ],
+          "availability": "Open"
+        },
+        {
+          "classCrn": "21589",
+          "meetings": [
+            {
+              "tag": "",
+              "days": "·T·····",
+              "time": "TBA",
+              "location": "Online"
+            }
+          ],
+          "availability": "Open"
+        }
+      ]
+    },
+    "NOVIKOV, IRINA email:None": {
+      "hasEmail": false,
+      "classes": [
+        {
+          "classCrn": "21591",
+          "meetings": [
+            {
+              "tag": "",
+              "days": "·T·····",
+              "time": "TBA",
+              "location": "Online"
+            }
+          ],
+          "availability": "Open"
+        },
+        {
+          "classCrn": "20149",
+          "meetings": [
+            {
+              "tag": "",
+              "days": "·T·····",
+              "time": "TBA",
+              "location": "Online"
+            }
+          ],
+          "availability": "Waitlist"
+        }
+      ]
+    },
+    "BOWMAN, SEAN email:None": {
+      "hasEmail": false,
+      "classes": [
+        {
+          "classCrn": "20624",
+          "meetings": [
+            {
+              "tag": "",
+              "days": "·T·····",
+              "time": "TBA",
+              "location": "Online"
+            }
+          ],
+          "availability": "Waitlist"
+        },
+        {
+          "classCrn": "21202",
+          "meetings": [
+            {
+              "tag": "",
+              "days": "·T·····",
+              "time": "TBA",
+              "location": "Online"
+            }
+          ],
+          "availability": "Open"
+        }
+      ]
+    },
+    "MAYER, JOE email:None": {
+      "hasEmail": false,
+      "classes": [
+        {
+          "classCrn": "20117",
+          "meetings": [
+            {
+              "tag": "",
+              "days": "·T·····",
+              "time": "TBA",
+              "location": "Online"
+            }
+          ],
+          "availability": "Open"
+        },
+        {
+          "classCrn": "20803",
+          "meetings": [
+            {
+              "tag": "",
+              "days": "·T·····",
+              "time": "TBA",
+              "location": "Online"
+            }
+          ],
+          "availability": "Waitlist"
+        }
+      ]
+    },
+    "GHODRAT, NANCY email:None": {
+      "hasEmail": false,
+      "classes": [
+        {
+          "classCrn": "20006",
+          "meetings": [
+            {
+              "tag": "",
+              "days": "·T·····",
+              "time": "TBA",
+              "location": "Online"
+            }
+          ],
+          "availability": "Waitlist"
+        },
+        {
+          "classCrn": "20135",
+          "meetings": [
+            {
+              "tag": "",
+              "days": "·T·····",
+              "time": "TBA",
+              "location": "Online"
+            }
+          ],
+          "availability": "Open"
+        }
+      ]
+    },
+    "GLASS, JUSTON email:None": {
+      "hasEmail": false,
+      "classes": [
+        {
+          "classCrn": "20203",
+          "meetings": [
+            {
+              "tag": "",
+              "days": "·T·····",
+              "time": "TBA",
+              "location": "Online"
+            }
+          ],
+          "availability": "Open"
+        },
+        {
+          "classCrn": "21203",
+          "meetings": [
+            {
+              "tag": "",
+              "days": "·T·····",
+              "time": "TBA",
+              "location": "Online"
+            }
+          ],
+          "availability": "Open"
+        }
+      ]
+    },
+    "HUANG, AILEEN email:None": {
+      "hasEmail": false,
+      "classes": [
+        {
+          "classCrn": "20007",
+          "meetings": [
+            {
+              "tag": "",
+              "days": "·T·····",
+              "time": "TBA",
+              "location": "Online"
+            }
+          ],
+          "availability": "Open"
+        },
+        {
+          "classCrn": "21592",
+          "meetings": [
+            {
+              "tag": "",
+              "days": "·T·····",
+              "time": "TBA",
+              "location": "Online"
+            }
+          ],
+          "availability": "Open"
+        }
+      ]
+    },
+    "VAN HULSEN, OLGA email:None": {
+      "hasEmail": false,
+      "classes": [
+        {
+          "classCrn": "20285",
+          "meetings": [
+            {
+              "tag": "",
+              "days": "·T·····",
+              "time": "TBA",
+              "location": "Online"
+            }
+          ],
+          "availability": "Open"
+        }
+      ]
+    },
+    "STAFF, M email:None": {
+      "hasEmail": false,
+      "classes": [
+        {
+          "classCrn": "20168",
+          "meetings": [
+            {
+              "tag": "",
+              "days": "·T·····",
+              "time": "TBA",
+              "location": "TBA"
+            }
+          ],
+          "availability": "Waitlist"
+        },
+        {
+          "classCrn": "20259",
+          "meetings": [
+            {
+              "tag": "",
+              "days": "·T·····",
+              "time": "TBA",
+              "location": "TBA"
+            }
+          ],
+          "availability": "Waitlist"
+        },
+        {
+          "classCrn": "20260",
+          "meetings": [
+            {
+              "tag": "",
+              "days": "·T·····",
+              "time": "TBA",
+              "location": "TBA"
+            }
+          ],
+          "availability": "Waitlist"
+        },
+        {
+          "classCrn": "20261",
+          "meetings": [
+            {
+              "tag": "",
+              "days": "·T·····",
+              "time": "TBA",
+              "location": "TBA"
+            }
+          ],
+          "availability": "Waitlist"
+        }
+      ]
+    },
+    "LUI, IRENE email:None": {
+      "hasEmail": false,
+      "classes": [
+        {
+          "classCrn": "20100",
+          "meetings": [
+            {
+              "tag": "",
+              "days": "·T·····",
+              "time": "TBA",
+              "location": "Online"
+            }
+          ],
+          "availability": "Open"
+        }
+      ]
+    },
+    "STURGESS, ANAN email:None": {
+      "hasEmail": false,
+      "classes": [
+        {
+          "classCrn": "20136",
+          "meetings": [
+            {
+              "tag": "",
+              "days": "·T·····",
+              "time": "TBA",
+              "location": "Online"
+            }
+          ],
+          "availability": "Open"
+        },
+        {
+          "classCrn": "20150",
+          "meetings": [
+            {
+              "tag": "",
+              "days": "·T·····",
+              "time": "TBA",
+              "location": "Online"
+            }
+          ],
+          "availability": "Open"
+        }
+      ]
+    },
+    "MENDIZABAL, MATTHEW email:None": {
+      "hasEmail": false,
+      "classes": [
+        {
+          "classCrn": "20286",
+          "meetings": [
+            {
+              "tag": "",
+              "days": "·T·····",
+              "time": "TBA",
+              "location": "Online"
+            }
+          ],
+          "availability": "Open"
+        },
+        {
+          "classCrn": "20557",
+          "meetings": [
+            {
+              "tag": "",
+              "days": "·T·····",
+              "time": "TBA",
+              "location": "Online"
+            }
+          ],
+          "availability": "Open"
+        }
+      ]
+    }
+  }
+}

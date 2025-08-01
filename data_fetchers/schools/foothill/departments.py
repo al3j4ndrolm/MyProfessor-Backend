@@ -3,23 +3,23 @@ from bs4 import BeautifulSoup
 
 logger = logging.getLogger(__name__)
 
-def get_departments(soup: BeautifulSoup) -> list:
+def get_department_data_table(soup: BeautifulSoup) -> dict:
     """   
     Example of return value:
-    [
-        ("Accounting", "ACCT"),
-        ("Biology", "BIO"),
+    {
+        "ACCT": "Accounting",
+        "BIO": "Biology",
         ...
-    ]   
+    } 
     """
     try:
         dept_select = soup.find("select", {"name": "dept", "id": "Dept"})
         department_elements = dept_select.find_all("option")[1:]
     except Exception as e:
         logger.error(f"Error extracting departments from Foothill College: {e}")
-        return []
+        return {}
 
-    department_name_code_list = []
+    department_data_table = {}
     for element in department_elements:
         department_code = element.get("value")
         department_name = element.text.strip()
@@ -28,7 +28,7 @@ def get_departments(soup: BeautifulSoup) -> list:
         if "|" in department_code:
             department_code = department_code.split("|")[0]
         
-        department_name_code_list.append((department_name, department_code))
+        department_data_table[department_code] = department_name
         
-    logger.info(f"Extracted {len(department_name_code_list)} departments from Foothill College")
-    return department_name_code_list
+    logger.info(f"Extracted {len(department_data_table)} departments from Foothill College")
+    return department_data_table
