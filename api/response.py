@@ -25,7 +25,7 @@ def response_schools(supabase: Client) -> dict:
     school_list = []
     schools_data = schools_db.get_supported(supabase)
     for entry in schools_data:
-        school_list.append(_create_school(entry))
+        school_list.append(_create_school_old(entry))
     
     broadcast_list = []
     broadcasts_data = broadcasts_db.get(supabase)
@@ -42,6 +42,15 @@ def _create_school(entry: dict) -> dict:
         configs.SCHOOL_NAME_KEY: entry[db_keys.SCHOOL_KEY_SCHOOL_NAME],
         configs.TERMS_KEY: entry[db_keys.SCHOOL_KEY_TERMS],
         configs.NOTIFICATION_KEY: {"text": entry[db_keys.SCHOOL_KEY_NOTIFICATION]},
+        configs.KEY_UPDATED_AT: entry[db_keys.KEY_UPDATED_AT]
+    }
+
+def _create_school_old(entry: dict) -> dict:
+    return {
+        configs.SCHOOL_NAME_KEY: entry[db_keys.SCHOOL_KEY_SCHOOL_NAME],
+        configs.TERMS_KEY: entry[db_keys.SCHOOL_KEY_TERMS],
+        configs.NOTIFICATION_KEY: {"text": entry[db_keys.SCHOOL_KEY_NOTIFICATION]},
+        "schoolRmpCode": entry[db_keys.SCHOOL_KEY_RMP_CODE],
         configs.KEY_UPDATED_AT: entry[db_keys.KEY_UPDATED_AT]
     }
 
