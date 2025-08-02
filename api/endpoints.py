@@ -22,6 +22,15 @@ key = os.getenv("SUPABASE_KEY")
 supabase: Client = create_client(url, key)
 
 class StartPostRequest(BaseModel):
+    '''
+    client_data = {
+        "build_type": "dev" | "release",
+        "platform": "iOS" | "Android"
+    }
+    user_data = {
+        "is_new_user": "true" | "false"
+    }
+    '''
     client_data: dict
     user_data: dict
 
