@@ -10,10 +10,10 @@ def response_start(supabase: Client, client_data: dict, user_data: dict) -> dict
 
     if client_data.get("build_type") == "dev":
         schools_data = schools_db.get(supabase, [SchoolStatus.SUPPORTED, SchoolStatus.TESTING])
-    elif client_data.get("build_type") == "prod":
+    elif client_data.get("build_type") == "release":
         schools_data = schools_db.get(supabase, [SchoolStatus.SUPPORTED])
     else:
-        schools_data = schools_db.get(supabase, [SchoolStatus.SUPPORTED])
+        schools_data = schools_db.get(supabase, [])
 
     school_list = [_create_school(entry) for entry in schools_data]
     broadcast_list = [_create_broadcast(entry) for entry in broadcasts_db.get_active(supabase)]
