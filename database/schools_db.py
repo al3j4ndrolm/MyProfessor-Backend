@@ -36,6 +36,6 @@ def set_status(supabase: Client, school_name: str, status: int):
         .eq(db_keys.SCHOOL_KEY_SCHOOL_NAME, school_name).execute()
 
 def get(supabase: Client, statuses: list[SchoolStatus]) -> list[dict]:
-    schools = supabase.table(TABLE_NAME).select("*").in_(db_keys.SCHOOL_KEY_STATUS, statuses).execute()
-    schools_data = schools.data
-    return schools_data
+    search_query = supabase.table(TABLE_NAME).select("*").in_(db_keys.SCHOOL_KEY_STATUS, statuses).execute()
+    return search_query.data
+

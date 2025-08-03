@@ -12,15 +12,14 @@ sys.path.insert(0, str(current_dir))
 from supabase import create_client, Client
 from dotenv import load_dotenv
 import os
-from database import schools_db, courses_db, classes_db, professors_db
+from database import schools_db, classes_db
 from database.schools_db import SchoolStatus
 from database import db_keys
-from helpers.data import data_keys, data_creators
 from data_fetchers.ratings.rating_provider import get_ratings_and_merge
 from logger import logger
 
 def main(supabase: Client):
-    schools = schools_db.get(supabase, status=SchoolStatus.UNKNOWN.value)
+    schools = schools_db.get(supabase, [SchoolStatus.SUPPORTED])
     
     for school_entry in schools:
         logger.info(f"Updating data fixing for {school_entry[db_keys.SCHOOL_KEY_SCHOOL_NAME]}")
@@ -36,15 +35,7 @@ def main(supabase: Client):
             logger.info(f"Processing department {department_code} in term {term_code} ...")
             
             classes_per_department = classes_entry[db_keys.CLASSES_KEY_DATA]
-            get_ratings_and_merge(supabase, classes_per_department, school_name, rmp_code, department_code)
-            
-            for course_code, classes_per_course in classes_per_department.items():
-                for professor_identifier, professor_data in classes_per_course.items():
-                    if 'rmpData' in professor_data:
-                        for key in ['rating', 'recommend', 'difficulty', 'reviewCount']:
-                            if key in professor_data:
-                                del professor_data[key]
-                        logger.info(f"Finished cleaning old rating keys for department {department_code} in term {term_code}.")
+            get_ratings_and_merge(supabase, classes_per_department, school_name, rmp_code, department_code, rescan_null=True)
             
             classes_db.save_one_entry(supabase, classes_per_department, school_name, term_code, department_code)
             logger.info(f"Updated classes data for {term_code} - {department_code}.")
