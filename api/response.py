@@ -1,4 +1,3 @@
-from storage3._sync import client
 from supabase import Client
 
 from database import schools_db, broadcasts_db, db_keys
@@ -26,7 +25,7 @@ def response_start(supabase: Client, client_data: dict, user_data: dict) -> dict
 def response_schools(supabase: Client) -> dict:
     
     school_list = []
-    schools_data = schools_db.get_supported(supabase)
+    schools_data = schools_db.get(supabase, [SchoolStatus.SUPPORTED])
     for entry in schools_data:
         school_list.append(_create_school_old(entry))
     
@@ -42,32 +41,33 @@ def response_schools(supabase: Client) -> dict:
 
 def _create_school(entry: dict) -> dict:
     return {
-        configs.SCHOOL_NAME_KEY: entry[db_keys.SCHOOL_KEY_SCHOOL_NAME],
-        configs.TERMS_KEY: entry[db_keys.SCHOOL_KEY_TERMS],
-        configs.NOTIFICATION_KEY: {"text": entry[db_keys.SCHOOL_KEY_NOTIFICATION]},
-        configs.KEY_UPDATED_AT: entry[db_keys.KEY_UPDATED_AT]
+        configs.SCHOOL_NAME: entry[db_keys.SCHOOL_KEY_SCHOOL_NAME],
+        configs.SCHOOL_TERMS: entry[db_keys.SCHOOL_KEY_TERMS],
+        configs.SCHOOL_NOTIFICATION: {"text": entry[db_keys.SCHOOL_KEY_NOTIFICATION]},
+        configs.SCHOOL_UPDATED_AT: entry[db_keys.KEY_UPDATED_AT],
+        configs.SCHOOL_COURSES_UPDATED_AT: entry[db_keys.SCHOOL_KEY_COURSES_UPDATED_AT]
     }
 
 def _create_school_old(entry: dict) -> dict:
     return {
-        configs.SCHOOL_NAME_KEY: entry[db_keys.SCHOOL_KEY_SCHOOL_NAME],
-        configs.TERMS_KEY: entry[db_keys.SCHOOL_KEY_TERMS],
-        configs.NOTIFICATION_KEY: {"text": entry[db_keys.SCHOOL_KEY_NOTIFICATION]},
+        configs.SCHOOL_NAME: entry[db_keys.SCHOOL_KEY_SCHOOL_NAME],
+        configs.SCHOOL_TERMS: entry[db_keys.SCHOOL_KEY_TERMS],
+        configs.SCHOOL_NOTIFICATION: {"text": entry[db_keys.SCHOOL_KEY_NOTIFICATION]},
         "schoolRmpCode": entry[db_keys.SCHOOL_KEY_RMP_CODE],
-        configs.KEY_UPDATED_AT: entry[db_keys.KEY_UPDATED_AT]
+        configs.SCHOOL_UPDATED_AT: entry[db_keys.KEY_UPDATED_AT]
     }
 
 def _create_broadcast(entry: dict) -> dict:
     return {
-        configs.BROADCAST_ID_KEY: entry[db_keys.BROADCAST_KEY_ID],
-        configs.BROADCAST_TEXT_KEY: entry[db_keys.BROADCAST_KEY_TEXT],
-        configs.BROADCAST_MIN_VERSION_KEY: entry[db_keys.BROADCAST_KEY_MIN_VERSION],
+        configs.BROADCAST_ID: entry[db_keys.BROADCAST_KEY_ID],
+        configs.BROADCAST_TEXT: entry[db_keys.BROADCAST_KEY_TEXT],
+        configs.BROADCAST_MIN_VERSION: entry[db_keys.BROADCAST_KEY_MIN_VERSION],
     }
 
 def _create_broadcast_old(entry: dict) -> dict:
     return {
-        configs.BROADCAST_ID_KEY: entry[db_keys.BROADCAST_KEY_ID],
-        configs.BROADCAST_TEXT_KEY: entry[db_keys.BROADCAST_KEY_TEXT],
-        configs.BROADCAST_NEED_UPDATE_KEY: entry[db_keys.BROADCAST_KEY_MIN_VERSION] is not None,
-        configs.BROADCAST_MIN_VERSION_KEY: entry[db_keys.BROADCAST_KEY_MIN_VERSION],
+        configs.BROADCAST_ID: entry[db_keys.BROADCAST_KEY_ID],
+        configs.BROADCAST_TEXT: entry[db_keys.BROADCAST_KEY_TEXT],
+        configs.BROADCAST_NEED_UPDATE: entry[db_keys.BROADCAST_KEY_MIN_VERSION] is not None,
+        configs.BROADCAST_MIN_VERSION: entry[db_keys.BROADCAST_KEY_MIN_VERSION],
     }

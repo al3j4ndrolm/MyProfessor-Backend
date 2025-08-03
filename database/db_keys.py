@@ -4,6 +4,7 @@ SCHOOL_KEY_RMP_CODE = "rmp_code"
 SCHOOL_KEY_TERMS = "terms"
 SCHOOL_KEY_STATUS = "status"
 SCHOOL_KEY_NOTIFICATION = "notification"
+SCHOOL_KEY_COURSES_UPDATED_AT = "courses_updated_at"
 
 # table `broadcasts`
 BROADCAST_KEY_ID = "id"

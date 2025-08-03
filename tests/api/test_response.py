@@ -26,13 +26,15 @@ class TestResponse:
                 db_keys.SCHOOL_KEY_SCHOOL_NAME: "Test School 1",
                 db_keys.SCHOOL_KEY_TERMS: [{"termName": "Fall 2025", "termCode": "2025F"}],
                 db_keys.SCHOOL_KEY_NOTIFICATION: "Test notification",
-                db_keys.KEY_UPDATED_AT: "2025-01-01T00:00:00Z"
+                db_keys.KEY_UPDATED_AT: "2025-01-01T00:00:00Z",
+                db_keys.SCHOOL_KEY_COURSES_UPDATED_AT: "2025-01-01T00:00:00Z"
             },
             {
                 db_keys.SCHOOL_KEY_SCHOOL_NAME: "Test School 2",
                 db_keys.SCHOOL_KEY_TERMS: [{"termName": "Spring 2025", "termCode": "2025S"}],
                 db_keys.SCHOOL_KEY_NOTIFICATION: "",
-                db_keys.KEY_UPDATED_AT: "2025-01-02T00:00:00Z"
+                db_keys.KEY_UPDATED_AT: "2025-01-02T00:00:00Z",
+                db_keys.SCHOOL_KEY_COURSES_UPDATED_AT: "2025-01-01T00:00:00Z"
             }
         ]
         
@@ -67,16 +69,16 @@ class TestResponse:
             # Verify school list
             school_list = result[configs.SCHOOLS_KEY_SCHOOL_LIST]
             assert len(school_list) == 2
-            assert school_list[0][configs.SCHOOL_NAME_KEY] == "Test School 1"
-            assert school_list[1][configs.SCHOOL_NAME_KEY] == "Test School 2"
+            assert school_list[0][configs.SCHOOL_NAME] == "Test School 1"
+            assert school_list[1][configs.SCHOOL_NAME] == "Test School 2"
             
             # Verify broadcast list
             broadcast_list = result[configs.SCHOOLS_KEY_BROADCASTS]
             assert len(broadcast_list) == 1
-            assert broadcast_list[0][configs.BROADCAST_ID_KEY] == "broadcast1"
+            assert broadcast_list[0][configs.BROADCAST_ID] == "broadcast1"
     
-    def test_response_start_prod_build(self):
-        """Test response_start with prod build type returns only SUPPORTED schools"""
+    def test_response_start_release_build(self):
+        """Test response_start with release build type returns only SUPPORTED schools"""
         
         # Mock the supabase client
         mock_supabase = Mock()
@@ -87,7 +89,8 @@ class TestResponse:
                 db_keys.SCHOOL_KEY_SCHOOL_NAME: "Production School",
                 db_keys.SCHOOL_KEY_TERMS: [{"termName": "Fall 2025", "termCode": "2025F"}],
                 db_keys.SCHOOL_KEY_NOTIFICATION: "",
-                db_keys.KEY_UPDATED_AT: "2025-01-01T00:00:00Z"
+                db_keys.KEY_UPDATED_AT: "2025-01-01T00:00:00Z",
+                db_keys.SCHOOL_KEY_COURSES_UPDATED_AT: "2025-01-01T00:00:00Z"
             }
         ]
         
@@ -101,7 +104,7 @@ class TestResponse:
             mock_get_broadcasts.return_value = mock_broadcasts_data
             
             # Call response_start with prod build type
-            result = response_start(mock_supabase, {"build_type": "prod"}, {})
+            result = response_start(mock_supabase, {"build_type": "release"}, {})
             
             # Verify schools_db.get was called with only SUPPORTED status
             mock_get_schools.assert_called_once_with(mock_supabase, [SchoolStatus.SUPPORTED])
@@ -109,7 +112,7 @@ class TestResponse:
             # Verify result
             school_list = result[configs.SCHOOLS_KEY_SCHOOL_LIST]
             assert len(school_list) == 1
-            assert school_list[0][configs.SCHOOL_NAME_KEY] == "Production School"
+            assert school_list[0][configs.SCHOOL_NAME] == "Production School"
             
             broadcast_list = result[configs.SCHOOLS_KEY_BROADCASTS]
             assert len(broadcast_list) == 0
@@ -173,7 +176,8 @@ class TestResponse:
                 db_keys.SCHOOL_KEY_TERMS: [{"termName": "Fall 2025", "termCode": "2025F"}],
                 db_keys.SCHOOL_KEY_NOTIFICATION: "Test notification",
                 db_keys.SCHOOL_KEY_RMP_CODE: "test_rmp",
-                db_keys.KEY_UPDATED_AT: "2025-01-01T00:00:00Z"
+                db_keys.KEY_UPDATED_AT: "2025-01-01T00:00:00Z",
+                db_keys.SCHOOL_KEY_COURSES_UPDATED_AT: "2025-01-01T00:00:00Z"
             }
         ]
         
@@ -181,22 +185,23 @@ class TestResponse:
             {
                 db_keys.BROADCAST_KEY_ID: "broadcast1",
                 db_keys.BROADCAST_KEY_TEXT: "Test broadcast",
-                db_keys.BROADCAST_KEY_MIN_VERSION: "1.0.0"
+                db_keys.BROADCAST_KEY_MIN_VERSION: "1.0.0",
+                db_keys.BROADCAST_KEY_ACTIVE: True
             }
         ]
         
         # Mock the database calls
-        with patch('api.response.schools_db.get_supported') as mock_get_supported, \
+        with patch('api.response.schools_db.get') as mock_get_schools, \
              patch('api.response.broadcasts_db.get') as mock_get_broadcasts:
             
-            mock_get_supported.return_value = mock_schools_data
+            mock_get_schools.return_value = mock_schools_data
             mock_get_broadcasts.return_value = mock_broadcasts_data
             
             # Call response_schools
             result = response_schools(mock_supabase)
             
             # Verify database calls
-            mock_get_supported.assert_called_once_with(mock_supabase)
+            mock_get_schools.assert_called_once_with(mock_supabase, [SchoolStatus.SUPPORTED])
             mock_get_broadcasts.assert_called_once_with(mock_supabase)
             
             # Verify result structure
@@ -207,7 +212,7 @@ class TestResponse:
             school_list = result[configs.SCHOOLS_KEY_SCHOOL_LIST]
             assert len(school_list) == 1
             school = school_list[0]
-            assert school[configs.SCHOOL_NAME_KEY] == "Test School"
+            assert school[configs.SCHOOL_NAME] == "Test School"
             assert "schoolRmpCode" in school  # Old format includes RMP code
             assert school["schoolRmpCode"] == "test_rmp"
             
@@ -215,8 +220,8 @@ class TestResponse:
             broadcast_list = result[configs.SCHOOLS_KEY_BROADCASTS]
             assert len(broadcast_list) == 1
             broadcast = broadcast_list[0]
-            assert broadcast[configs.BROADCAST_ID_KEY] == "broadcast1"
-            assert "needUpdate" in broadcast  # Old format includes needUpdate field
+            assert broadcast[configs.BROADCAST_ID] == "broadcast1"
+            assert "isUpdate" in broadcast  # Old format includes needUpdate field
     
     def test_create_school_format(self):
         """Test that _create_school formats school data correctly"""
@@ -230,7 +235,8 @@ class TestResponse:
                 db_keys.SCHOOL_KEY_SCHOOL_NAME: "Test School",
                 db_keys.SCHOOL_KEY_TERMS: [{"termName": "Fall 2025", "termCode": "2025F"}],
                 db_keys.SCHOOL_KEY_NOTIFICATION: "Test notification",
-                db_keys.KEY_UPDATED_AT: "2025-01-01T00:00:00Z"
+                db_keys.KEY_UPDATED_AT: "2025-01-01T00:00:00Z",
+                db_keys.SCHOOL_KEY_COURSES_UPDATED_AT: "2025-01-01T00:00:00Z"
             }
         ]
         
@@ -248,10 +254,10 @@ class TestResponse:
             
             # Verify school format
             school = result[configs.SCHOOLS_KEY_SCHOOL_LIST][0]
-            assert school[configs.SCHOOL_NAME_KEY] == "Test School"
-            assert school[configs.TERMS_KEY] == [{"termName": "Fall 2025", "termCode": "2025F"}]
-            assert school[configs.NOTIFICATION_KEY] == {"text": "Test notification"}
-            assert school[configs.KEY_UPDATED_AT] == "2025-01-01T00:00:00Z"
+            assert school[configs.SCHOOL_NAME] == "Test School"
+            assert school[configs.SCHOOL_TERMS] == [{"termName": "Fall 2025", "termCode": "2025F"}]
+            assert school[configs.SCHOOL_NOTIFICATION] == {"text": "Test notification"}
+            assert school[configs.SCHOOL_UPDATED_AT] == "2025-01-01T00:00:00Z"
             assert "schoolRmpCode" not in school  # New format doesn't include RMP code
     
     def test_create_broadcast_format(self):
@@ -282,9 +288,9 @@ class TestResponse:
             
             # Verify broadcast format
             broadcast = result[configs.SCHOOLS_KEY_BROADCASTS][0]
-            assert broadcast[configs.BROADCAST_ID_KEY] == "broadcast1"
-            assert broadcast[configs.BROADCAST_TEXT_KEY] == "Test broadcast message"
-            assert broadcast[configs.BROADCAST_MIN_VERSION_KEY] == "2.0.0"
+            assert broadcast[configs.BROADCAST_ID] == "broadcast1"
+            assert broadcast[configs.BROADCAST_TEXT] == "Test broadcast message"
+            assert broadcast[configs.BROADCAST_MIN_VERSION] == "2.0.0"
             assert "needUpdate" not in broadcast  # New format doesn't include needUpdate field
 
 if __name__ == "__main__":
