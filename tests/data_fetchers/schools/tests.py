@@ -35,7 +35,8 @@ def get_available_schools() -> Dict[str, str]:
     return {
         "de_anza_college": "De Anza College",
         "sjsu": "San Jose State University",
-        "foothill": "Foothill College"
+        "foothill": "Foothill College",
+        "sfsu": "San Francisco State University"
     }
 
 def find_school_test_files(school_code: Optional[str] = None) -> List[Path]:
@@ -129,7 +130,7 @@ def print_school_test_results(results: List[Dict[str, Any]], school_name: str, v
     failed_tests = total_tests - passed_tests
     
     if failed_tests > 0:
-        print("\nFAILED TESTS:")
+        print(f"\nFAILED TESTS: {school_name}")
         print("-" * 40)
         for result in results:
             if not result["success"]:
@@ -138,7 +139,7 @@ def print_school_test_results(results: List[Dict[str, Any]], school_name: str, v
                     print(f"   Error: {result['stderr'].strip()}")
     
     if passed_tests > 0:
-        print("\nPASSED TESTS:")
+        print(f"\nPASSED TESTS: {school_name}")
         print("-" * 40)
         for result in results:
             if result["success"]:
@@ -152,7 +153,7 @@ def print_school_test_results(results: List[Dict[str, Any]], school_name: str, v
             break
     
     if has_error:
-        print("\nDETAILED OUTPUT:")
+        print(f"\nDETAILED OUTPUT: {school_name}")
         print("-" * 40)
         for result in results:
             print(f"\n{result['file'].name}:")
@@ -265,14 +266,6 @@ def main():
     if not result["success"] and "error" in result:
         print(f"❌ {result['error']}")
         return 1
-    
-    # Print overall summary
-    print(f"\n" + "="*80)
-    print("OVERALL SUMMARY")
-    print("="*80)
-    print(f"Total test files: {result['total_tests']}")
-    print(f"Passed: {result['passed_tests']}")
-    print(f"Failed: {result['failed_tests']}")
     
     return 0 if result["success"] else 1
 
