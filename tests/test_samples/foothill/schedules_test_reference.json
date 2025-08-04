@@ -1,0 +1,808 @@
+{
+    "ACTG 1A": {
+      "TORRETTO, JOE email:None": {
+        "hasEmail": false,
+        "classes": [
+          {
+            "classCrn": "20487",
+            "meetings": [
+              {
+                "tag": "",
+                "days": "M·W····",
+                "time": "10:00AM-12:15PM",
+                "location": "3206"
+              }
+            ],
+            "availability": "15/40 15/15"
+          }
+        ]
+      },
+      "GOPAL, SUBHA email:None": {
+        "hasEmail": false,
+        "classes": [
+          {
+            "classCrn": "20795",
+            "meetings": [
+              {
+                "tag": "",
+                "days": "·T·R···",
+                "time": "10:00AM-11:50AM",
+                "location": "5602"
+              },
+              {
+                "tag": "",
+                "days": "·······",
+                "time": "",
+                "location": "Online"
+              }
+            ],
+            "availability": "34/40 15/15"
+          },
+          {
+            "classCrn": "20413",
+            "meetings": [
+              {
+                "tag": "",
+                "days": "·······",
+                "time": "",
+                "location": "Online"
+              }
+            ],
+            "availability": "33/40 15/15"
+          }
+        ]
+      },
+      "WANG-NAVA, JOSE email:None": {
+        "hasEmail": false,
+        "classes": [
+          {
+            "classCrn": "20004",
+            "meetings": [
+              {
+                "tag": "",
+                "days": "·······",
+                "time": "",
+                "location": "Online"
+              }
+            ],
+            "availability": "16/40 15/15"
+          },
+          {
+            "classCrn": "20587",
+            "meetings": [
+              {
+                "tag": "",
+                "days": "·······",
+                "time": "",
+                "location": "Online"
+              }
+            ],
+            "availability": "35/40 15/15"
+          }
+        ]
+      },
+      "JAMA, FILSUN email:None": {
+        "hasEmail": false,
+        "classes": [
+          {
+            "classCrn": "20003",
+            "meetings": [
+              {
+                "tag": "",
+                "days": "·······",
+                "time": "",
+                "location": "Online"
+              }
+            ],
+            "availability": "0/40 14/15"
+          },
+          {
+            "classCrn": "20002",
+            "meetings": [
+              {
+                "tag": "",
+                "days": "·······",
+                "time": "",
+                "location": "Online"
+              }
+            ],
+            "availability": "14/40 15/15"
+          }
+        ]
+      },
+      "BENSON, BEN email:None": {
+        "hasEmail": false,
+        "classes": [
+          {
+            "classCrn": "20256",
+            "meetings": [
+              {
+                "tag": "",
+                "days": "·······",
+                "time": "",
+                "location": "Online"
+              }
+            ],
+            "availability": "38/40 15/15"
+          }
+        ]
+      },
+      "NGUYEN, LONG email:None": {
+        "hasEmail": false,
+        "classes": [
+          {
+            "classCrn": "20808",
+            "meetings": [
+              {
+                "tag": "",
+                "days": "·······",
+                "time": "",
+                "location": "Online"
+              }
+            ],
+            "availability": "39/40 15/15"
+          }
+        ]
+      }
+    },
+    "ACTG 1B": {
+      "JAMA, FILSUN email:None": {
+        "hasEmail": false,
+        "classes": [
+          {
+            "classCrn": "20837",
+            "meetings": [
+              {
+                "tag": "",
+                "days": "·T·R···",
+                "time": "10:00AM-11:50AM",
+                "location": "5613"
+              },
+              {
+                "tag": "",
+                "days": "·······",
+                "time": "",
+                "location": "Online"
+              }
+            ],
+            "availability": "24/40 15/15"
+          }
+        ]
+      },
+      "WANG-NAVA, JOSE email:None": {
+        "hasEmail": false,
+        "classes": [
+          {
+            "classCrn": "20200",
+            "meetings": [
+              {
+                "tag": "",
+                "days": "·······",
+                "time": "",
+                "location": "Online"
+              }
+            ],
+            "availability": "0/40 15/15"
+          },
+          {
+            "classCrn": "20210",
+            "meetings": [
+              {
+                "tag": "",
+                "days": "·······",
+                "time": "",
+                "location": "Online"
+              }
+            ],
+            "availability": "30/40 15/15"
+          }
+        ]
+      },
+      "USMANI, UROOSA email:None": {
+        "hasEmail": false,
+        "classes": [
+          {
+            "classCrn": "20109",
+            "meetings": [
+              {
+                "tag": "",
+                "days": "·······",
+                "time": "",
+                "location": "Online"
+              }
+            ],
+            "availability": "16/40 15/15"
+          },
+          {
+            "classCrn": "20588",
+            "meetings": [
+              {
+                "tag": "",
+                "days": "·······",
+                "time": "",
+                "location": "Online"
+              }
+            ],
+            "availability": "36/40 15/15"
+          }
+        ]
+      }
+    },
+    "ACTG 1C": {
+      "BENSON, BEN email:None": {
+        "hasEmail": false,
+        "classes": [
+          {
+            "classCrn": "20005",
+            "meetings": [
+              {
+                "tag": "",
+                "days": "·······",
+                "time": "",
+                "location": "Online"
+              }
+            ],
+            "availability": "0/40 12/15"
+          }
+        ]
+      },
+      "BENSON, LLOYD email:None": {
+        "hasEmail": false,
+        "classes": [
+          {
+            "classCrn": "20116",
+            "meetings": [
+              {
+                "tag": "",
+                "days": "·······",
+                "time": "",
+                "location": "Online"
+              }
+            ],
+            "availability": "10/40 15/15"
+          },
+          {
+            "classCrn": "20596",
+            "meetings": [
+              {
+                "tag": "",
+                "days": "·······",
+                "time": "",
+                "location": "Online"
+              }
+            ],
+            "availability": "34/40 15/15"
+          }
+        ]
+      }
+    },
+    "ACTG 51A": {
+      "FISH, OLGA email:None": {
+        "hasEmail": false,
+        "classes": [
+          {
+            "classCrn": "20287",
+            "meetings": [
+              {
+                "tag": "",
+                "days": "·······",
+                "time": "",
+                "location": "Online"
+              }
+            ],
+            "availability": "13/40 15/15"
+          },
+          {
+            "classCrn": "21201",
+            "meetings": [
+              {
+                "tag": "",
+                "days": "·······",
+                "time": "",
+                "location": "Online"
+              }
+            ],
+            "availability": "39/40 15/15"
+          }
+        ]
+      }
+    },
+    "ACTG 53": {
+      "FAKOOR, FARIMA email:None": {
+        "hasEmail": false,
+        "classes": [
+          {
+            "classCrn": "20623",
+            "meetings": [
+              {
+                "tag": "",
+                "days": "·······",
+                "time": "",
+                "location": "Online"
+              }
+            ],
+            "availability": "0/40 5/15"
+          }
+        ]
+      }
+    },
+    "ACTG 54": {
+      "ARDIZZONE, ARTHUR email:None": {
+        "hasEmail": false,
+        "classes": [
+          {
+            "classCrn": "20440",
+            "meetings": [
+              {
+                "tag": "",
+                "days": "·······",
+                "time": "",
+                "location": "Online"
+              }
+            ],
+            "availability": "4/40 15/15"
+          }
+        ]
+      }
+    },
+    "ACTG 55": {
+      "ARDIZZONE, ARTHUR email:None": {
+        "hasEmail": false,
+        "classes": [
+          {
+            "classCrn": "21589",
+            "meetings": [
+              {
+                "tag": "",
+                "days": "·······",
+                "time": "",
+                "location": "Online"
+              }
+            ],
+            "availability": "30/40 15/15"
+          }
+        ]
+      }
+    },
+    "ACTG 56": {
+      "NGUYEN, LONG email:None": {
+        "hasEmail": false,
+        "classes": [
+          {
+            "classCrn": "21590",
+            "meetings": [
+              {
+                "tag": "",
+                "days": "·······",
+                "time": "",
+                "location": "Online"
+              }
+            ],
+            "availability": "20/40 15/15"
+          }
+        ]
+      }
+    },
+    "ACTG 57": {
+      "NOVIKOV, IRINA email:None": {
+        "hasEmail": false,
+        "classes": [
+          {
+            "classCrn": "21591",
+            "meetings": [
+              {
+                "tag": "",
+                "days": "·······",
+                "time": "",
+                "location": "Online"
+              }
+            ],
+            "availability": "26/40 15/15"
+          }
+        ]
+      }
+    },
+    "ACTG 58": {
+      "BOWMAN, SEAN email:None": {
+        "hasEmail": false,
+        "classes": [
+          {
+            "classCrn": "20624",
+            "meetings": [
+              {
+                "tag": "",
+                "days": "·······",
+                "time": "",
+                "location": "Online"
+              }
+            ],
+            "availability": "0/40 15/15"
+          },
+          {
+            "classCrn": "21202",
+            "meetings": [
+              {
+                "tag": "",
+                "days": "·······",
+                "time": "",
+                "location": "Online"
+              }
+            ],
+            "availability": "39/40 15/15"
+          }
+        ]
+      }
+    },
+    "ACTG 59": {
+      "MAYER, JOE email:None": {
+        "hasEmail": false,
+        "classes": [
+          {
+            "classCrn": "20117",
+            "meetings": [
+              {
+                "tag": "",
+                "days": "·······",
+                "time": "",
+                "location": "Online"
+              }
+            ],
+            "availability": "7/40 15/15"
+          }
+        ]
+      }
+    },
+    "ACTG 60": {
+      "GHODRAT, NANCY email:None": {
+        "hasEmail": false,
+        "classes": [
+          {
+            "classCrn": "20006",
+            "meetings": [
+              {
+                "tag": "",
+                "days": "·······",
+                "time": "",
+                "location": "Online"
+              }
+            ],
+            "availability": "0/40 15/15"
+          },
+          {
+            "classCrn": "20135",
+            "meetings": [
+              {
+                "tag": "",
+                "days": "·······",
+                "time": "",
+                "location": "Online"
+              }
+            ],
+            "availability": "20/40 15/15"
+          }
+        ]
+      }
+    },
+    "ACTG 64A": {
+      "GOPAL, SUBHA email:None": {
+        "hasEmail": false,
+        "classes": [
+          {
+            "classCrn": "20201",
+            "meetings": [
+              {
+                "tag": "",
+                "days": "·······",
+                "time": "",
+                "location": "Online"
+              }
+            ],
+            "availability": "2/40 15/15"
+          },
+          {
+            "classCrn": "20202",
+            "meetings": [
+              {
+                "tag": "",
+                "days": "·······",
+                "time": "",
+                "location": "Online"
+              }
+            ],
+            "availability": "35/40 15/15"
+          }
+        ]
+      }
+    },
+    "ACTG 64B": {
+      "GLASS, JUSTON email:None": {
+        "hasEmail": false,
+        "classes": [
+          {
+            "classCrn": "20203",
+            "meetings": [
+              {
+                "tag": "",
+                "days": "·······",
+                "time": "",
+                "location": "Online"
+              }
+            ],
+            "availability": "1/40 15/15"
+          },
+          {
+            "classCrn": "21203",
+            "meetings": [
+              {
+                "tag": "",
+                "days": "·······",
+                "time": "",
+                "location": "Online"
+              }
+            ],
+            "availability": "39/40 15/15"
+          }
+        ]
+      }
+    },
+    "ACTG 65": {
+      "HUANG, AILEEN email:None": {
+        "hasEmail": false,
+        "classes": [
+          {
+            "classCrn": "20007",
+            "meetings": [
+              {
+                "tag": "",
+                "days": "·······",
+                "time": "",
+                "location": "Online"
+              }
+            ],
+            "availability": "7/40 15/15"
+          },
+          {
+            "classCrn": "21592",
+            "meetings": [
+              {
+                "tag": "",
+                "days": "·······",
+                "time": "",
+                "location": "Online"
+              }
+            ],
+            "availability": "38/40 15/15"
+          }
+        ]
+      }
+    },
+    "ACTG 66": {
+      "FAKOOR, FARIMA email:None": {
+        "hasEmail": false,
+        "classes": [
+          {
+            "classCrn": "20008",
+            "meetings": [
+              {
+                "tag": "",
+                "days": "·······",
+                "time": "",
+                "location": "Online"
+              }
+            ],
+            "availability": "24/40 15/15"
+          }
+        ]
+      }
+    },
+    "ACTG 67": {
+      "NOVIKOV, IRINA email:None": {
+        "hasEmail": false,
+        "classes": [
+          {
+            "classCrn": "20149",
+            "meetings": [
+              {
+                "tag": "",
+                "days": "·······",
+                "time": "",
+                "location": "Online"
+              }
+            ],
+            "availability": "0/40 13/15"
+          }
+        ]
+      },
+      "MAYER, JOE email:None": {
+        "hasEmail": false,
+        "classes": [
+          {
+            "classCrn": "20803",
+            "meetings": [
+              {
+                "tag": "",
+                "days": "·······",
+                "time": "",
+                "location": "Online"
+              }
+            ],
+            "availability": "0/40 7/15"
+          }
+        ]
+      }
+    },
+    "ACTG 68A": {
+      "VAN HULSEN, OLGA email:None": {
+        "hasEmail": false,
+        "classes": [
+          {
+            "classCrn": "20285",
+            "meetings": [
+              {
+                "tag": "",
+                "days": "·······",
+                "time": "",
+                "location": "Online"
+              }
+            ],
+            "availability": "27/40 15/15"
+          }
+        ]
+      }
+    },
+    "ACTG 70R": {
+      "STAFF, M email:None": {
+        "hasEmail": false,
+        "classes": [
+          {
+            "classCrn": "20168",
+            "meetings": [
+              {
+                "tag": "",
+                "days": "·······",
+                "time": "",
+                "location": "TBA"
+              }
+            ],
+            "availability": "0/0 0/0"
+          }
+        ]
+      }
+    },
+    "ACTG 71R": {
+      "STAFF, M email:None": {
+        "hasEmail": false,
+        "classes": [
+          {
+            "classCrn": "20259",
+            "meetings": [
+              {
+                "tag": "",
+                "days": "·······",
+                "time": "",
+                "location": "TBA"
+              }
+            ],
+            "availability": "0/0 0/0"
+          }
+        ]
+      }
+    },
+    "ACTG 72R": {
+      "STAFF, M email:None": {
+        "hasEmail": false,
+        "classes": [
+          {
+            "classCrn": "20260",
+            "meetings": [
+              {
+                "tag": "",
+                "days": "·······",
+                "time": "",
+                "location": "TBA"
+              }
+            ],
+            "availability": "0/0 0/0"
+          }
+        ]
+      }
+    },
+    "ACTG 73R": {
+      "STAFF, M email:None": {
+        "hasEmail": false,
+        "classes": [
+          {
+            "classCrn": "20261",
+            "meetings": [
+              {
+                "tag": "",
+                "days": "·······",
+                "time": "",
+                "location": "TBA"
+              }
+            ],
+            "availability": "0/0 0/0"
+          }
+        ]
+      }
+    },
+    "ACTG 75": {
+      "LUI, IRENE email:None": {
+        "hasEmail": false,
+        "classes": [
+          {
+            "classCrn": "20100",
+            "meetings": [
+              {
+                "tag": "",
+                "days": "·······",
+                "time": "",
+                "location": "Online"
+              }
+            ],
+            "availability": "11/40 15/15"
+          }
+        ]
+      }
+    },
+    "ACTG 76": {
+      "STURGESS, ANAN email:None": {
+        "hasEmail": false,
+        "classes": [
+          {
+            "classCrn": "20136",
+            "meetings": [
+              {
+                "tag": "",
+                "days": "·······",
+                "time": "",
+                "location": "Online"
+              }
+            ],
+            "availability": "4/40 15/15"
+          },
+          {
+            "classCrn": "20150",
+            "meetings": [
+              {
+                "tag": "",
+                "days": "·······",
+                "time": "",
+                "location": "Online"
+              }
+            ],
+            "availability": "40/40 15/15"
+          }
+        ]
+      },
+      "MENDIZABAL, MATTHEW email:None": {
+        "hasEmail": false,
+        "classes": [
+          {
+            "classCrn": "20286",
+            "meetings": [
+              {
+                "tag": "",
+                "days": "·······",
+                "time": "",
+                "location": "Online"
+              }
+            ],
+            "availability": "35/40 15/15"
+          },
+          {
+            "classCrn": "20557",
+            "meetings": [
+              {
+                "tag": "",
+                "days": "·······",
+                "time": "",
+                "location": "Online"
+              }
+            ],
+            "availability": "40/40 15/15"
+          }
+        ]
+      }
+    }
+  }
