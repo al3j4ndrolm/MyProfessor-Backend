@@ -124,20 +124,9 @@ def print_school_test_results(results: List[Dict[str, Any]], school_name: str, v
         school_name: Name of the school being tested
         verbose: Whether to print detailed output
     """
-    print(f"\n" + "="*80)
-    print(f"TEST RESULTS FOR {school_name.upper()}")
-    print("="*80)
-    
     total_tests = len(results)
     passed_tests = sum(1 for r in results if r["success"])
     failed_tests = total_tests - passed_tests
-    total_duration = sum(r["duration"] for r in results)
-    
-    print(f"Total test files: {total_tests}")
-    print(f"Passed: {passed_tests}")
-    print(f"Failed: {failed_tests}")
-    print(f"Total duration: {total_duration:.2f} seconds")
-    print(f"Success rate: {(passed_tests/total_tests*100):.1f}%" if total_tests > 0 else "N/A")
     
     if failed_tests > 0:
         print("\nFAILED TESTS:")
@@ -155,7 +144,14 @@ def print_school_test_results(results: List[Dict[str, Any]], school_name: str, v
             if result["success"]:
                 print(f"✅ {result['file'].name} ({result['duration']:.2f}s)")
     
-    if verbose:
+    # Print detailed output if there are errors
+    has_error = False
+    for result in results:
+        if not result["success"] or result["stderr"]:
+            has_error = True
+            break
+    
+    if has_error:
         print("\nDETAILED OUTPUT:")
         print("-" * 40)
         for result in results:
@@ -204,11 +200,7 @@ def run_school_tests(school_code: Optional[str], verbose: bool = False) -> Dict[
         print(f"🔍 Running tests for all schools")
         print(f"📋 Found {len(test_files)} test files:")
     
-    for test_file in test_files:
-        print(f"   {test_file.relative_to(project_root)}")
-    
     # Run tests
-    print(f"\n🚀 Running tests...")
     results = []
     
     for test_file in test_files:
@@ -281,12 +273,6 @@ def main():
     print(f"Total test files: {result['total_tests']}")
     print(f"Passed: {result['passed_tests']}")
     print(f"Failed: {result['failed_tests']}")
-    print(f"Success rate: {(result['passed_tests']/result['total_tests']*100):.1f}%" if result['total_tests'] > 0 else "N/A")
-    
-    if result["success"]:
-        print("🎉 All tests passed!")
-    else:
-        print("❌ Some tests failed!")
     
     return 0 if result["success"] else 1
 

@@ -60,7 +60,7 @@ def _parse_meeting(html):
     location = loc_match.group(1).strip() if loc_match else ""
 
     # 3) map two-letter day codes → single letters, build Mon–Sun string
-    days = "".join(data_parser.DAY_MAP[k] if k in days_raw else "·" for k in data_parser.DAY_MAP.keys())
+    days = data_parser.get_normalized_days(days_raw)
 
     # 4) tidy up the time string
     time = time_raw.replace(" ", "") if time_raw else ""
