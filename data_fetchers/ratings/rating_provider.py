@@ -2,19 +2,19 @@ from datetime import datetime, timedelta
 from supabase import Client
 from database import professors_db
 from database import db_keys
+from data_fetchers.ratings.rating_configs import RMP_DEFAULTS
 from helpers.data import data_keys, data_creators
 from data_fetchers.ratings.rmp import get_rmp_data
 from logger import logger
 
-def get_ratings_and_merge(supabase: Client, classes_one_department: dict, school: str, rmp_code: str, department_code: str) -> dict:
+def get_ratings_and_merge(supabase: Client, classes_one_department: dict, school: str, rmp_code: str, department_code: str, rescan_null: bool = False) -> dict:
     for course_code, classes_one_course in classes_one_department.items():
         for professor_identifier, professor_data in classes_one_course.items():
             professor_name, professor_email = data_creators.parse_professor_identifier(professor_identifier)
-            rmp_data = get_rating_data(supabase, school, department_code, professor_name, professor_email, rmp_code)
-            if rmp_data:
-                professor_data[data_keys.PROFESSOR_RMP_DATA_KEY] = rmp_data
+            rmp_data = get_rating_data(supabase, school, department_code, professor_name, professor_email, rmp_code, rescan_null)
+            professor_data[data_keys.PROFESSOR_RMP_DATA_KEY] = rmp_data
 
-def get_rating_data(supabase: Client, school: str, department: str, professor_name: str, professor_email: str, rmp_code: str) -> dict:
+def get_rating_data(supabase: Client, school: str, department: str, professor_name: str, professor_email: str, rmp_code: str, rescan_null: bool) -> dict:
     """
     Example of rmp_data:
     {
@@ -37,14 +37,19 @@ def get_rating_data(supabase: Client, school: str, department: str, professor_na
 
     logger.debug(f"Checking if professor {professor_name} in {school} {department} is in `professors` table ...")
     professor_entry = professors_db.get_one_entry(supabase, school, department, professor_name, professor_email)
-    if professor_entry and not professors_db.should_update(professor_entry):
-        logger.debug(f"Returning professor {professor_name} in `professors` table.")
-        return {
-            data_keys.PROFESSOR_RATING_KEY: professor_entry[db_keys.KEY_RMP_RATING],
-            data_keys.PROFESSOR_REVIEW_COUNT_KEY: professor_entry[db_keys.KEY_RMP_REVIEWS_COUNT],
-            data_keys.PROFESSOR_DIFFICULTY_KEY: professor_entry[db_keys.KEY_RMP_DIFFICULTY],
-            data_keys.PROFESSOR_RECOMMEND_KEY: professor_entry[db_keys.KEY_RMP_RECOMMEND]
-        }
+    if professor_entry:
+        should_search = False
+        if rescan_null:
+            should_search = professor_entry[db_keys.KEY_RMP_LINK] is None
+        should_search = should_search or professors_db.should_update(professor_entry)
+        if not should_search:
+            logger.debug(f"Returning professor {professor_name} in `professors` table.")
+            return {
+                data_keys.PROFESSOR_RATING_KEY: professor_entry[db_keys.KEY_RMP_RATING],
+                data_keys.PROFESSOR_REVIEW_COUNT_KEY: professor_entry[db_keys.KEY_RMP_REVIEWS_COUNT],
+                data_keys.PROFESSOR_DIFFICULTY_KEY: professor_entry[db_keys.KEY_RMP_DIFFICULTY],
+                data_keys.PROFESSOR_RECOMMEND_KEY: professor_entry[db_keys.KEY_RMP_RECOMMEND]
+            }
 
     logger.debug(f"Not found, searching for professor {professor_name} in RMP ...")
     
@@ -58,10 +63,10 @@ def get_rating_data(supabase: Client, school: str, department: str, professor_na
         rmp_data = {
             data_keys.PROFESSOR_LINK_KEY: None,
             data_keys.PROFESSOR_SCORE_KEY: None,
-            data_keys.PROFESSOR_RATING_KEY: -0.1,
-            data_keys.PROFESSOR_REVIEW_COUNT_KEY: 0,
-            data_keys.PROFESSOR_DIFFICULTY_KEY: 5.1,
-            data_keys.PROFESSOR_RECOMMEND_KEY: -1
+            data_keys.PROFESSOR_RATING_KEY: RMP_DEFAULTS[data_keys.PROFESSOR_RATING_KEY],
+            data_keys.PROFESSOR_REVIEW_COUNT_KEY: RMP_DEFAULTS[data_keys.PROFESSOR_REVIEW_COUNT_KEY],
+            data_keys.PROFESSOR_DIFFICULTY_KEY: RMP_DEFAULTS[data_keys.PROFESSOR_DIFFICULTY_KEY],
+            data_keys.PROFESSOR_RECOMMEND_KEY: RMP_DEFAULTS[data_keys.PROFESSOR_RECOMMEND_KEY]
         }
     
     logger.info(f"Saving professor {professor_name} in `professors` table.")

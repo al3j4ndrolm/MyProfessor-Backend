@@ -10,6 +10,7 @@ class SchoolStatus(IntEnum):
     READY = 1
     SUPPORTED = 2
     MAINTENANCE = 3
+    TESTING = 4
 
 class School(BaseModel):
     school: str
@@ -34,10 +35,7 @@ def set_status(supabase: Client, school_name: str, status: int):
     supabase.table(TABLE_NAME).update({db_keys.SCHOOL_KEY_STATUS: status})\
         .eq(db_keys.SCHOOL_KEY_SCHOOL_NAME, school_name).execute()
 
-def get_supported(supabase: Client) -> list[dict]:
-    return get(supabase, status=SchoolStatus.SUPPORTED.value)
+def get(supabase: Client, statuses: list[SchoolStatus]) -> list[dict]:
+    search_query = supabase.table(TABLE_NAME).select("*").in_(db_keys.SCHOOL_KEY_STATUS, statuses).execute()
+    return search_query.data
 
-def get(supabase: Client, status: int) -> list[dict]:
-    schools = supabase.table(TABLE_NAME).select("*").eq(db_keys.SCHOOL_KEY_STATUS, status).execute()
-    schools_data = schools.data
-    return schools_data

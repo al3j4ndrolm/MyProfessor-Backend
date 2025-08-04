@@ -2,10 +2,12 @@
 from bs4 import BeautifulSoup, Tag
 import re
 import jellyfish
+import traceback
 
 # Local Imports
 from helpers.soup_getter import html_url_to_soup
 from helpers.data import data_keys, data_creators
+from data_fetchers.ratings.rating_configs import RMP_DEFAULTS
 from logger import logger
 
 BASE_URL = "https://www.ratemyprofessors.com/search/professors/"
@@ -46,6 +48,11 @@ def get_rmp_data(professor_name: str, rmp_code: str) -> dict | None:
     professor_ratings = _get_ratings(rmp_data['professor_element'])
     if professor_ratings:
         rmp_data.update(professor_ratings)
+    else:
+        rmp_data[data_keys.PROFESSOR_RATING_KEY] = RMP_DEFAULTS[data_keys.PROFESSOR_RATING_KEY]
+        rmp_data[data_keys.PROFESSOR_REVIEW_COUNT_KEY] = RMP_DEFAULTS[data_keys.PROFESSOR_REVIEW_COUNT_KEY]
+        rmp_data[data_keys.PROFESSOR_DIFFICULTY_KEY] = RMP_DEFAULTS[data_keys.PROFESSOR_DIFFICULTY_KEY]
+        rmp_data[data_keys.PROFESSOR_RECOMMEND_KEY] = RMP_DEFAULTS[data_keys.PROFESSOR_RECOMMEND_KEY]
 
     del rmp_data['professor_element']
     del rmp_data['rmp_name']
@@ -112,64 +119,35 @@ def _get_name_similarity(target_name: str, candidate_name: str) -> float:
     """
     if target_name == candidate_name:
         return 1.0
+
+    target_words = re.split(r'[\s\-\(\)\.]+', target_name)
+    candidate_words = re.split(r'[\s\-\(\)\.]+', candidate_name)
+    if _is_covered_by(target_words, candidate_words) or _is_covered_by(candidate_words, target_words):
+        return 0.99
     
-    scores = []
-    curve = 1.0
+    score_target_to_candidate = _get_overall_score(target_words, candidate_words)
+    score_candidate_to_target = _get_overall_score(candidate_words, target_words)
+    return max(score_target_to_candidate, score_candidate_to_target)
 
-    # Check last names - if they don't match, apply heavy penalty
-    target_words = target_name.split()
-    candidate_words = candidate_name.split()
-    
-    if len(target_words) >= 2 and len(candidate_words) >= 2:
+def _is_covered_by(target_words: list[str], candidate_words: list[str]) -> bool:
+    return all(word in candidate_words for word in target_words)
 
-        target_last_name = target_words[-1]
-        candidate_last_name = candidate_words[-1]
-        scores.append(_get_lastname_score(target_last_name, candidate_last_name))
-
-        target_first_name = target_words[0]
-        candidate_first_name = candidate_words[0]
-        scores.append(_get_firstname_score(target_first_name, candidate_first_name))
-
-        curve = min(scores[0], scores[1])
-    
-    overall_score = _get_overall_score(target_name, candidate_name)
-    scores.append(overall_score)
-
-    return sum(scores)/len(scores)*curve
-
-def _get_overall_score(target_name: str, candidate_name: str) -> float:
-    # Clean names for comparison (remove parentheses and normalize)
-    target_clean = re.sub(r'\([^)]*\)', '', target_name).strip()
-    candidate_clean = re.sub(r'\([^)]*\)', '', candidate_name).strip()
-    
+def _get_overall_score(words1: list[str], words2: list[str]) -> float:
     # Use Jellyfish algorithms for name similarity
-    jellyfish_similarities = [
-        jellyfish.jaro_winkler_similarity(target_name, candidate_name),
-        jellyfish.jaro_winkler_similarity(target_name, candidate_clean),
-        jellyfish.jaro_winkler_similarity(target_clean, candidate_name),
-        jellyfish.jaro_winkler_similarity(target_clean, candidate_clean),
-    ]
-    
-    return max(jellyfish_similarities)*0.6 + sum(jellyfish_similarities)/len(jellyfish_similarities)*0.4
+    scores = []
+    for word1 in words1:
+        word1_scores = [_get_score(word1, word2) for word2 in words2]
+        word1_score = max(word1_scores)
+        scores.append(word1_score)
+    return min(scores)
 
-def _get_lastname_score(target_last_name: str, candidate_last_name: str) -> float:
-    if target_last_name == candidate_last_name:
+def _get_score(word1: str, word2: str) -> float:
+    if word1 == word2:
         return 1.0
-    elif target_last_name.startswith(candidate_last_name) or candidate_last_name.startswith(target_last_name):
-        if len(target_last_name) == 1 or len(candidate_last_name) == 1:
-            return 0.9
-        else:
-            return 0.5
-    else:
-        return 0.0
-
-def _get_firstname_score(target_first_name: str, candidate_first_name: str) -> float:
-    if target_first_name == candidate_first_name:
-        return 1.0
-    elif target_first_name.startswith(candidate_first_name) or candidate_first_name.startswith(target_first_name):
+    elif word1.startswith(word2) or word2.startswith(word1):
         return 0.9
     else:
-        score = jellyfish.jaro_winkler_similarity(target_first_name, candidate_first_name)
+        score = jellyfish.jaro_winkler_similarity(word1, word2)
         return score * score
 
 def _get_ratings(professor_element: Tag) -> dict:
@@ -197,7 +175,7 @@ def _get_ratings(professor_element: Tag) -> dict:
             data_keys.PROFESSOR_DIFFICULTY_KEY: difficulty,
             data_keys.PROFESSOR_RECOMMEND_KEY: recommend.replace('%', '')}
     except Exception as e:
-        logger.error(f"Error getting professor ratings: {e}")
+        logger.error(f"Error getting professor ratings for {_get_professor_name(professor_element)}: {traceback.format_exc()}")
         return None
 
 def _search_soup(professor_name: str, rmp_code: str) -> BeautifulSoup:
@@ -213,5 +191,34 @@ def _get_link(professor_element: Tag) -> str:
 def _get_professor_department(professor_element: Tag) -> str:
     return professor_element.find('div', class_=re.compile(r'^CardSchool__Department')).text
 
-if __name__ == "__main__":
-    get_rmp_data(["Andrew Yu", "Jian Andrew Yu", "Jian Yu"], "1967")
+"""
+<a class="TeacherCard__StyledTeacherCard-syjs0d-0 eerjaA" href="/professor/2814263">
+    <div class="TeacherCard__InfoRatingWrapper-syjs0d-3 kAxNBg">
+        <div class="TeacherCard__NumRatingWrapper-syjs0d-2 bvYZTI">
+            <div class="CardNumRating__StyledCardNumRating-sc-17t4b9u-0 cSNjdE">
+                <div class="CardNumRating__CardNumRatingHeader-sc-17t4b9u-1 lhHpkk">QUALITY</div>
+                <div class="CardNumRating__CardNumRatingNumber-sc-17t4b9u-2 ERCLc">4.2</div>
+                <div class="CardNumRating__CardNumRatingCount-sc-17t4b9u-3 ckSFVh">42 ratings</div>
+            </div>
+        </div>
+        <div class="TeacherCard__CardInfo-syjs0d-1 cwMOi">
+            <div class="CardName__StyledCardName-sc-1gyrgim-0 gGdQEj">Andrew Oliphant</div>
+            <div class="CardSchool__StyledCardSchool-sc-19lmz2k-2 irrVnX">
+                <div class="CardSchool__Department-sc-19lmz2k-0 hRJPlj">Geography</div>
+                <div class="CardSchool__School-sc-19lmz2k-1 bjvHvb">San Francisco State University</div>
+            </div>
+            <div class="CardFeedback__StyledCardFeedback-lq6nix-0 cLXvfC">
+                <div class="CardFeedback__CardFeedbackItem-lq6nix-1 bqWpYz">
+                    <div class="CardFeedback__CardFeedbackNumber-lq6nix-2 iHkSBk">100%</div>
+                        would take again
+                </div>
+                <div class="VerticalSeparator-sc-1l9ngcr-0 kXhgKB"></div> 
+                <div class="CardFeedback__CardFeedbackItem-lq6nix-1 bqWpYz">
+                    <div class="CardFeedback__CardFeedbackNumber-lq6nix-2 iHkSBk">2.6</div>
+                        level of difficulty
+                </div>
+            </div>
+        </div>
+    </div>
+</a>
+"""

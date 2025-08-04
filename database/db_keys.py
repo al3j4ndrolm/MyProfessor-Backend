@@ -4,11 +4,13 @@ SCHOOL_KEY_RMP_CODE = "rmp_code"
 SCHOOL_KEY_TERMS = "terms"
 SCHOOL_KEY_STATUS = "status"
 SCHOOL_KEY_NOTIFICATION = "notification"
+SCHOOL_KEY_COURSES_UPDATED_AT = "courses_updated_at"
 
 # table `broadcasts`
 BROADCAST_KEY_ID = "id"
 BROADCAST_KEY_TEXT = "text"
 BROADCAST_KEY_MIN_VERSION = "min_version"
+BROADCAST_KEY_ACTIVE = "is_active"
 
 # table `professors`
 KEY_PROFESSOR_NAME = "professor_name"

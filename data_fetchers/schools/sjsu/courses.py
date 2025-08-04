@@ -1,14 +1,13 @@
 # Standard library imports
-import logging
 from bs4 import BeautifulSoup
 
-logger = logging.getLogger(__name__)
+from logger import logger
 
-def update_courses_data_table(soup: BeautifulSoup, courses_data_table: dict) -> None:
+def update_courses_data_table(department_soup: BeautifulSoup, courses_data_table: dict) -> None:
     try:
         logger.debug(f"Extracting courses for San Jose State University ...")
 
-        courses_fieldset = soup.find("table", id="classSchedule")
+        courses_fieldset = department_soup.find("table", id="classSchedule")
         if courses_fieldset is None:
             raise ValueError("Courses holder not found in soup for San Jose State University")
         courses_options = courses_fieldset.find_all("tr")[1:]
@@ -22,7 +21,5 @@ def update_courses_data_table(soup: BeautifulSoup, courses_data_table: dict) -> 
             if department_code not in courses_data_table:
                 courses_data_table[department_code] = set()
             courses_data_table[department_code].add(course_name + " - " + course_title)
-
-        logger.info(f"Extracted courses for {len(courses_data_table)} departments for San Jose State University")
     except Exception as e:
         logger.error(f"Error getting courses for San Jose State University: {e}")
