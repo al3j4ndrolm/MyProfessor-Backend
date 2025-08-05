@@ -1,6 +1,6 @@
 RMP_DEFAULTS = {
-    "rating": 5.1,
+    "rating": -0.1,
     "reviewCount": 0,
-    "difficulty": -0.1,
+    "difficulty": 5.1,
     "recommend": -1
 }
