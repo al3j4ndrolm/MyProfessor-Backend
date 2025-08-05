@@ -1,3 +1,4 @@
+import re
 from bs4 import BeautifulSoup
 
 from logger import logger
@@ -36,16 +37,24 @@ def get_department_data_table(soup: BeautifulSoup) -> dict:
         return {}
 
 def find_department_elements(soup: BeautifulSoup) -> list:
-    # TODO: Implement based on your school's HTML structure
+    department_elements = soup.find('select', attrs={'id': re.compile(r'^edit-field-subject-target-id--2')})
+
+    if department_elements is None:
+        logger.warning("No department elements found in the HTML structure of CCSF")
+        return []
     
-    return []
+    return department_elements.find_all('option')
 
 def get_department_code(element) -> str:
-    # TODO: Implement based on your school's structure
-    
-    return ""
+    text = element.text.strip()
+    match = re.search(r'\((.*?)\)', text)
+    if match:
+        return match.group(1)
+    return text  # Fallback to full text if no parentheses found
 
 def get_department_name(element) -> str:
-    # TODO: Implement based on your school's structure
-    
-    return "" 
+    text = element.text.strip()
+    match = re.search(r'^(.*?)\s*\(', text)
+    if match:
+        return match.group(1).strip()
+    return text  # Fallback to full text if no parentheses found
