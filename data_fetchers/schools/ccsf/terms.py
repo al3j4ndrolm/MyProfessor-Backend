@@ -1,4 +1,5 @@
 # Standard library imports
+import re
 from bs4 import BeautifulSoup
 
 # Local imports
@@ -40,16 +41,17 @@ def get_terms(soup: BeautifulSoup) -> list[dict]:
         return []
 
 def get_terms_elements(soup: BeautifulSoup) -> list:
-    # TODO: Implement based on your school's HTML structure
+    terms_holder = soup.find('select', attrs={'name': re.compile(r'^field_term_target_id')})
 
-    return []
+    if terms_holder is None:
+        logger.warning("No terms found in the HTML structure of CCSF")
+        return []
+
+    return terms_holder.find_all('option')[1:]
 
 def get_term_code(term_element) -> str:
-    # TODO: Implement based on your school's structure
-    
-    return ""
+    return term_element.get('value')
 
 def get_term_name(term_element) -> str:
-    # TODO: Implement based on your school's structure
-    
-    return ""
+    return term_element.text.strip()
+
