@@ -54,3 +54,4 @@ def get_term_code(term_element) -> str:
 
 def get_term_name(term_element) -> str:
     return term_element.text.strip()
+
