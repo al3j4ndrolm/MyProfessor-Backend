@@ -1,18 +1,17 @@
-import sys
-import os
+# Standard library imports
 import time
 from supabase import Client
-sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
 
+# Local Imports
+from helpers.soup_getter import html_url_to_soup
 from helpers.data import data_keys
 from data_fetchers.ratings.rating_provider import get_ratings_and_merge
-from data_fetchers.schools.foothill.terms import get_terms
-from data_fetchers.schools.foothill.departments import get_department_data_table
-from data_fetchers.schools.foothill.courses import update_courses_data_table
-from data_fetchers.schools.foothill.schedules import get_classes_per_department
-from data_fetchers.schools.foothill.school_config import SCHEDULES_BASE_URL, TERMS_BASE_URL, SCHOOL_NAME, RMP_CODE
-from helpers.soup_getter import html_url_to_soup
-from database import schools_db, courses_db, classes_db
+from data_fetchers.schools.template.terms import get_terms
+from data_fetchers.schools.template.courses import get_courses_per_department
+from data_fetchers.schools.template.schedules import get_classes_per_department
+from data_fetchers.schools.template.departments import get_department_data_table
+from data_fetchers.schools.template.school_config import TERMS_BASE_URL, SCHEDULES_BASE_URL, SCHOOL_NAME, RMP_CODE
+from database import courses_db, schools_db, classes_db
 from database.schools_db import SchoolStatus
 from logger import logger
 
@@ -50,23 +49,29 @@ def get_courses_and_classes(department_data_table: dict, term_codes: list) -> tu
     """
     courses_data_table = {}
     classes_data_table = {term_code: {} for term_code in term_codes}
-    for department_code, department_full_name in department_data_table.items():
 
+    for department_code, department_full_name in department_data_table.items():
         courses = set()
         for term_code in term_codes:
-            department_url = f"{SCHEDULES_BASE_URL}?dept={department_code}%7C{department_full_name}&Quarter={term_code}"
+
+            department_url = _get_department_url(department_code, term_code)
             department_soup = html_url_to_soup(department_url)
 
             logger.debug(f"Getting classes for {department_code} in {term_code} ...")
-            classes_per_department = get_classes_per_department(department_soup)
+            classes_per_department = get_classes_per_department(department_soup, department_code)
             classes_data_table[term_code][department_code] = classes_per_department
 
             logger.debug(f"Extracting courses for {department_code} in {term_code} ...")
-            update_courses_data_table(department_soup, courses)
+            courses_per_term = get_courses_per_department(department_code, department_soup)
+            courses.update(courses_per_term)
 
-            time.sleep(3)
+            time.sleep(1)
 
         logger.info(f"Overall found {len(courses)} courses for {department_code}.")
         courses_data_table[department_code] = courses
 
     return courses_data_table, classes_data_table
+
+def _get_department_url(department_code: str, term_code: str) -> str:
+    # TODO: Modify this based on your school's url structure
+    return f"{SCHEDULES_BASE_URL}dept={department_code}&t={term_code}"
