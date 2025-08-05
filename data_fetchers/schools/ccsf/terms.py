@@ -41,7 +41,7 @@ def get_terms(soup: BeautifulSoup) -> list[dict]:
         return []
 
 def get_terms_elements(soup: BeautifulSoup) -> list:
-    terms_holder = soup.find('select', attrs={'name': re.compile(r'^field_term_target_id')})
+    terms_holder = soup.find('select', attrs={'name': re.compile(r'^field_term_target_id')})    
 
     if terms_holder is None:
         logger.warning("No terms found in the HTML structure of CCSF")
