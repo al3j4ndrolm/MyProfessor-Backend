@@ -7,7 +7,7 @@ from helpers.soup_getter import html_url_to_soup
 from helpers.data import data_keys
 from data_fetchers.ratings.rating_provider import get_ratings_and_merge
 from data_fetchers.schools.template.terms import get_terms
-from data_fetchers.schools.template.courses import get_courses_per_department
+from data_fetchers.schools.template.courses import update_courses_data_table
 from data_fetchers.schools.template.schedules import get_classes_per_department
 from data_fetchers.schools.template.departments import get_department_data_table
 from data_fetchers.schools.template.school_config import TERMS_BASE_URL, SCHEDULES_BASE_URL, SCHOOL_NAME, RMP_CODE
@@ -62,7 +62,7 @@ def get_courses_and_classes(department_data_table: dict, term_codes: list) -> tu
             classes_data_table[term_code][department_code] = classes_per_department
 
             logger.debug(f"Extracting courses for {department_code} in {term_code} ...")
-            courses_per_term = get_courses_per_department(department_code, department_soup)
+            courses_per_term = update_courses_data_table(department_code, department_soup)
             courses.update(courses_per_term)
 
             time.sleep(1)

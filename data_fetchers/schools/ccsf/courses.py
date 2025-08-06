@@ -1,13 +1,14 @@
 # Standard library imports
+import re
 import traceback
 
 # Third Party Imports
 from bs4 import BeautifulSoup, Tag
 
 from logger import logger
-from school_config import SCHOOL_NAME
+from data_fetchers.schools.ccsf.school_config import SCHOOL_NAME
 
-def get_courses_per_department(department_soup: BeautifulSoup, courses_data_table: dict, department_code: str) -> None:
+def update_courses_data_table(department_soup: BeautifulSoup, courses_data_table: dict, department_code: str) -> None:
     """
     Update the courses data table for a department.
     """
@@ -19,23 +20,20 @@ def get_courses_per_department(department_soup: BeautifulSoup, courses_data_tabl
         return
 
     for course_element in courses_elements:
-        course_code = get_course_code(course_element)
-        course_name = get_course_name(course_element)
+        course_data = course_element.find_all('td')
+        course_code = f"{course_data[2].text.strip()} {course_data[3].text.strip()}"
+        course_name = course_data[5].text.strip()
         course_full_name = f"{course_code} - {course_name}"
         
-        courses_data_table[department_code].add(course_full_name)
+        if department_code in course_code:
+            courses_data_table[department_code].add(course_full_name)
 
 def get_courses_elements(department_soup: BeautifulSoup) -> list[Tag]:
-    # TODO: Implement based on your school's structure
-    
-    return []
 
-def get_course_code(course_element: Tag) -> str:
-    # TODO: Implement based on your school's structure
-    
-    return ""
+    courses_table = department_soup.find('table', attrs={'class': re.compile(r'^cols-18')})
 
-def get_course_name(course_element: Tag) -> str:
-    # TODO: Implement based on your school's structure
+    if courses_table is None:
+        logger.warning("No courses table found in the HTML structure of CCSF")
+        return []
     
-    return "" 
+    return courses_table.find_all('tr', attrs={'class': re.compile(r'^course-data')})

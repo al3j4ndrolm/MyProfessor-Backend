@@ -7,7 +7,7 @@ from bs4 import BeautifulSoup, Tag
 from logger import logger
 from school_config import SCHOOL_NAME
 
-def get_courses_per_department(department_soup: BeautifulSoup, courses_data_table: dict, department_code: str) -> None:
+def update_courses_data_table(department_soup: BeautifulSoup, courses_data_table: dict, department_code: str) -> None:
     """
     Update the courses data table for a department.
     """
