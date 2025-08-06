@@ -21,9 +21,8 @@ class TestCCSFCourses(BaseSchoolTest):
         soup = self.load_test_html_data("courses_test_sample.html")
         
         def run_test():
-            courses_data_table = {"CS": set()}  # Initialize with CS department
-            courses.get_courses_per_department(soup, courses_data_table, "CS")
-            return sorted(list(courses_data_table["CS"]))
+            result = courses.get_courses_per_department(soup, "")  # Empty string to get all courses
+            return sorted(list(result))
         
         # Run test with automatic result saving and data loading
         result = self.run_test_with_result_saving(run_test)

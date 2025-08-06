@@ -8,16 +8,16 @@ from bs4 import BeautifulSoup, Tag
 from logger import logger
 from data_fetchers.schools.ccsf.school_config import SCHOOL_NAME
 
-def get_courses_per_department(department_soup: BeautifulSoup, courses_data_table: dict, department_code: str) -> None:
+def get_courses_per_department(department_soup: BeautifulSoup, department_code: str) -> set:
     """
     Update the courses data table for a department.
     """
     try:
         courses_elements = get_courses_elements(department_soup)
-        
+        courses_set = set()
     except Exception as e:
         logger.error(f"Error getting courses for {SCHOOL_NAME} {department_code}: {traceback.format_exc()}")
-        return
+        return set()
 
     for course_element in courses_elements:
         course_data = course_element.find_all('td')
@@ -25,7 +25,10 @@ def get_courses_per_department(department_soup: BeautifulSoup, courses_data_tabl
         course_name = course_data[5].text.strip()
         course_full_name = f"{course_code} - {course_name}"
         
-        courses_data_table[department_code].add(course_full_name)
+        if department_code in course_full_name:
+            courses_set.add(course_full_name)
+    
+    return courses_set
 
 def get_courses_elements(department_soup: BeautifulSoup) -> list[Tag]:
 
