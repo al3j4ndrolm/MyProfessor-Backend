@@ -21,9 +21,9 @@ class TestCCSFCourses(BaseSchoolTest):
         soup = self.load_test_html_data("courses_test_sample.html")
         
         def run_test():
-            courses_data_table = {"": set()}  # Initialize with empty department to get all courses
-            courses.update_courses_data_table(soup, courses_data_table, "")
-            return sorted(list(courses_data_table[""]))
+            courses_data_table = {"ADMJ": set()}  # Initialize with ADMJ department
+            courses.update_courses_data_table(soup, courses_data_table, "ADMJ")
+            return sorted(list(courses_data_table["ADMJ"]))
         
         # Run test with automatic result saving and data loading
         result = self.run_test_with_result_saving(run_test)
