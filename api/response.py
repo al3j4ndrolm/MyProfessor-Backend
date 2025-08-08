@@ -62,6 +62,7 @@ def _create_broadcast(entry: dict) -> dict:
         configs.BROADCAST_ID: entry[db_keys.BROADCAST_KEY_ID],
         configs.BROADCAST_TEXT: entry[db_keys.BROADCAST_KEY_TEXT],
         configs.BROADCAST_MIN_VERSION: entry[db_keys.BROADCAST_KEY_MIN_VERSION],
+        configs.BROADCAST_NEED_UPDATE: entry[db_keys.BROADCAST_KEY_MIN_VERSION] is not None,
     }
 
 def _create_broadcast_old(entry: dict) -> dict:
