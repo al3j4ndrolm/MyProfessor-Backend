@@ -5,6 +5,7 @@ from database import db_keys
 from data_fetchers.ratings.rating_configs import RMP_DEFAULTS
 from helpers.data import data_keys, data_creators
 from data_fetchers.ratings.rmp import get_rmp_data
+from data_fetchers.ai_summary.ai_summary import generate_ai_summary
 from logger import logger
 
 def get_ratings_and_merge(supabase: Client, classes_one_department: dict, school: str, rmp_code: str, department_code: str, rescan_null: bool = False) -> dict:
@@ -42,13 +43,60 @@ def get_rating_data(supabase: Client, school: str, department: str, professor_na
         if rescan_null:
             should_search = professor_entry[db_keys.KEY_RMP_LINK] is None
         should_search = should_search or professors_db.should_update(professor_entry)
-        if not should_search:
+        
+        # Check if we need to generate AI summary for existing professor
+        needs_ai_summary = professor_entry.get(db_keys.KEY_AI_SUMMARY) is None and professor_entry.get(db_keys.KEY_RMP_LINK) is not None
+        
+        if not should_search and not needs_ai_summary:
             logger.debug(f"Returning professor {professor_name} in `professors` table.")
             return {
                 data_keys.PROFESSOR_RATING_KEY: professor_entry[db_keys.KEY_RMP_RATING],
                 data_keys.PROFESSOR_REVIEW_COUNT_KEY: professor_entry[db_keys.KEY_RMP_REVIEWS_COUNT],
                 data_keys.PROFESSOR_DIFFICULTY_KEY: professor_entry[db_keys.KEY_RMP_DIFFICULTY],
-                data_keys.PROFESSOR_RECOMMEND_KEY: professor_entry[db_keys.KEY_RMP_RECOMMEND]
+                data_keys.PROFESSOR_RECOMMEND_KEY: professor_entry[db_keys.KEY_RMP_RECOMMEND],
+                db_keys.KEY_AI_SUMMARY: professor_entry.get(db_keys.KEY_AI_SUMMARY)
+            }
+        
+        # If we need to generate AI summary, continue to the RMP search section
+        if needs_ai_summary:
+            logger.info(f"Professor {professor_name} exists but needs AI summary. Fetching RMP data...")
+            rmp_data = get_rmp_data(professor_name, rmp_code) if not is_staff(professor_name) else None
+            if rmp_data and rmp_data.get(data_keys.PROFESSOR_LINK_KEY):
+                # Generate AI summary for existing professor
+                try:
+                    logger.info(f"Generating AI summary for existing professor {professor_name}...")
+                    ai_summary = generate_ai_summary(
+                        professor_name=professor_name,
+                        school=school,
+                        professor_email=professor_email,
+                        rmp_link=rmp_data.get(data_keys.PROFESSOR_LINK_KEY)
+                    )
+                    if ai_summary:
+                        # Update the existing professor record with AI summary
+                        supabase.table("professors").update({db_keys.KEY_AI_SUMMARY: ai_summary})\
+                            .eq("email", professor_email)\
+                            .eq("professor_name", professor_name)\
+                            .eq("school", school)\
+                            .eq("department", department)\
+                            .execute()
+                        logger.info(f"Successfully updated AI summary for existing professor {professor_name}")
+                        return {
+                            data_keys.PROFESSOR_RATING_KEY: professor_entry[db_keys.KEY_RMP_RATING],
+                            data_keys.PROFESSOR_REVIEW_COUNT_KEY: professor_entry[db_keys.KEY_RMP_REVIEWS_COUNT],
+                            data_keys.PROFESSOR_DIFFICULTY_KEY: professor_entry[db_keys.KEY_RMP_DIFFICULTY],
+                            data_keys.PROFESSOR_RECOMMEND_KEY: professor_entry[db_keys.KEY_RMP_RECOMMEND],
+                            db_keys.KEY_AI_SUMMARY: ai_summary
+                        }
+                except Exception as e:
+                    logger.error(f"Error generating AI summary for existing professor {professor_name}: {e}")
+            
+            # If AI summary generation failed, return existing data
+            return {
+                data_keys.PROFESSOR_RATING_KEY: professor_entry[db_keys.KEY_RMP_RATING],
+                data_keys.PROFESSOR_REVIEW_COUNT_KEY: professor_entry[db_keys.KEY_RMP_REVIEWS_COUNT],
+                data_keys.PROFESSOR_DIFFICULTY_KEY: professor_entry[db_keys.KEY_RMP_DIFFICULTY],
+                data_keys.PROFESSOR_RECOMMEND_KEY: professor_entry[db_keys.KEY_RMP_RECOMMEND],
+                db_keys.KEY_AI_SUMMARY: professor_entry.get(db_keys.KEY_AI_SUMMARY)
             }
 
     logger.debug(f"Not found, searching for professor {professor_name} in RMP ...")
@@ -68,6 +116,24 @@ def get_rating_data(supabase: Client, school: str, department: str, professor_na
             data_keys.PROFESSOR_DIFFICULTY_KEY: RMP_DEFAULTS[data_keys.PROFESSOR_DIFFICULTY_KEY],
             data_keys.PROFESSOR_RECOMMEND_KEY: RMP_DEFAULTS[data_keys.PROFESSOR_RECOMMEND_KEY]
         }
+    
+    # Generate AI summary if we have valid RMP data and professor email
+    if rmp_data and rmp_data.get(data_keys.PROFESSOR_LINK_KEY) and professor_email:
+        try:
+            logger.info(f"Generating AI summary for {professor_name}...")
+            ai_summary = generate_ai_summary(
+                professor_name=professor_name,
+                school=school,
+                professor_email=professor_email,
+                rmp_link=rmp_data.get(data_keys.PROFESSOR_LINK_KEY)
+            )
+            if ai_summary:
+                rmp_data[db_keys.KEY_AI_SUMMARY] = ai_summary
+                logger.info(f"Successfully generated AI summary for {professor_name}")
+            else:
+                logger.warning(f"Failed to generate AI summary for {professor_name}")
+        except Exception as e:
+            logger.error(f"Error generating AI summary for {professor_name}: {e}")
     
     logger.info(f"Saving professor {professor_name} in `professors` table.")
     professors_db.save_one_entry(supabase, school, department, professor_name, professor_email, rmp_data)
