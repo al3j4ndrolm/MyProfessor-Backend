@@ -16,6 +16,7 @@ PROFESSOR_RECOMMEND_KEY = "recommend"
 PROFESSOR_REVIEW_COUNT_KEY = "reviewCount"
 PROFESSOR_SCORE_KEY = "score"
 PROFESSOR_LINK_KEY = "link"
+PROFESSOR_AI_SUMMARY_KEY = "ai_summary"
 
 # Classes configs
 CLASS_CRN_KEY = "classCrn"

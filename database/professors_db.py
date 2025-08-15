@@ -43,7 +43,7 @@ def save_one_entry(supabase: Client, school: str, department: str, professor_nam
             rmp_reviews_count = rmp_data[data_keys.PROFESSOR_REVIEW_COUNT_KEY],
             rmp_score = rmp_data[data_keys.PROFESSOR_SCORE_KEY],
             rmp_link = rmp_data[data_keys.PROFESSOR_LINK_KEY],
-            ai_summary = rmp_data.get(db_keys.KEY_AI_SUMMARY)
+            ai_summary = rmp_data.get(data_keys.PROFESSOR_AI_SUMMARY_KEY)
         )
         supabase.table(TABLE_NAME).update(professor.model_dump())\
             .eq(db_keys.KEY_PROFESSOR_NAME, professor_name)\
@@ -65,7 +65,7 @@ def _add_one_entry(supabase: Client, school: str, department: str, professor_nam
         rmp_reviews_count = rmp_data[data_keys.PROFESSOR_REVIEW_COUNT_KEY],
         rmp_score = rmp_data[data_keys.PROFESSOR_SCORE_KEY],
         rmp_link = rmp_data[data_keys.PROFESSOR_LINK_KEY],
-        ai_summary = rmp_data.get(db_keys.KEY_AI_SUMMARY)
+        ai_summary = rmp_data.get(data_keys.PROFESSOR_AI_SUMMARY_KEY)
     )
     supabase.table(TABLE_NAME).insert(professor.model_dump()).execute()
 

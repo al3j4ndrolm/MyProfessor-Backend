@@ -8,7 +8,7 @@ import sys
 from pathlib import Path
 
 # Add the project root to Python path
-project_root = Path(__file__).parent
+project_root = Path(__file__).parent.parent.parent.parent
 sys.path.insert(0, str(project_root))
 
 from dotenv import load_dotenv
@@ -36,15 +36,15 @@ def test_ai_summary_integration():
     
     # Test parameters
     school = "De Anza College"  # Example school
-    department = "MATH"  # Example department
-    professor_name = "Vinh Nguyen"  # Example professor
-    professor_email = "nguyenvinh@deanza.edu"  # Example email
+    department = "SPAN"  # Example department
+    professor_name = "Viviana Alcazar"  # Test with existing professor
+    professor_email = "alcazarviviana@deanza.edu"  # Test with existing email
     rmp_code = "1967"  # Example RMP code
     
     try:
         logger.info(f"Testing AI summary integration for {professor_name}...")
         
-        # Call get_rating_data function
+        # Call get_rating_data function with rescan_null=True to force AI summary generation
         result = get_rating_data(
             supabase=supabase,
             school=school,
@@ -52,7 +52,7 @@ def test_ai_summary_integration():
             professor_name=professor_name,
             professor_email=professor_email,
             rmp_code=rmp_code,
-            rescan_null=False
+            rescan_null=True
         )
         
         logger.info(f"Result: {result}")
