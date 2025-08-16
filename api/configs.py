@@ -8,6 +8,7 @@ SCHOOL_NOTIFICATION = "notification"
 SCHOOL_STATUS = "status"
 SCHOOL_UPDATED_AT = "updatedAt"
 SCHOOL_COURSES_UPDATED_AT = "coursesUpdatedAt"
+SCHOOL_FEATURES = "features"
 
 BROADCAST_ID = "broadcastId"
 BROADCAST_TEXT = "text"

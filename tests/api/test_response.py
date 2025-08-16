@@ -27,14 +27,16 @@ class TestResponse:
                 db_keys.SCHOOL_KEY_TERMS: [{"termName": "Fall 2025", "termCode": "2025F"}],
                 db_keys.SCHOOL_KEY_NOTIFICATION: "Test notification",
                 db_keys.KEY_UPDATED_AT: "2025-01-01T00:00:00Z",
-                db_keys.SCHOOL_KEY_COURSES_UPDATED_AT: "2025-01-01T00:00:00Z"
+                db_keys.SCHOOL_KEY_COURSES_UPDATED_AT: "2025-01-01T00:00:00Z",
+                db_keys.SCHOOL_KEY_FEATURES: {"feature1": True, "feature2": False}
             },
             {
                 db_keys.SCHOOL_KEY_SCHOOL_NAME: "Test School 2",
                 db_keys.SCHOOL_KEY_TERMS: [{"termName": "Spring 2025", "termCode": "2025S"}],
                 db_keys.SCHOOL_KEY_NOTIFICATION: "",
                 db_keys.KEY_UPDATED_AT: "2025-01-02T00:00:00Z",
-                db_keys.SCHOOL_KEY_COURSES_UPDATED_AT: "2025-01-01T00:00:00Z"
+                db_keys.SCHOOL_KEY_COURSES_UPDATED_AT: "2025-01-01T00:00:00Z",
+                db_keys.SCHOOL_KEY_FEATURES: {"feature1": False, "feature2": False}
             }
         ]
         
@@ -90,7 +92,8 @@ class TestResponse:
                 db_keys.SCHOOL_KEY_TERMS: [{"termName": "Fall 2025", "termCode": "2025F"}],
                 db_keys.SCHOOL_KEY_NOTIFICATION: "",
                 db_keys.KEY_UPDATED_AT: "2025-01-01T00:00:00Z",
-                db_keys.SCHOOL_KEY_COURSES_UPDATED_AT: "2025-01-01T00:00:00Z"
+                db_keys.SCHOOL_KEY_COURSES_UPDATED_AT: "2025-01-01T00:00:00Z",
+                db_keys.SCHOOL_KEY_FEATURES: {"feature1": False, "feature2": False}
             }
         ]
         
@@ -177,7 +180,8 @@ class TestResponse:
                 db_keys.SCHOOL_KEY_NOTIFICATION: "Test notification",
                 db_keys.SCHOOL_KEY_RMP_CODE: "test_rmp",
                 db_keys.KEY_UPDATED_AT: "2025-01-01T00:00:00Z",
-                db_keys.SCHOOL_KEY_COURSES_UPDATED_AT: "2025-01-01T00:00:00Z"
+                db_keys.SCHOOL_KEY_COURSES_UPDATED_AT: "2025-01-01T00:00:00Z",
+                db_keys.SCHOOL_KEY_FEATURES: {"feature1": True, "feature2": False}
             }
         ]
         
@@ -236,7 +240,8 @@ class TestResponse:
                 db_keys.SCHOOL_KEY_TERMS: [{"termName": "Fall 2025", "termCode": "2025F"}],
                 db_keys.SCHOOL_KEY_NOTIFICATION: "Test notification",
                 db_keys.KEY_UPDATED_AT: "2025-01-01T00:00:00Z",
-                db_keys.SCHOOL_KEY_COURSES_UPDATED_AT: "2025-01-01T00:00:00Z"
+                db_keys.SCHOOL_KEY_COURSES_UPDATED_AT: "2025-01-01T00:00:00Z",
+                db_keys.SCHOOL_KEY_FEATURES: {"feature1": True, "feature2": False}
             }
         ]
         
