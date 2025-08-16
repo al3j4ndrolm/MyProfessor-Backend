@@ -310,19 +310,17 @@ class TestRMPGetBestMatchData:
         assert result is None
     
     def test_match_case_17(self):
-        """Test single professor with exact match"""
+        """Test unmatched name"""
 
         professor_elements = [
-            _create_element("Jennifer Martinez"),
+            _create_element("Jill Bronfman"),
         ]
         
         # Call the function
-        result = _get_best_match_data(professor_elements, "Jennifer Martinez")
+        result = _get_best_match_data(professor_elements, "Jill YochimTo")
         
         # Verify result
-        assert result is not None
-        assert result["rmp_name"] == "Jennifer Martinez"
-        assert result["professor_element"] == professor_elements[0]
+        assert result is None
     
     def test_match_case_18(self):
         """Test multiple similar names - should pick the best match"""
@@ -358,6 +356,21 @@ class TestRMPGetBestMatchData:
         assert result is not None
         assert result["rmp_name"] == "David Chen"
         assert result["professor_element"] == professor_elements[1]
+
+    def test_match_case_19(self):
+        """Test that the best match is picked"""
+
+        professor_elements = [
+            _create_element("Zachary Judson"),
+        ]
+        
+        # Call the function
+        result = _get_best_match_data(professor_elements, "Zack Judson")
+        
+        # Verify result
+        assert result is not None
+        assert result["rmp_name"] == "Zachary Judson"
+        assert result["professor_element"] == professor_elements[0]
 
 def _create_element(professor_name: str) -> Tag:
     html = f"""
