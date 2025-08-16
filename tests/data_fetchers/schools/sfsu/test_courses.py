@@ -23,7 +23,7 @@ class TestSFSUCourses(BaseSchoolTest):
         courses_set = set()
         
         def run_test():
-            result = courses.update_courses_set_per_term(session_data, courses_set)
+            result = courses.update_courses_set_per_term(session_data, courses_set, "PHYS")
             return sorted(list(result))
         
         # Run test with automatic result saving and data loading
