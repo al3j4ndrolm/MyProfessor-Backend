@@ -20,7 +20,7 @@ from data_fetchers.ratings.rating_provider import get_ratings_and_merge
 from logger import logger
 
 def main(supabase: Client):
-    schools = schools_db.get(supabase, status=SchoolStatus.SUPPORTED.value)
+    schools = schools_db.get(supabase, statuses=[SchoolStatus.SUPPORTED.value, SchoolStatus.FETCHING.value])
     
     for school_entry in schools:
         logger.info(f"Updating data fixing for {school_entry[db_keys.SCHOOL_KEY_SCHOOL_NAME]}")

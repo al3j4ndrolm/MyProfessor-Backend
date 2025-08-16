@@ -97,7 +97,7 @@ def process_rmp_data(rmp_data: dict) -> dict:
     review_count = _safe_int(rmp_data[data_keys.PROFESSOR_REVIEW_COUNT_KEY])
     if review_count == 0:
         rmp_data[data_keys.PROFESSOR_RATING_KEY] = -0.1
-        rmp_data[data_keys.PROFESSOR_REVIEW_COUNT_KEY] = -1
+        rmp_data[data_keys.PROFESSOR_RECOMMEND_KEY] = -1
         rmp_data[data_keys.PROFESSOR_DIFFICULTY_KEY] = 5.1
     
     return {
