@@ -13,6 +13,61 @@ def create_term_data(term_name: str, term_code: str) -> dict:
         data_keys.TERM_CODE_KEY: term_code,
     }
 
+def process_term_data_list(term_data_list: list[dict]) -> list[dict]:
+    """
+    Sort terms by:
+    1. If termCode can be cast to int, sort by that descending
+    2. Otherwise, sort by termName: year descending, then season (Fall > Summer > Spring > Winter)
+    
+    Example of return value:
+    """
+    def get_sort_key(term_data):
+        term_code = term_data[data_keys.TERM_CODE_KEY]
+        term_name = term_data[data_keys.TERM_NAME_KEY]
+        
+        try:
+            code_int = int(term_code)
+            return (0, -code_int)
+        except (ValueError, TypeError):
+            return (1, _get_term_name_sort_key(term_name))
+    
+    sorted_term_data_list = sorted(term_data_list, key=get_sort_key)
+    return sorted_term_data_list
+
+def _get_term_name_sort_key(term_name: str) -> tuple:
+    """
+    Extract year and season from term name and return a sort key.
+    Returns (negative_year, season_priority) for descending sort.
+    
+    Season priority: Fall=0, Summer=1, Spring=2, Winter=3 (lower = higher priority)
+    """
+    import re
+    
+    # Extract year from term name
+    year_match = re.search(r'(\d{4})', term_name)
+    if not year_match:
+        # If no year found, return low priority
+        return (0, 999)
+    
+    year = int(year_match.group(1))
+    
+    # Determine season priority
+    term_lower = term_name.lower()
+    if 'fall' in term_lower:
+        season_priority = 0
+    elif 'summer' in term_lower:
+        season_priority = 1
+    elif 'spring' in term_lower:
+        season_priority = 2
+    elif 'winter' in term_lower:
+        season_priority = 3
+    else:
+        # Unknown season, give low priority
+        season_priority = 999
+    
+    # Return negative year for descending sort, and season priority
+    return (-year, season_priority)
+
 def create_courses_data(department_name: str, courses_names: set) -> dict:
     """
     Example of return value:
@@ -97,7 +152,7 @@ def process_rmp_data(rmp_data: dict) -> dict:
     review_count = _safe_int(rmp_data[data_keys.PROFESSOR_REVIEW_COUNT_KEY])
     if review_count == 0:
         rmp_data[data_keys.PROFESSOR_RATING_KEY] = -0.1
-        rmp_data[data_keys.PROFESSOR_REVIEW_COUNT_KEY] = -1
+        rmp_data[data_keys.PROFESSOR_RECOMMEND_KEY] = -1
         rmp_data[data_keys.PROFESSOR_DIFFICULTY_KEY] = 5.1
     
     return {

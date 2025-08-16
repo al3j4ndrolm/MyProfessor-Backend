@@ -11,7 +11,7 @@ LOGGING_CONFIG = {
     "handlers": {
         "console": {
             "class": "logging.StreamHandler",
-            "level": "DEBUG",
+            "level": "INFO",
             "formatter": "standard",
         },
         "file": {
@@ -26,6 +26,11 @@ LOGGING_CONFIG = {
     "root": {
         "handlers": ["console", "file"],
         "level": "INFO",
+    },
+    "loggers": {
+        "httpx": {
+            "level": "WARNING",  # Reduce httpx logging to WARNING level
+        },
     },
 }
 

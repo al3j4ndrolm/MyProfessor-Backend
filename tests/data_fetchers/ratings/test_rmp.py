@@ -7,8 +7,27 @@ from bs4 import Tag, BeautifulSoup
 # Add the parent directory to the path so we can import our modules
 sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))))
 
-from data_fetchers.ratings.rmp import _get_best_match_data, _get_professor_name, _get_professor_department
+from data_fetchers.ratings.rmp import _get_best_match_data, get_rmp_data
+from data_fetchers.ratings.rating_configs import RMP_DEFAULTS
 from helpers.data import data_keys
+
+class TestGetRMPData:
+    """Test class for get_rmp_data function"""
+
+    def test_get_rmp_data(self):
+        """Test that get_rmp_data function returns the correct data"""
+
+        result = get_rmp_data("Brett Johnson", rmp_code="1967")
+
+        assert result is not None
+        assert result == {
+            "difficulty": RMP_DEFAULTS[data_keys.PROFESSOR_DIFFICULTY_KEY],
+            "rating": RMP_DEFAULTS[data_keys.PROFESSOR_RATING_KEY],
+            "reviewCount": RMP_DEFAULTS[data_keys.PROFESSOR_REVIEW_COUNT_KEY],
+            "recommend": RMP_DEFAULTS[data_keys.PROFESSOR_RECOMMEND_KEY],
+            "link": "/professor/2942170",
+            "score": 1.0,
+        }
 
 class TestRMPGetBestMatchData:
     """Test class for _get_best_match_data function"""
