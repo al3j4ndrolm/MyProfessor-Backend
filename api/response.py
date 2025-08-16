@@ -45,7 +45,8 @@ def _create_school(entry: dict) -> dict:
         configs.SCHOOL_TERMS: entry[db_keys.SCHOOL_KEY_TERMS],
         configs.SCHOOL_NOTIFICATION: {"text": entry[db_keys.SCHOOL_KEY_NOTIFICATION]},
         configs.SCHOOL_UPDATED_AT: entry[db_keys.KEY_UPDATED_AT],
-        configs.SCHOOL_COURSES_UPDATED_AT: entry[db_keys.SCHOOL_KEY_COURSES_UPDATED_AT]
+        configs.SCHOOL_COURSES_UPDATED_AT: entry[db_keys.SCHOOL_KEY_COURSES_UPDATED_AT],
+        configs.SCHOOL_FEATURES: entry[db_keys.SCHOOL_KEY_FEATURES]
     }
 
 def _create_school_old(entry: dict) -> dict:
@@ -54,7 +55,8 @@ def _create_school_old(entry: dict) -> dict:
         configs.SCHOOL_TERMS: entry[db_keys.SCHOOL_KEY_TERMS],
         configs.SCHOOL_NOTIFICATION: {"text": entry[db_keys.SCHOOL_KEY_NOTIFICATION]},
         "schoolRmpCode": entry[db_keys.SCHOOL_KEY_RMP_CODE],
-        configs.SCHOOL_UPDATED_AT: entry[db_keys.KEY_UPDATED_AT]
+        configs.SCHOOL_UPDATED_AT: entry[db_keys.KEY_UPDATED_AT],
+        configs.SCHOOL_FEATURES: entry[db_keys.SCHOOL_KEY_FEATURES]
     }
 
 def _create_broadcast(entry: dict) -> dict:
