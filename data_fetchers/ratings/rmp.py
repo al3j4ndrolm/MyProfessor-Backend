@@ -12,7 +12,7 @@ from logger import logger
 
 BASE_URL = "https://www.ratemyprofessors.com/search/professors/"
 
-SIMILARITY_THRESHOLD = 0.8
+SIMILARITY_THRESHOLD = 0.65
 
 def get_rmp_data(professor_name: str, rmp_code: str) -> dict | None:
     """
