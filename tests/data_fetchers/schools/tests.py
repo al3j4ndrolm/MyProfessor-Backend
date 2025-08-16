@@ -205,7 +205,6 @@ def run_school_tests(school_code: Optional[str], verbose: bool = False) -> Dict[
     results = []
     
     for test_file in test_files:
-        print(f"\n📋 Running {test_file.name}...")
         result = run_pytest_on_file(test_file, verbose)
         results.append(result)
         

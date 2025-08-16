@@ -43,7 +43,7 @@ def get_terms(soup: BeautifulSoup):
             terms_data.append(term_data)
             
         logger.info(f"Extracted {len(terms_data)} terms from Foothill College")
-        return terms_data
+        return data_creators.process_term_data_list(terms_data)
         
     except Exception as e:
         logger.error(f"Error extracting terms from Foothill College: {e}")

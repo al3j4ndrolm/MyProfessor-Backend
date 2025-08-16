@@ -33,7 +33,7 @@ def get_terms(soup: BeautifulSoup) -> list[dict]:
             term_data_list.append(data_creators.create_term_data(term_name, term_code))
         
         logger.info(f"Fetched {len(term_data_list)} terms for {SCHOOL_NAME}")
-        return term_data_list
+        return data_creators.process_term_data_list(term_data_list)
         
     except Exception as e:
         logger.error(f"Error fetching terms for {SCHOOL_NAME}: {e}")

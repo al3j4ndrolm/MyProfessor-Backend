@@ -22,7 +22,7 @@ def get_terms(soup: BeautifulSoup) -> list[dict]:
         terms_data = build_term_data_list(terms_options)
 
         logger.info(f"Fetched {len(terms_data)} terms for San Jose State University")
-        return terms_data
+        return data_creators.process_term_data_list(terms_data)
     except Exception as e:
         logger.error(f"Error fetching terms for San Jose State University: {e}")
         return []
