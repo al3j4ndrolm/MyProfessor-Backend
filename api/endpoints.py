@@ -8,7 +8,7 @@ from pydantic import BaseModel
 
 # Local imports
 from api import response
-from database import courses_db, classes_db, reports_db
+from database import courses_db, classes_db, reports_db, searches_db
 
 # Initialize FastAPI app and router
 app = FastAPI()
@@ -67,6 +67,7 @@ def classes_get(
     if school is None or term is None or department is None:
         raise HTTPException(status_code=400)
     else:
+        searches_db.save(supabase, school, term, department)
         return classes_db.get_one_entry(supabase, school, term, department)
 
 class ReportsErrorsPostRequest(BaseModel):
