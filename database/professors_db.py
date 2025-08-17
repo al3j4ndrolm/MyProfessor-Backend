@@ -87,16 +87,6 @@ def should_update(professor_entry: dict) -> bool:
         updated_at = updated_at.replace(tzinfo=None)
     return updated_at < datetime.now() - timedelta(days=30)
 
-# TODO: Remove after client migrates to new classes endpoints
-def get_without_email(supabase: Client, school: str, department: str, professor_name: str) -> Optional[Professor]:
-    search_query = supabase.table(TABLE_NAME)\
-        .select("*").eq(db_keys.KEY_PROFESSOR_NAME, professor_name)\
-        .eq(db_keys.KEY_SCHOOL, school)\
-        .eq(db_keys.KEY_DEPARTMENT, department)\
-        .execute()
-    
-    return search_query.data[0] if search_query.data else None
-
 # TODO: Remove after all data in database is fixed
 def get_all(supabase: Client, school: str, department: str) -> dict:
     search_query = supabase.table(TABLE_NAME)\
