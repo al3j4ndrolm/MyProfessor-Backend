@@ -45,6 +45,10 @@ REPORTS_KEY_PLATFORM = "platform"
 REPORTS_KEY_BUILD = "build"
 REPORTS_KEY_IS_ERROR = "is_error"
 
+# table `searches`
+SEARCHES_KEY_SCHOOL = "school"
+SEARCHES_KEY_TERM = "term"
+SEARCHES_KEY_DEPARTMENT = "department"
 
 # for all tables
 KEY_UPDATED_AT = "updated_at"

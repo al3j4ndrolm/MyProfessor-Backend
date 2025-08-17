@@ -116,55 +116,7 @@ def run_pytest_on_file(test_file: Path, verbose: bool = False) -> Dict[str, Any]
             "error": True
         }
 
-def print_school_test_results(results: List[Dict[str, Any]], school_name: str, verbose: bool = False):
-    """
-    Print test results for a specific school.
-    
-    Args:
-        results: List of test result dictionaries
-        school_name: Name of the school being tested
-        verbose: Whether to print detailed output
-    """
-    total_tests = len(results)
-    passed_tests = sum(1 for r in results if r["success"])
-    failed_tests = total_tests - passed_tests
-    
-    if failed_tests > 0:
-        print(f"\nFAILED TESTS: {school_name}")
-        print("-" * 40)
-        for result in results:
-            if not result["success"]:
-                print(f"❌ {result['file'].name}")
-                if verbose and result["stderr"]:
-                    print(f"   Error: {result['stderr'].strip()}")
-    
-    if passed_tests > 0:
-        print(f"\nPASSED TESTS: {school_name}")
-        print("-" * 40)
-        for result in results:
-            if result["success"]:
-                print(f"✅ {result['file'].name} ({result['duration']:.2f}s)")
-    
-    # Print detailed output if there are errors
-    has_error = False
-    for result in results:
-        if not result["success"] or result["stderr"]:
-            has_error = True
-            break
-    
-    if has_error:
-        print(f"\nDETAILED OUTPUT: {school_name}")
-        print("-" * 40)
-        for result in results:
-            print(f"\n{result['file'].name}:")
-            if result["stdout"]:
-                print("STDOUT:")
-                print(result["stdout"])
-            if result["stderr"]:
-                print("STDERR:")
-                print(result["stderr"])
-
-def run_school_tests(school_code: Optional[str], verbose: bool = False) -> Dict[str, Any]:
+def run_school_tests(school_code: Optional[str], verbose: bool = False):
     """
     Run tests for a specific school or all schools.
     
@@ -195,10 +147,10 @@ def run_school_tests(school_code: Optional[str], verbose: bool = False) -> Dict[
     # Display what we're testing
     if school_code:
         school_name = schools[school_code]
-        print(f"🔍 Running tests for {school_name} ({school_code})")
+        print(f"🔍 Running tests for {school_name} ({school_code})\n")
         print(f"📋 Found {len(test_files)} test files:")
     else:
-        print(f"🔍 Running tests for all schools")
+        print(f"🔍 Running tests for all schools\n")
         print(f"📋 Found {len(test_files)} test files:")
     
     # Run tests
@@ -209,38 +161,20 @@ def run_school_tests(school_code: Optional[str], verbose: bool = False) -> Dict[
         results.append(result)
         
         if result["success"]:
-            print(f"✅ {test_file.name} passed ({result['duration']:.2f}s)")
+            print(f"✅ {test_file.parent.name} - {test_file.name}")
         else:
-            print(f"❌ {test_file.name} failed")
+            print(f"❌ {test_file.parent.name} - {test_file.name}")
     
     # Print results
-    if school_code:
-        print_school_test_results(results, schools[school_code], verbose)
-    else:
-        # Group results by school
-        school_results = {}
-        for result in results:
-            school_dir = result["file"].parent.name
-            if school_dir not in school_results:
-                school_results[school_dir] = []
-            school_results[school_dir].append(result)
-        
-        # Print results for each school
-        for school_dir, school_result_list in school_results.items():
-            school_name = schools.get(school_dir, school_dir.title())
-            print_school_test_results(school_result_list, school_name, verbose)
-    
-    # Calculate overall success
-    total_passed = sum(1 for r in results if r["success"])
-    total_tests = len(results)
-    
-    return {
-        "success": total_passed == total_tests,
-        "total_tests": total_tests,
-        "passed_tests": total_passed,
-        "failed_tests": total_tests - total_passed,
-        "results": results
-    }
+    for result in results:
+        if not result["success"]:
+            print(f"\n--------------------------------Result output--------------------------------")
+            if result["stdout"]:
+                print("STDOUT:")
+                print(result["stdout"])
+            if result["stderr"]:
+                print("STDERR:")
+                print(result["stderr"])
 
 def main():
     """Main function to run school tests."""
@@ -260,13 +194,7 @@ def main():
         return 0
     
     # Run tests
-    result = run_school_tests(args.school, args.verbose)
-    
-    if not result["success"] and "error" in result:
-        print(f"❌ {result['error']}")
-        return 1
-    
-    return 0 if result["success"] else 1
+    run_school_tests(args.school, args.verbose)
 
 if __name__ == "__main__":
     exit_code = main()
