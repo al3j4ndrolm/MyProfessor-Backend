@@ -53,13 +53,13 @@ def get_courses_and_classes(departments: list, term_codes: list) -> tuple[dict, 
 
             logger.debug(f"Getting schedules for {department_code} in {term_code} ...")
             department_schedules = get_classes_per_department(session_data, department_code)
-            classes_data_table[term_code][department_code] = department_schedules
+            classes_data_table[term_code][department_code.replace(" ", "")] = department_schedules
 
             logger.debug(f"Extracting courses for {department_code} in {term_code} ...")
-            update_courses_set_per_term(session_data, courses)
+            update_courses_set_per_term(session_data, courses, department_code)
 
         logger.info(f"Overall found {len(courses)} courses for {department_code}.")
-        courses_data_table[department_code] = courses
+        courses_data_table[department_code.replace(" ", "")] = courses
 
     return courses_data_table, classes_data_table
 

@@ -30,6 +30,7 @@ CLASSES_KEY_SCHOOL = "school"
 CLASSES_KEY_DEPARTMENT = "department"
 CLASSES_KEY_TERM = "term"
 CLASSES_KEY_DATA = "data"
+CLASSES_KEY_UPDATED_AT = "updated_at"
 
 # table `courses`
 COURSES_KEY_SCHOOL = "school"
