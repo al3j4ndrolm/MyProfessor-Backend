@@ -38,17 +38,16 @@ def get_rating_data(supabase: Client, school: str, department: str, professor_na
 
     logger.debug(f"Checking if professor {professor_name} in {school} {department} is in `professors` table ...")
     professor_entry = professors_db.get_one_entry(supabase, school, department, professor_name, professor_email)
+    
     if professor_entry:
         should_search = False
         if rescan_null:
             should_search = professor_entry[db_keys.KEY_RMP_LINK] is None
         should_search = should_search or professors_db.should_update(professor_entry)
         
-        # Always generate/update AI summary for existing professors if they have RMP data
-        has_rmp_data = professor_entry.get(db_keys.KEY_RMP_LINK) is not None
-        
-        if not should_search and not has_rmp_data:
-            logger.debug(f"Returning professor {professor_name} in `professors` table (no RMP data to update).")
+        # If no search needed and we have RMP data, return existing data
+        if not should_search and professor_entry.get(db_keys.KEY_RMP_LINK) is not None:
+            logger.debug(f"Returning professor {professor_name} from cache (has RMP data, no update needed).")
             return {
                 data_keys.PROFESSOR_RATING_KEY: professor_entry[db_keys.KEY_RMP_RATING],
                 data_keys.PROFESSOR_REVIEW_COUNT_KEY: professor_entry[db_keys.KEY_RMP_REVIEWS_COUNT],
@@ -57,53 +56,40 @@ def get_rating_data(supabase: Client, school: str, department: str, professor_na
                 db_keys.KEY_AI_SUMMARY: professor_entry.get(db_keys.KEY_AI_SUMMARY)
             }
         
-        # If professor has RMP data, always update AI summary
-        if has_rmp_data:
-            logger.info(f"Professor {professor_name} exists with RMP data. Updating AI summary...")
+        # If professor exists and has RMP data, get fresh RMP data for potential updates
+        if professor_entry.get(db_keys.KEY_RMP_LINK) is not None:
+            logger.info(f"Professor {professor_name} exists with RMP data. Getting fresh data...")
             rmp_data = get_rmp_data(professor_name, rmp_code) if not is_staff(professor_name) else None
             if rmp_data and rmp_data.get(data_keys.PROFESSOR_LINK_KEY):
-                # Generate/update AI summary for existing professor
-                try:
-                    logger.info(f"Generating/updating AI summary for existing professor {professor_name}...")
-                    ai_summary = generate_ai_summary(
-                        supabase=supabase,
-                        professor_name=professor_name,
-                        school=school,
-                        professor_email=professor_email,
-                        rmp_link=rmp_data.get(data_keys.PROFESSOR_LINK_KEY)
-                    )
-                    if ai_summary:
-                        # Update all professors with the same RMP link with AI summary
-                        supabase.table("professors").update({db_keys.KEY_AI_SUMMARY: ai_summary})\
-                            .eq(db_keys.KEY_RMP_LINK, rmp_data.get(data_keys.PROFESSOR_LINK_KEY))\
-                            .execute()
-                        logger.info(f"Successfully generated/updated AI summary for existing professor {professor_name}")
-                        return {
-                            data_keys.PROFESSOR_RATING_KEY: professor_entry[db_keys.KEY_RMP_RATING],
-                            data_keys.PROFESSOR_REVIEW_COUNT_KEY: professor_entry[db_keys.KEY_RMP_REVIEWS_COUNT],
-                            data_keys.PROFESSOR_DIFFICULTY_KEY: professor_entry[db_keys.KEY_RMP_DIFFICULTY],
-                            data_keys.PROFESSOR_RECOMMEND_KEY: professor_entry[db_keys.KEY_RMP_RECOMMEND],
-                            db_keys.KEY_AI_SUMMARY: ai_summary
-                        }
-                except Exception as e:
-                    logger.error(f"Error generating/updating AI summary for existing professor {professor_name}: {e}")
-            
-            # If AI summary generation failed, return existing data
-            return {
-                data_keys.PROFESSOR_RATING_KEY: professor_entry[db_keys.KEY_RMP_RATING],
-                data_keys.PROFESSOR_REVIEW_COUNT_KEY: professor_entry[db_keys.KEY_RMP_REVIEWS_COUNT],
-                data_keys.PROFESSOR_DIFFICULTY_KEY: professor_entry[db_keys.KEY_RMP_DIFFICULTY],
-                data_keys.PROFESSOR_RECOMMEND_KEY: professor_entry[db_keys.KEY_RMP_RECOMMEND],
-                db_keys.KEY_AI_SUMMARY: professor_entry.get(db_keys.KEY_AI_SUMMARY)
-            }
-
-    logger.debug(f"Not found, searching for professor {professor_name} in RMP ...")
-    
-    if is_staff(professor_name): # if the professor is a staff, we don't need to fetch the rating data
-        rmp_data = None
+                # Use fresh RMP data but keep existing data if fresh data is not available
+                pass
+            else:
+                # If fresh RMP data not available, use existing data
+                rmp_data = {
+                    data_keys.PROFESSOR_LINK_KEY: professor_entry[db_keys.KEY_RMP_LINK],
+                    data_keys.PROFESSOR_SCORE_KEY: professor_entry.get(db_keys.KEY_RMP_SCORE),
+                    data_keys.PROFESSOR_RATING_KEY: professor_entry[db_keys.KEY_RMP_RATING],
+                    data_keys.PROFESSOR_REVIEW_COUNT_KEY: professor_entry[db_keys.KEY_RMP_REVIEWS_COUNT],
+                    data_keys.PROFESSOR_DIFFICULTY_KEY: professor_entry[db_keys.KEY_RMP_DIFFICULTY],
+                    data_keys.PROFESSOR_RECOMMEND_KEY: professor_entry[db_keys.KEY_RMP_RECOMMEND]
+                }
+        else:
+            # Professor exists but no RMP data, need to search
+            rmp_data = None
     else:
-        rmp_data = get_rmp_data(professor_name, rmp_code)
+        # Professor not found, need to search
+        rmp_data = None
+
+    # If we don't have RMP data yet, search for it
+    if rmp_data is None:
+        logger.debug(f"Searching for professor {professor_name} in RMP ...")
+        
+        if is_staff(professor_name): # if the professor is a staff, we don't need to fetch the rating data
+            rmp_data = None
+        else:
+            rmp_data = get_rmp_data(professor_name, rmp_code)
     
+    # Set default values if no RMP data found
     if not rmp_data:
         logger.debug(f"No professor {professor_name} found in RMP.")
         rmp_data = {
@@ -134,11 +120,15 @@ def get_rating_data(supabase: Client, school: str, department: str, professor_na
         except Exception as e:
             logger.error(f"Error generating AI summary for {professor_name}: {e}")
     
-    logger.info(f"Saving professor {professor_name} in `professors` table.")
+    # Save or update professor data
+    logger.info(f"Saving/updating professor {professor_name} in `professors` table.")
     professors_db.save_one_entry(supabase, school, department, professor_name, professor_email, rmp_data)
-    del rmp_data[data_keys.PROFESSOR_LINK_KEY]
-    del rmp_data[data_keys.PROFESSOR_SCORE_KEY]
-    return rmp_data
+    
+    # Prepare return data (remove internal fields)
+    return_data = rmp_data.copy()
+    del return_data[data_keys.PROFESSOR_LINK_KEY]
+    del return_data[data_keys.PROFESSOR_SCORE_KEY]
+    return return_data
 
 def is_staff(professor_name: str) -> bool:
     name_lower = professor_name.lower().strip()

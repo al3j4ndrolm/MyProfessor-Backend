@@ -28,14 +28,13 @@ ONLINE_FIELDS = ["isForOnlineClass","isOnline","onlineClass"]
 # PUBLIC FUNCTIONS
 # ============================================================================
 
-def generate_ai_summary(supabase: Client, professor_name: str, school: str, professor_email: str, rmp_link: str = None) -> Optional[Dict]:
+def generate_ai_summary(supabase: Client, professor_name: str, school: str, rmp_link: str = None) -> Optional[Dict]:
     """
     Generate AI summary for a professor using their RMP data.
     
     Args:
         professor_name: Name of the professor
         school: School name
-        professor_email: Professor's email
         rmp_link: RMP link (optional, will be extracted from RMP if not provided)
     
     Returns:
@@ -98,7 +97,7 @@ def generate_ai_summary(supabase: Client, professor_name: str, school: str, prof
 # PRIVATE FUNCTIONS (internal helpers, ordered by call order)
 # ============================================================================
 
-def execute_rmp_graphql_query(query: str, variables: Optional[Dict] = None) -> Dict:
+def _execute_rmp_graphql_query(query: str, variables: Optional[Dict] = None) -> Dict:
     """Execute GraphQL query against RateMyProfessors API."""
     time.sleep(random.uniform(0.2, 0.5))
     r = S.post(RMP_ENDPOINT, json={"query": query, "variables": variables or {}}, timeout=30)
@@ -119,7 +118,7 @@ def find_teacher(name: str, school_legacy_id: int) -> Optional[str]:
       newSearch{ teachers(query:$q){ edges{ node{ id } } } }
     }"""
     gid = b64_node("School", school_legacy_id)
-    d = execute_rmp_graphql_query(q, {"q": {"text": name, "schoolID": gid, "fallback": True}})
+    d = _execute_rmp_graphql_query(q, {"q": {"text": name, "schoolID": gid, "fallback": True}})
     edges = d.get("newSearch", {}).get("teachers", {}).get("edges", [])
     return edges[0]["node"]["id"] if edges else None
 
@@ -153,7 +152,7 @@ def fetch_reviews(teacher_id: str, page_size=25, max_reviews=180) -> List[Dict]:
             after = None
             out = []
             while len(out) < max_reviews:
-                d = execute_rmp_graphql_query(try_query(cfield, ofield), {"id": teacher_id, "first": page_size, "after": after})
+                d = _execute_rmp_graphql_query(try_query(cfield, ofield), {"id": teacher_id, "first": page_size, "after": after})
                 r = (d.get("node") or {}).get("ratings") or {}
                 out.extend(e["node"] for e in r.get("edges", []))
                 if not r.get("pageInfo", {}).get("hasNextPage"): break
