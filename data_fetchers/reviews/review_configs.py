@@ -8,3 +8,5 @@ SESSION_HEADER = {
             "Accept": "application/json, text/plain, */*",
             "Content-Type": "application/json"
         }
+
+RMP_GRAPHQL_URL = "https://www.ratemyprofessors.com/graphql"

@@ -1,4 +1,4 @@
-from data_fetchers.ratings.review_configs import RMP_BASE_URL, SESSION_HEADER
+from data_fetchers.ratings.review_configs import RMP_BASE_URL, SESSION_HEADER, RMP_GRAPHQL_URL
 from data_fetchers.ratings.graphql import get_school_data_payload, get_professors_reviews_payload
 from helpers.soup_getter import html_url_to_soup
 import base64
@@ -58,12 +58,12 @@ def _extract_top_tags(soup) -> list[str]:
 def _extract_reviews(professor_rmp_link: str) -> dict:
     professor_id = _get_professor_id(rmp_link=professor_rmp_link)
     payload = get_professors_reviews_payload(professor_id=professor_id)
-    response = get_session().post("https://www.ratemyprofessors.com/graphql", json=payload)
+    response = get_session().post(RMP_GRAPHQL_URL, json=payload)
     return response.json()
 
 def _get_school_id(school_name: str, session) -> str:
     payload = get_school_data_payload(school_name=school_name)
-    response = session.post("https://www.ratemyprofessors.com/graphql", json=payload)
+    response = session.post(RMP_GRAPHQL_URL, json=payload)
     school_id = response.json()["data"]["newSearch"]["schools"]["edges"][0]["node"]["id"]
     return school_id
 

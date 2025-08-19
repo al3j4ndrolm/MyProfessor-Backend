@@ -3,7 +3,6 @@ from logger import logger
 from openai import OpenAI
 
 def get_summary(reviews_data: list[dict], deepseek_client):
-
     response = deepseek_client.create(
         model=DEEPSEEK_MODEL,
         messages=[
