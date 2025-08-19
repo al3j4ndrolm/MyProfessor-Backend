@@ -1,6 +1,6 @@
 from data_fetchers.ratings.review_configs import REVIEW_LIMIT
 
-def get_school_data_payload(school_name: str = "") -> dict:
+def get_school_data_payload(school_name: str) -> dict:
     payload = {
         "query": """
         query SearchSchools($query: SchoolSearchQuery!) {
