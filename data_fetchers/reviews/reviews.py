@@ -1,5 +1,5 @@
-from data_fetchers.ratings.review_configs import RMP_BASE_URL, SESSION_HEADER, RMP_GRAPHQL_URL
-from data_fetchers.ratings.graphql import get_school_data_payload, get_professors_reviews_payload
+from data_fetchers.reviews.config import RMP_BASE_URL, SESSION_HEADER, RMP_GRAPHQL_URL
+from data_fetchers.reviews.review_graphql import get_school_data_payload, get_professors_reviews_payload
 from helpers.soup_getter import html_url_to_soup
 import base64
 import requests
