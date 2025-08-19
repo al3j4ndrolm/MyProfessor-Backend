@@ -15,10 +15,9 @@ def get_summary(reviews_data: list[dict], deepseek_client):
     try:
         return response.choices[0].message.content
     except Exception as e:
-        logger.error(f"Error: {e}")
-        return "Error: " + str(e)
+        logger.error(f"Unable to get summary from DeepSeek: {e}")
+        return {}
 
 def create_deepseek_client():
     return OpenAI(api_key=DEEPSEEK_API_KEY, base_url=DEEPSEEK_BASE_URL).chat.completions
 
-    
