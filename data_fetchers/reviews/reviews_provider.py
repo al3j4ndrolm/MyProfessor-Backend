@@ -3,16 +3,17 @@ from data_fetchers.ratings.graphql import get_school_data_payload, get_professor
 from helpers.soup_getter import html_url_to_soup
 import base64
 import requests
+from logger import logger
 
 # Public functions ------------------------------------------------------------
 
-def get_reviews(professor_rmp_link: str, school_name: str):
+def get_reviews(professor_rmp_link: str, school_name: str, session):
     url = f"{RMP_BASE_URL}{professor_rmp_link}"
     soup = html_url_to_soup(url)
 
     ratings_distribution = _extract_ratings_distribution(soup)
     top_tags = _extract_top_tags(soup)
-    reviews = _extract_reviews(professor_rmp_link, school_name)
+    reviews = _extract_reviews(professor_rmp_link, session)
     return ratings_distribution, top_tags, reviews
 
 def get_session():
@@ -20,12 +21,24 @@ def get_session():
     session.headers.update(SESSION_HEADER)
     return session
 
+# TODO: Optional approach to fetch professor data from RMP API (DELETE if needed)
+def get_school_id(school_name: str, session) -> str:
+    payload = get_school_data_payload(school_name=school_name)
+    response = session.post(RMP_GRAPHQL_URL, json=payload)
+
+    try:
+        school_id = response.json()["data"]["newSearch"]["schools"]["edges"][0]["node"]["id"]
+    except Exception as e:
+        logger.error(f"Unable to get school id from RMP API: {e}")
+        return ""
+    return school_id
+
 # Private functions ------------------------------------------------------------
 
 def _extract_ratings_distribution(soup) -> dict:
 
     """ 
-    returns:
+    Returns:
         {'Awesome 5': '114', 'Great 4': '56', 'Good 3': '48', 'OK 2': '72', 'Awful 1': '179'}
     """
 
@@ -43,7 +56,7 @@ def _extract_ratings_distribution(soup) -> dict:
 def _extract_top_tags(soup) -> list[str]:
 
     """ 
-    returns:
+    Returns:
         top_tags: list[str]
     """
     top_tags_holder = soup.find("div", class_="TeacherTags__TagsContainer-sc-16vmh1y-0")
@@ -55,18 +68,13 @@ def _extract_top_tags(soup) -> list[str]:
 
     return top_tags
 
-def _extract_reviews(professor_rmp_link: str) -> dict:
+def _extract_reviews(professor_rmp_link: str, session) -> dict:
     professor_id = _get_professor_id(rmp_link=professor_rmp_link)
     payload = get_professors_reviews_payload(professor_id=professor_id)
-    response = get_session().post(RMP_GRAPHQL_URL, json=payload)
+    response = session.post(RMP_GRAPHQL_URL, json=payload)
     return response.json()
 
-def _get_school_id(school_name: str, session) -> str:
-    payload = get_school_data_payload(school_name=school_name)
-    response = session.post(RMP_GRAPHQL_URL, json=payload)
-    school_id = response.json()["data"]["newSearch"]["schools"]["edges"][0]["node"]["id"]
-    return school_id
-
+# TODO: if this function will not be used more than one time, we don't need to wrap this
 def _base64_encode(string: str) -> str:
     return base64.b64encode(string.encode()).decode()
 

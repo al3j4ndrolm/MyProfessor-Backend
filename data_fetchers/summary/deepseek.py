@@ -2,7 +2,7 @@ from configs import DEEPSEEK_SYSTEM_PROMPT, DEEPSEEK_MODEL, DEEPSEEK_API_KEY, DE
 from logger import logger
 from openai import OpenAI
 
-def get_summary(reviews_data: list[dict], deepseek_client):
+def get_summary(reviews_data: list[dict], deepseek_client) -> dict:
     response = deepseek_client.create(
         model=DEEPSEEK_MODEL,
         messages=[
@@ -12,7 +12,7 @@ def get_summary(reviews_data: list[dict], deepseek_client):
         stream=False
     )
     try:
-        return response.choices[0].message.content
+        return response.choices[0].message.content 
     except Exception as e:
         logger.error(f"Unable to get summary from DeepSeek: {e}")
         return {}
