@@ -28,7 +28,7 @@ def get_school_data_payload(school_name: str = "") -> dict:
 
     return payload
 
-def get_professors_reviews_payload(professor_id: str = ""):
+def get_professors_reviews_payload(professor_id: str):
     payload = {
         "query": """
         query GetTeacher($id: ID!) {

@@ -1,21 +1,21 @@
-from data_fetchers.ratings.review_configs import RMP_BASE_URL, SESSION
+from data_fetchers.ratings.review_configs import RMP_BASE_URL
 from data_fetchers.ratings.graphql import get_school_data_payload, get_professors_reviews_payload
 from helpers.soup_getter import html_url_to_soup
 import base64
-
+import requests
 
 def get_reviews(professor_rmp_link: str, school_name: str):
 
     url = f"{RMP_BASE_URL}{professor_rmp_link}"
     soup = html_url_to_soup(url)
 
-    ratings_distribution = extract_ratings_distribution(soup)
-    top_tags = extract_top_tags(soup)
-    reviews = extract_reviews(professor_rmp_link, school_name)
+    ratings_distribution = _extract_ratings_distribution(soup)
+    top_tags = _extract_top_tags(soup)
+    reviews = _extract_reviews(professor_rmp_link, school_name)
     
     return reviews
 
-def extract_ratings_distribution(soup) -> dict:
+def _extract_ratings_distribution(soup) -> dict:
 
     """ 
     Extracts the ratings distribution from the RMP page of the professor.
@@ -40,7 +40,7 @@ def extract_ratings_distribution(soup) -> dict:
 
     return ratings_distribution_data
 
-def extract_top_tags(soup) -> list[str]:
+def _extract_top_tags(soup) -> list[str]:
 
     """ 
     Extracts the top tags from the RMP page of the professor.
@@ -48,18 +48,16 @@ def extract_top_tags(soup) -> list[str]:
     returns:
         top_tags: list[str]
     """
-
     top_tags_holder = soup.find("div", class_="TeacherTags__TagsContainer-sc-16vmh1y-0")
     top_tags_list = top_tags_holder.find_all("span")
 
     top_tags = []
-
     for tag in top_tags_list:
         top_tags.append(tag.text.strip())
 
     return top_tags
 
-def extract_reviews(professor_rmp_link: str, school_name: str) -> int:
+def _extract_reviews(professor_rmp_link: str, school_name: str) -> int:
 
     """ 
     Extracts the reviews from the RMP page of the professor.
@@ -87,3 +85,12 @@ def _base64_encode(string: str) -> str:
 def _get_professor_id(rmp_link: str) -> str:
     code = rmp_link.split("/")[-1]
     return _base64_encode(f"Teacher-{code}")
+
+def get_session():
+    session = requests.Session()
+    session.headers.update({
+            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36",
+            "Accept": "application/json, text/plain, */*",
+            "Content-Type": "application/json"
+        })
+    return session
