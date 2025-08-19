@@ -4,3 +4,4 @@ RMP_DEFAULTS = {
     "difficulty": 5.1,
     "recommend": -1
 }
+
