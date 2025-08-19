@@ -1,4 +1,4 @@
-from data_fetchers.ratings.review_configs import REVIEW_LIMIT
+from data_fetchers.rmp.reviews.config import REVIEW_LIMIT
 
 def get_school_data_payload(school_name: str) -> dict:
     payload = {

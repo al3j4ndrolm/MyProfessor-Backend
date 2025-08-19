@@ -1,5 +1,5 @@
-from data_fetchers.reviews.config import RMP_BASE_URL, SESSION_HEADER, RMP_GRAPHQL_URL
-from data_fetchers.reviews.review_graphql import get_school_data_payload, get_professors_reviews_payload
+from data_fetchers.rmp.reviews.config import RMP_BASE_URL, SESSION_HEADER, RMP_GRAPHQL_URL
+from data_fetchers.rmp.reviews.review_graphql import get_school_data_payload, get_professors_reviews_payload
 from helpers.soup_getter import html_url_to_soup
 import base64
 import requests
@@ -7,6 +7,7 @@ from logger import logger
 
 # Public functions ------------------------------------------------------------
 
+# TODO: Remove school_name parameter if not needed for AI Summary
 def get_reviews(professor_rmp_link: str, school_name: str, session):
     url = f"{RMP_BASE_URL}{professor_rmp_link}"
     soup = html_url_to_soup(url)
