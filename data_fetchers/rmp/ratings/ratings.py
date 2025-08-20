@@ -10,8 +10,6 @@ from helpers.data import data_keys, data_creators
 from data_fetchers.rmp.ratings.configs import RMP_DEFAULTS, BASE_URL, SIMILARITY_THRESHOLD
 from logger import logger
 
-
-
 def get_rmp_data(professor_name: str, rmp_code: str) -> dict | None:
     """
     Example of return value:

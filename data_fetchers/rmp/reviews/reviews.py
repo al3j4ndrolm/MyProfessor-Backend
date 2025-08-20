@@ -1,4 +1,4 @@
-from data_fetchers.rmp.reviews.config import RMP_BASE_URL, SESSION_HEADER, RMP_GRAPHQL_URL
+from data_fetchers.rmp.reviews.configs import RMP_BASE_URL, SESSION_HEADER, RMP_GRAPHQL_URL
 from data_fetchers.rmp.reviews.review_graphql import get_school_data_payload, get_professors_reviews_payload
 from helpers.soup_getter import html_url_to_soup
 import base64
@@ -6,6 +6,11 @@ import requests
 from logger import logger
 
 # Public functions ------------------------------------------------------------
+
+def get_session():
+    session = requests.Session()
+    session.headers.update(SESSION_HEADER)
+    return session
 
 # TODO: Remove school_name parameter if not needed for AI Summary
 def get_reviews(professor_rmp_link: str, school_name: str, session):
@@ -17,29 +22,23 @@ def get_reviews(professor_rmp_link: str, school_name: str, session):
     reviews = _extract_reviews(professor_rmp_link, session)
     return ratings_distribution, top_tags, reviews
 
-def get_session():
-    session = requests.Session()
-    session.headers.update(SESSION_HEADER)
-    return session
-
 # TODO: Optional approach to fetch professor data from RMP API (DELETE if needed)
-def get_school_id(school_name: str, session) -> str:
+def get_school_id(school_name: str, session) -> str | None:
     payload = get_school_data_payload(school_name=school_name)
     response = session.post(RMP_GRAPHQL_URL, json=payload)
 
     try:
-        school_id = response.json()["data"]["newSearch"]["schools"]["edges"][0]["node"]["id"]
+        return response.json()["data"]["newSearch"]["schools"]["edges"][0]["node"]["id"]
     except Exception as e:
         logger.error(f"Unable to get school id from RMP API: {e}")
-        return ""
-    return school_id
+        return None
 
 # Private functions ------------------------------------------------------------
 
 def _extract_ratings_distribution(soup) -> dict:
 
     """ 
-    Returns:
+    Example of return value:
         {'Awesome 5': '114', 'Great 4': '56', 'Good 3': '48', 'OK 2': '72', 'Awful 1': '179'}
     """
 
@@ -57,8 +56,8 @@ def _extract_ratings_distribution(soup) -> dict:
 def _extract_top_tags(soup) -> list[str]:
 
     """ 
-    Returns:
-        top_tags: list[str]
+    Example of return value:
+        ['Easy', 'Helpful', 'Smart', 'Interesting']
     """
     top_tags_holder = soup.find("div", class_="TeacherTags__TagsContainer-sc-16vmh1y-0")
     top_tags_list = top_tags_holder.find_all("span")
@@ -75,11 +74,11 @@ def _extract_reviews(professor_rmp_link: str, session) -> dict:
     response = session.post(RMP_GRAPHQL_URL, json=payload)
     return response.json()
 
-# TODO: if this function will not be used more than one time, we don't need to wrap this
-def _base64_encode(string: str) -> str:
-    return base64.b64encode(string.encode()).decode()
-
 def _get_professor_id(rmp_link: str) -> str:
     code = rmp_link.split("/")[-1]
     return _base64_encode(f"Teacher-{code}")
+
+# TODO: if this function will not be used more than one time, we don't need to wrap this
+def _base64_encode(string: str) -> str:
+    return base64.b64encode(string.encode()).decode()
 
