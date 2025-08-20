@@ -7,12 +7,8 @@ import traceback
 # Local Imports
 from helpers.soup_getter import html_url_to_soup
 from helpers.data import data_keys, data_creators
-from data_fetchers.ratings.rating_configs import RMP_DEFAULTS
+from data_fetchers.rmp.ratings.configs import RMP_DEFAULTS, BASE_URL, SIMILARITY_THRESHOLD
 from logger import logger
-
-BASE_URL = "https://www.ratemyprofessors.com/search/professors/"
-
-SIMILARITY_THRESHOLD = 0.65
 
 def get_rmp_data(professor_name: str, rmp_code: str) -> dict | None:
     """

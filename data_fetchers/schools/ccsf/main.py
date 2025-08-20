@@ -5,7 +5,7 @@ from supabase import Client
 # Local Imports
 from helpers.soup_getter import html_url_to_soup
 from helpers.data import data_keys
-from data_fetchers.ratings.rating_provider import get_ratings_and_merge
+from data_fetchers.rmp.ratings.rating_provider import get_ratings_and_merge
 from data_fetchers.schools.ccsf.terms import get_terms
 from data_fetchers.schools.ccsf.courses import update_courses_data_table    
 from data_fetchers.schools.ccsf.schedules import get_classes_per_department

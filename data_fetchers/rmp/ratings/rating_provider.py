@@ -1,10 +1,9 @@
-from datetime import datetime, timedelta
 from supabase import Client
 from database import professors_db
 from database import db_keys
-from data_fetchers.ratings.rating_configs import RMP_DEFAULTS
+from data_fetchers.rmp.ratings.configs import RMP_DEFAULTS
 from helpers.data import data_keys, data_creators
-from data_fetchers.ratings.rmp import get_rmp_data
+from data_fetchers.rmp.ratings.ratings import get_rmp_data
 from logger import logger
 
 def get_ratings_and_merge(supabase: Client, classes_one_department: dict, school: str, rmp_code: str, department_code: str, rescan_null: bool = False) -> dict:

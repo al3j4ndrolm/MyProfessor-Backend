@@ -3,7 +3,8 @@ import sys
 import pytest
 from time import sleep
 from datetime import datetime, timedelta
-from supabase import create_client
+# Temporarily comment out Supabase import to fix websockets issue
+# from supabase import create_client
 
 # Add the parent directory to the path so we can import our modules
 sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))

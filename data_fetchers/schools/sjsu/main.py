@@ -10,7 +10,7 @@ from helpers.data import data_keys
 from data_fetchers.schools.sjsu.terms import get_terms
 from data_fetchers.schools.sjsu.courses import update_courses_data_table
 from data_fetchers.schools.sjsu.schedules import get_classes_per_department
-from data_fetchers.ratings.rating_provider import get_ratings_and_merge
+from data_fetchers.rmp.ratings.rating_provider import get_ratings_and_merge
 from data_fetchers.schools.sjsu.school_config import TERMS_BASE_URL, SCHEDULES_BASE_URL, SCHOOL_NAME, RMP_CODE
 from database import courses_db, classes_db, schools_db
 from database.schools_db import SchoolStatus

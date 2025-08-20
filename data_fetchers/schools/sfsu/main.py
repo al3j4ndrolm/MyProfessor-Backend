@@ -9,7 +9,7 @@ from data_fetchers.schools.sfsu.terms import get_terms
 from data_fetchers.schools.sfsu.departments import get_department_data_table
 from data_fetchers.schools.sfsu.courses import update_courses_set_per_term
 from data_fetchers.schools.sfsu.schedules import get_classes_per_department
-from data_fetchers.ratings.rating_provider import get_ratings_and_merge
+from data_fetchers.rmp.ratings.rating_provider import get_ratings_and_merge
 from database import courses_db, schools_db, classes_db
 from database.schools_db import SchoolStatus
 
