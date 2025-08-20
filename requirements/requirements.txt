@@ -9,4 +9,3 @@ uvicorn
 fastapi
 dotenv
 openai
-base64

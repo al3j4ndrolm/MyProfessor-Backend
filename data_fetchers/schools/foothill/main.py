@@ -5,7 +5,7 @@ from supabase import Client
 sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
 
 from helpers.data import data_keys
-from data_fetchers.ratings.rating_provider import get_ratings_and_merge
+from data_fetchers.rmp.ratings.rating_provider import get_ratings_and_merge
 from data_fetchers.schools.foothill.terms import get_terms
 from data_fetchers.schools.foothill.departments import get_department_data_table
 from data_fetchers.schools.foothill.courses import update_courses_data_table

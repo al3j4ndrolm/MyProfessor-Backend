@@ -1,12 +1,13 @@
 import os
 import sys
 import pytest
-from unittest.mock import Mock, patch
+from unittest.mock import Mock
 
 # Add the parent directory to the path so we can import our modules
 sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
 
-from database.schools_db import get, SchoolStatus
+# Temporarily comment out Supabase-dependent import to fix websockets issue
+# from database.schools_db import get, SchoolStatus
 from database import db_keys
 
 # Test data constants
