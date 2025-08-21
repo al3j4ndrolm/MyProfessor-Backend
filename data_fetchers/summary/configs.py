@@ -41,7 +41,7 @@ Analyze the following professor review data and create a detailed JSON response 
    - wouldTakeAgain: Use the wouldTakeAgain data if available
    - aiScore: Consider rating balance, difficulty, and overall satisfaction
 
-2. **Popular Tags:**
+2. **Popular Tags:** MAX: 8 TAGS
    - Use the teacherRatingTags data at the end for accurate counts
    - Include ALL tags with their actual mention counts
    - Categorize as "good", "bad", or "medium" based on their nature

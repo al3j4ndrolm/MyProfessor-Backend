@@ -24,19 +24,6 @@ supabase: Client = create_client(url, key)
 
 # GET ENDPOINTS ---------------------------------------------------------------
 
-@router.get("/ai_summary/")
-@router.get("/ai_summary")
-def ai_summary_get(
-    school_name: str = None,
-    professor_rmp_link: str = None
-):
-    if professor_rmp_link is None or school_name is None:
-        raise HTTPException(status_code=400)
-    else:
-        reviews = get_reviews(professor_rmp_link=professor_rmp_link, school_name=school_name, session=get_session())
-        summary = get_summary(reviews_data=reviews, deepseek_client=create_deepseek_client())
-        return summary
-
 @router.get("/courses")
 def courses_get(
     school: str = None
