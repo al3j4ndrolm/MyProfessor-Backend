@@ -55,7 +55,8 @@ def get_rating_data(supabase: Client, school: str, department: str, professor_na
                 data_keys.PROFESSOR_RATING_KEY: professor_entry[db_keys.KEY_RMP_RATING],
                 data_keys.PROFESSOR_REVIEW_COUNT_KEY: professor_entry[db_keys.KEY_RMP_REVIEWS_COUNT],
                 data_keys.PROFESSOR_DIFFICULTY_KEY: professor_entry[db_keys.KEY_RMP_DIFFICULTY],
-                data_keys.PROFESSOR_RECOMMEND_KEY: professor_entry[db_keys.KEY_RMP_RECOMMEND]
+                data_keys.PROFESSOR_RECOMMEND_KEY: professor_entry[db_keys.KEY_RMP_RECOMMEND],
+                data_keys.PROFESSOR_LINK_KEY: professor_entry[db_keys.KEY_RMP_LINK]
             }
 
     logger.debug(f"Not found, searching for professor {professor_name} in RMP ...")
@@ -78,7 +79,6 @@ def get_rating_data(supabase: Client, school: str, department: str, professor_na
     
     logger.info(f"Saving professor {professor_name} in `professors` table.")
     professors_db.save_one_entry(supabase, school, department, professor_name, professor_email, rmp_data)
-    del rmp_data[data_keys.PROFESSOR_LINK_KEY]
     del rmp_data[data_keys.PROFESSOR_SCORE_KEY]
     return rmp_data
 

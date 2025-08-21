@@ -8,10 +8,7 @@ from pydantic import BaseModel
 
 # Local imports
 from api import response
-from database import courses_db, classes_db, reports_db, searches_db
-from data_fetchers.rmp.reviews.reviews import get_reviews
-from data_fetchers.rmp.reviews.reviews import get_session
-from data_fetchers.summary.deepseek import get_summary, create_deepseek_client
+from database import courses_db, classes_db, reports_db, searches_db, summaries_db, db_keys
 
 # Initialize FastAPI app and router
 app = FastAPI()
@@ -44,6 +41,16 @@ def classes_get(
     else:
         searches_db.save(supabase, school, term, department)
         return classes_db.get_one_entry(supabase, school, term, department)
+
+@router.get("/summary")
+def summary_get(
+    rmp_link: str = None
+):
+    if rmp_link is None:
+        raise HTTPException(status_code=400)
+    else:
+        summary_entry = summaries_db.get_one_entry(supabase, rmp_link)
+        return None if not summary_entry else summary_entry[db_keys.SUMMARIES_KEY_SUMMARY]
 
 # TODO: Remove after client migrates to new classes endpoints
 @router.get("/schools/")

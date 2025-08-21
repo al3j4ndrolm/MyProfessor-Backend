@@ -45,6 +45,10 @@ REPORTS_KEY_PLATFORM = "platform"
 REPORTS_KEY_BUILD = "build"
 REPORTS_KEY_IS_ERROR = "is_error"
 
+# table `summaries`
+SUMMARIES_KEY_RMP_LINK = "rmp_link"
+SUMMARIES_KEY_SUMMARY = "summary"
+
 # table `searches`
 SEARCHES_KEY_SCHOOL = "school"
 SEARCHES_KEY_TERM = "term"

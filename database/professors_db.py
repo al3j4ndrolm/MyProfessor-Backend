@@ -1,4 +1,3 @@
-from deprecation import deprecated
 from supabase import Client
 from pydantic import BaseModel
 from typing import Optional
