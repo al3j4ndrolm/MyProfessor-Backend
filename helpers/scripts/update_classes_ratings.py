@@ -16,7 +16,7 @@ import os
 from database import schools_db, classes_db
 from database.schools_db import SchoolStatus
 from database import db_keys
-from data_fetchers.ratings.rating_provider import get_ratings_and_merge
+from data_fetchers.rmp.ratings.rating_provider import get_ratings_and_merge
 from logger import logger
 
 def main(supabase: Client):
