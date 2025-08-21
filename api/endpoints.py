@@ -9,6 +9,9 @@ from pydantic import BaseModel
 # Local imports
 from api import response
 from database import courses_db, classes_db, reports_db, searches_db
+from data_fetchers.rmp.reviews.reviews import get_reviews
+from data_fetchers.rmp.reviews.reviews import get_session
+from data_fetchers.summary.deepseek import get_summary, create_deepseek_client
 
 # Initialize FastAPI app and router
 app = FastAPI()
@@ -18,6 +21,50 @@ load_dotenv()
 url = os.getenv("SUPABASE_URL")
 key = os.getenv("SUPABASE_KEY")
 supabase: Client = create_client(url, key)
+
+# GET ENDPOINTS ---------------------------------------------------------------
+
+@router.get("/ai_summary/")
+@router.get("/ai_summary")
+def ai_summary_get(
+    school_name: str = None,
+    professor_rmp_link: str = None
+):
+    if professor_rmp_link is None or school_name is None:
+        raise HTTPException(status_code=400)
+    else:
+        reviews = get_reviews(professor_rmp_link=professor_rmp_link, school_name=school_name, session=get_session())
+        summary = get_summary(reviews_data=reviews, deepseek_client=create_deepseek_client())
+        return summary
+
+@router.get("/courses")
+def courses_get(
+    school: str = None
+):
+    if school is None:
+        raise HTTPException(status_code=400)
+    else:
+        return courses_db.get(supabase, school)
+
+@router.get("/classes")
+def classes_get(
+    school: str = None,
+    term: str = None,
+    department: str = None
+):
+    if school is None or term is None or department is None:
+        raise HTTPException(status_code=400)
+    else:
+        searches_db.save(supabase, school, term, department)
+        return classes_db.get_one_entry(supabase, school, term, department)
+
+# TODO: Remove after client migrates to new classes endpoints
+@router.get("/schools/")
+@router.get("/schools")
+def schools_get():
+    return response.response_schools(supabase)
+
+# POST ENDPOINTS ---------------------------------------------------------------
 
 class StartPostRequest(BaseModel):
     '''
@@ -49,27 +96,6 @@ def start_post(
 
     return response.response_start(supabase, body.client_data, body.user_data)
 
-@router.get("/courses")
-def courses_get(
-    school: str = None
-):
-    if school is None:
-        raise HTTPException(status_code=400)
-    else:
-        return courses_db.get(supabase, school)
-
-@router.get("/classes")
-def classes_get(
-    school: str = None,
-    term: str = None,
-    department: str = None
-):
-    if school is None or term is None or department is None:
-        raise HTTPException(status_code=400)
-    else:
-        searches_db.save(supabase, school, term, department)
-        return classes_db.get_one_entry(supabase, school, term, department)
-
 class ReportsErrorsPostRequest(BaseModel):
     critical: bool
     details: str
@@ -82,12 +108,6 @@ def reports_errors_post(
     body: ReportsErrorsPostRequest = Body(...)
 ):
     reports_db.save(supabase, body, is_error=True)
-
-# TODO: Remove after client migrates to new classes endpoints
-@router.get("/schools/")
-@router.get("/schools")
-def schools_get():
-    return response.response_schools(supabase)
 
 # TODO: Remove after client migrates to new classes endpoints
 class ClassesPostRequest(BaseModel):

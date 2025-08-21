@@ -30,24 +30,25 @@ def get_school_data_payload(school_name: str) -> dict:
 
 def get_professors_reviews_payload(professor_id: str):
     payload = {
-        "query": """
-        query GetTeacher($id: ID!) {
-            node(id: $id) {
-                ... on Teacher {
+        "query": f"""
+        query GetTeacher($id: ID!) {{
+            node(id: $id) {{
+                ... on Teacher {{
                     id
                     firstName
                     lastName
                     avgRating
                     numRatings
-                    school {
+                    school {{
                         name
-                    }
+                    }}
                     department
-                    ratings(first: {REVIEW_LIMIT}) {
-                        edges {
-                            node {
+                    ratings(first: {REVIEW_LIMIT}) {{
+                        edges {{
+                            node {{ 
                                 id
                                 comment
+                                class
                                 ratingTags
                                 date
                                 grade
@@ -55,22 +56,33 @@ def get_professors_reviews_payload(professor_id: str):
                                 helpfulRating
                                 isForCredit
                                 isForOnlineClass
-                            }
-                        }
-                    }
-                    teacherRatingTags {
+                            }}
+                        }}
+                    }}
+                    teacherRatingTags {{
                         tagName
                         tagCount
-                    }
-                }
-            }
-        }
-        """,
+                    }}      
+                }}
+            }}
+        }}
+        """, # noqa: E501   
         "variables": {
                 "id": professor_id
             }
         }
-
     return payload
 
-
+def get_api_schema_payload():
+    payload = {
+        "query": """
+        query {
+            __schema {
+                types {
+                    name
+                }
+            }
+        }
+        """
+    } 
+    return payload
