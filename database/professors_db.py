@@ -98,12 +98,17 @@ def get_all(supabase: Client, school: str, department: str) -> dict:
     else:
         return {}
 
-def get_all_rmp_links_from_school(supabase: Client, school: str) -> set[str]:
+def get_unique_rmp_links(supabase: Client, school: str) -> set[str]:
     search_query = supabase.table(TABLE_NAME)\
         .select(db_keys.KEY_RMP_LINK)\
         .eq(db_keys.KEY_SCHOOL, school)\
         .execute()
-    rmp_links = set([professor[db_keys.KEY_RMP_LINK] for professor in search_query.data if professor[db_keys.KEY_RMP_LINK] is not None])
+
+    rmp_links = set()
+    for professor in search_query.data:
+        if professor[db_keys.KEY_RMP_LINK] is not None:
+            rmp_links.add(professor[db_keys.KEY_RMP_LINK])
+
     if rmp_links:
         return rmp_links
     else:

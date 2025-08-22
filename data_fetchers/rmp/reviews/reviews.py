@@ -7,25 +7,18 @@ from logger import logger
 
 # Public functions ------------------------------------------------------------
 
-def get_session():
+def get_session() -> requests.Session:
     session = requests.Session()
     session.headers.update(SESSION_HEADER)
     return session
 
 # TODO: Remove school_name parameter if not needed for AI Summary
-def get_reviews(professor_rmp_link: str, school_name: str, session):
-    url = f"{RMP_BASE_URL}{professor_rmp_link}"
-    soup = html_url_to_soup(url)
+def get_reviews(professor_rmp_link: str, school_name: str, session: requests.Session) -> dict | None:
+    reviews = _extract_reviews(professor_rmp_link, session)
 
-    ratings_distribution = _extract_ratings_distribution(soup)
-    top_tags = _extract_top_tags(soup)
-
-    if ratings_distribution and top_tags:
-        reviews = _extract_reviews(professor_rmp_link, session)
-    else:
+    if reviews is None:
         return None
-
-    return (ratings_distribution, top_tags, reviews)
+    return reviews
 
 # TODO: Optional approach to fetch professor data from RMP API (DELETE if needed)
 def get_school_id(school_name: str, session) -> str | None:
@@ -83,11 +76,14 @@ def _extract_top_tags(soup) -> list[str]:
 
 def _extract_reviews(professor_rmp_link: str, session) -> dict:
     professor_id = _get_professor_id(rmp_link=professor_rmp_link)
-    payload = get_professors_reviews_payload(professor_id=professor_id)
 
-    
-    response = session.post(RMP_GRAPHQL_URL, json=payload)
-    return response.json()
+    try:
+        payload = get_professors_reviews_payload(professor_id=professor_id)
+        response = session.post(RMP_GRAPHQL_URL, json=payload)
+        return response.json()
+    except Exception as e:
+        logger.error(f"Unable to get reviews from RMP API: {e}")
+        return None
 
 def _get_professor_id(rmp_link: str) -> str:
     code = rmp_link.split("/")[-1]

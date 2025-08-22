@@ -22,20 +22,23 @@ class DeepSeekSession:
             messages=self.conversation_history,
             stream=False
         )
+
+        result = response.choices[0].message.content
         
         # Add assistant response to conversation
         self.conversation_history.append({
             "role": "assistant",
-            "content": response.choices[0].message.content
+            "content": result
         })
 
-        if isinstance(response.choices[0].message.content, str):
+        if isinstance(result, str):
             try:
-                return json.loads(response.choices[0].message.content)
+                return json.loads(result)
             except json.JSONDecodeError:
-                return {"error": "Failed to parse response " + response.choices[0].message.content}
+                logger.error(f"Failed to parse response: {result}")
+                return None
         else:
-            return response.choices[0].message.content
+            return result
     
     def reset_conversation(self):
         """Reset conversation but keep system prompt"""

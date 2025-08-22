@@ -10,9 +10,8 @@ def update_summaries_table(supabase: Client):
     schools = _get_available_schools(supabase)
 
     for school in schools:
-        rmp_links = professors_db.get_all_rmp_links_from_school(supabase, school)
+        rmp_links = professors_db.get_unique_rmp_links(supabase, school)
         logger.info(f"Found {len(rmp_links)} RMP links for {school}")
-        logger.info(f"RMP links: {rmp_links}")
 
         for rmp_link in list(rmp_links):
             reviews = get_reviews(rmp_link, school, session)
@@ -20,9 +19,14 @@ def update_summaries_table(supabase: Client):
                 logger.info(f"No reviews found for {rmp_link}")
                 continue
 
-            reviews_count = len(reviews[2]['data']['node']['ratings']['edges'])
+            reviews_count = len(reviews['data']['node']['ratings']['edges'])
             logger.info(f"Found {reviews_count} reviews for {rmp_link}")
+
             summary = deepseek_session.get_summary(reviews)
+            if summary is None:
+                logger.info(f"No summary found for {rmp_link}")
+                continue
+
             summaries_db.save_one_entry(supabase, rmp_link, summary)
             logger.info(f"Saved summary for {rmp_link} in {school}")
 
@@ -31,3 +35,13 @@ def _get_available_schools(supabase: Client) -> list[str]:
     # school_names = [school[db_keys.SCHOOL_KEY_SCHOOL_NAME] for school in schools]
     # return school_names
     return ["Testing School"]
+
+if __name__ == "__main__":
+    from supabase import create_client, Client
+    import os
+    from dotenv import load_dotenv
+
+    load_dotenv()
+
+    supabase = create_client(os.getenv("SUPABASE_URL"), os.getenv("SUPABASE_KEY"))
+    update_summaries_table(supabase)
