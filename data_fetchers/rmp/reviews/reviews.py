@@ -4,6 +4,7 @@ from helpers.soup_getter import html_url_to_soup
 import base64
 import requests
 from logger import logger
+import traceback
 
 # Public functions ------------------------------------------------------------
 
@@ -15,9 +16,6 @@ def get_session() -> requests.Session:
 # TODO: Remove school_name parameter if not needed for AI Summary
 def get_reviews(professor_rmp_link: str, school_name: str, session: requests.Session) -> dict | None:
     reviews = _extract_reviews(professor_rmp_link, session)
-
-    if reviews is None:
-        return None
     return reviews
 
 # TODO: Optional approach to fetch professor data from RMP API (DELETE if needed)
@@ -46,6 +44,7 @@ def _extract_ratings_distribution(soup) -> dict:
     try:
         ratings_distribution_list = ratings_distribution_holder.find_all("li")
     except:
+        logger.error(f"Unable to extract ratings distribution from RMP page: {traceback.format_exc()}")
         return {}
 
     for row in ratings_distribution_list:
@@ -66,6 +65,7 @@ def _extract_top_tags(soup) -> list[str]:
     try:
         top_tags_list = top_tags_holder.find_all("span")
     except:
+        logger.error(f"Unable to extract top tags from RMP page: {traceback.format_exc()}")
         return []
 
     top_tags = []

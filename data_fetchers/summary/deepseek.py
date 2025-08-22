@@ -22,8 +22,12 @@ class DeepSeekSession:
             messages=self.conversation_history,
             stream=False
         )
-
-        result = response.choices[0].message.content
+        
+        try:
+            result = response.choices[0].message.content
+        except Exception as e:
+            logger.error(f"Failed to get summary from DeepSeek: {e}")
+            return None
         
         # Add assistant response to conversation
         self.conversation_history.append({

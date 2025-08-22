@@ -16,7 +16,7 @@ def update_summaries_table(supabase: Client):
         for rmp_link in list(rmp_links):
             reviews = get_reviews(rmp_link, school, session)
             if reviews is None:
-                logger.info(f"No reviews found for {rmp_link}")
+                logger.warning(f"No reviews found for {rmp_link}")
                 continue
 
             reviews_count = len(reviews['data']['node']['ratings']['edges'])
@@ -24,7 +24,7 @@ def update_summaries_table(supabase: Client):
 
             summary = deepseek_session.get_summary(reviews)
             if summary is None:
-                logger.info(f"No summary found for {rmp_link}")
+                logger.warning(f"No summary found for {rmp_link}")
                 continue
 
             summaries_db.save_one_entry(supabase, rmp_link, summary)
