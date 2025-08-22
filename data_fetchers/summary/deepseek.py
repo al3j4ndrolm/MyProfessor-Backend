@@ -28,12 +28,14 @@ class DeepSeekSession:
             "role": "assistant",
             "content": response.choices[0].message.content
         })
-        
-        try:
-            return response.choices[0].message.content 
-        except Exception as e:
-            logger.error(f"Unable to get summary from DeepSeek: {e}")
-            return {}
+
+        if isinstance(response.choices[0].message.content, str):
+            try:
+                return json.loads(response.choices[0].message.content)
+            except json.JSONDecodeError:
+                return {"error": "Failed to parse response " + response.choices[0].message.content}
+        else:
+            return response.choices[0].message.content
     
     def reset_conversation(self):
         """Reset conversation but keep system prompt"""

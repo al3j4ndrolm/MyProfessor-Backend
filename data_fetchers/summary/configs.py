@@ -9,6 +9,7 @@ You are an AI assistant that analyzes and generates comprehensive, structured su
 
 Analyze the following professor review comments and create a detailed JSON response with the exact structure shown below:
 
+IMPORTANT: Return ONLY the JSON object, no markdown formatting, no code blocks, no explanations.
 **REQUIRED OUTPUT STRUCTURE:**
 {
   "stats": {

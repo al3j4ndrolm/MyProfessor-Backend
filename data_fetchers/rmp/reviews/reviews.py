@@ -19,8 +19,13 @@ def get_reviews(professor_rmp_link: str, school_name: str, session):
 
     ratings_distribution = _extract_ratings_distribution(soup)
     top_tags = _extract_top_tags(soup)
-    reviews = _extract_reviews(professor_rmp_link, session)
-    return ratings_distribution, top_tags, reviews
+
+    if ratings_distribution and top_tags:
+        reviews = _extract_reviews(professor_rmp_link, session)
+    else:
+        return None
+
+    return (ratings_distribution, top_tags, reviews)
 
 # TODO: Optional approach to fetch professor data from RMP API (DELETE if needed)
 def get_school_id(school_name: str, session) -> str | None:
@@ -44,7 +49,11 @@ def _extract_ratings_distribution(soup) -> dict:
 
     ratings_distribution_data = {}
     ratings_distribution_holder = soup.find("ul", class_="RatingDistributionChart__MeterList-o2y7ff-0")
-    ratings_distribution_list = ratings_distribution_holder.find_all("li")
+
+    try:
+        ratings_distribution_list = ratings_distribution_holder.find_all("li")
+    except:
+        return {}
 
     for row in ratings_distribution_list:
         rating_label = row.find("label").text.strip()
@@ -60,7 +69,11 @@ def _extract_top_tags(soup) -> list[str]:
         ['Easy', 'Helpful', 'Smart', 'Interesting']
     """
     top_tags_holder = soup.find("div", class_="TeacherTags__TagsContainer-sc-16vmh1y-0")
-    top_tags_list = top_tags_holder.find_all("span")
+
+    try:
+        top_tags_list = top_tags_holder.find_all("span")
+    except:
+        return []
 
     top_tags = []
     for tag in top_tags_list:
@@ -71,6 +84,8 @@ def _extract_top_tags(soup) -> list[str]:
 def _extract_reviews(professor_rmp_link: str, session) -> dict:
     professor_id = _get_professor_id(rmp_link=professor_rmp_link)
     payload = get_professors_reviews_payload(professor_id=professor_id)
+
+    
     response = session.post(RMP_GRAPHQL_URL, json=payload)
     return response.json()
 
