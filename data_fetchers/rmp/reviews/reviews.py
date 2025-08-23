@@ -13,67 +13,15 @@ def get_session() -> requests.Session:
     session.headers.update(SESSION_HEADER)
     return session
 
-# TODO: Remove school_name parameter if not needed for AI Summary
-def get_reviews(professor_rmp_link: str, school_name: str, session: requests.Session) -> dict | None:
+def get_reviews(professor_rmp_link: str, session: requests.Session) -> dict | None:
     reviews = _extract_reviews(professor_rmp_link, session)
-    return reviews
 
-# TODO: Optional approach to fetch professor data from RMP API (DELETE if needed)
-def get_school_id(school_name: str, session) -> str | None:
-    payload = get_school_data_payload(school_name=school_name)
-    response = session.post(RMP_GRAPHQL_URL, json=payload)
-
-    try:
-        return response.json()["data"]["newSearch"]["schools"]["edges"][0]["node"]["id"]
-    except Exception as e:
-        logger.error(f"Unable to get school id from RMP API: {e}")
-        return None
-
-# Private functions ------------------------------------------------------------
-
-def _extract_ratings_distribution(soup) -> dict:
-
-    """ 
-    Example of return value:
-        {'Awesome 5': '114', 'Great 4': '56', 'Good 3': '48', 'OK 2': '72', 'Awful 1': '179'}
-    """
-
-    ratings_distribution_data = {}
-    ratings_distribution_holder = soup.find("ul", class_="RatingDistributionChart__MeterList-o2y7ff-0")
-
-    try:
-        ratings_distribution_list = ratings_distribution_holder.find_all("li")
-    except:
-        logger.error(f"Unable to extract ratings distribution from RMP page: {traceback.format_exc()}")
+    if reviews["data"]["node"]["numRatings"] == 0:
         return {}
 
-    for row in ratings_distribution_list:
-        rating_label = row.find("label").text.strip()
-        rating_quantity = row.find("div").text.strip()
-        ratings_distribution_data[rating_label] = rating_quantity
+    return reviews
 
-    return ratings_distribution_data
-
-def _extract_top_tags(soup) -> list[str]:
-
-    """ 
-    Example of return value:
-        ['Easy', 'Helpful', 'Smart', 'Interesting']
-    """
-    top_tags_holder = soup.find("div", class_="TeacherTags__TagsContainer-sc-16vmh1y-0")
-
-    try:
-        top_tags_list = top_tags_holder.find_all("span")
-    except:
-        logger.error(f"Unable to extract top tags from RMP page: {traceback.format_exc()}")
-        return []
-
-    top_tags = []
-    for tag in top_tags_list:
-        top_tags.append(tag.text.strip())
-
-    return top_tags
-
+# Private functions ------------------------------------------------------------
 def _extract_reviews(professor_rmp_link: str, session) -> dict:
     professor_id = _get_professor_id(rmp_link=professor_rmp_link)
 
@@ -87,9 +35,9 @@ def _extract_reviews(professor_rmp_link: str, session) -> dict:
 
 def _get_professor_id(rmp_link: str) -> str:
     code = rmp_link.split("/")[-1]
-    return _base64_encode(f"Teacher-{code}")
+    return base64.b64encode(f"Teacher-{code}".encode()).decode() # This is the format of the professor id in the RMP API
 
-# TODO: if this function will not be used more than one time, we don't need to wrap this
-def _base64_encode(string: str) -> str:
-    return base64.b64encode(string.encode()).decode()
-
+if __name__ == "__main__":
+    session = get_session()
+    reviews = get_reviews(professor_rmp_link="professor/89065", school_name="", session=session)
+    print(reviews)

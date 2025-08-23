@@ -9,7 +9,10 @@ You are an AI assistant that analyzes and generates comprehensive, structured su
 
 Analyze the following professor review comments and create a detailed JSON response with the exact structure shown below:
 
-IMPORTANT: Return ONLY the JSON object, no markdown formatting, no code blocks, no explanations.
+IMPORTANT: 
+* Return ONLY the JSON object, no markdown formatting, no code blocks, no explanations. 
+* Focus on the comment writings in reviews['data']['node']['ratings']['edges']["node"]["comment"].
+
 **REQUIRED OUTPUT STRUCTURE:**
 {
   "stats": {
@@ -33,12 +36,13 @@ IMPORTANT: Return ONLY the JSON object, no markdown formatting, no code blocks, 
 **ANALYSIS GUIDELINES:**
 
 1. **Stats Calculation:**
-   - aiScore: Calculate based on review comments, trending, balance, popularity. Take bigger weight for the more recent reviews.
+   - aiScore: Calculate based on comments, trending, balance, popularity. Take bigger weight for the more recent comments.
    - reviewCount: Total number of reviews
 
 2. **Popular Tags:** MAX: 8 TAGS
-   - Generate tags based on the review comments, with count of times the tag is mentioned
+   - Generate tags based on the writing comments.
    - Categorize as "good", "warning", or "bad" based on their nature
+   - Whenever a writing comment is describing a tag, count it as one mention of that tag.
 
 3. **Recent Course Feedback:**
    - Extract from the 'class' field in reviews (MATH 1A, PHYS 4A, etc)

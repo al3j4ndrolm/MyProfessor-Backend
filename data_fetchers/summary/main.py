@@ -1,47 +1,48 @@
-from supabase import Client
+from supabase import create_client, Client
 from database import summaries_db, schools_db, professors_db, db_keys
+from database.schools_db import SchoolStatus
 from logger import logger
 from data_fetchers.summary.deepseek import DeepSeekSession
 from data_fetchers.rmp.reviews.reviews import get_reviews, get_session
+import requests
+import openai
+import os
+from dotenv import load_dotenv
 
-def update_summaries_table(supabase: Client):
-    deepseek_session = DeepSeekSession()
-    session = get_session()
-    schools = _get_available_schools(supabase)
+def update_summaries_table(supabase: Client, deepseek_session: DeepSeekSession, session: requests.Session):
+    schools = schools_db.get(supabase, [SchoolStatus.TESTING])
 
     for school in schools:
-        rmp_links = professors_db.get_unique_rmp_links(supabase, school)
-        logger.info(f"Found {len(rmp_links)} RMP links for {school}")
+        school_name = school[db_keys.SCHOOL_KEY_SCHOOL_NAME]
+        rmp_links = professors_db.get_unique_rmp_links(supabase, school_name)
+        logger.info(f"Found {len(rmp_links)} RMP links for {school_name}, now processing...")
 
         for rmp_link in list(rmp_links):
-            reviews = get_reviews(rmp_link, school, session)
-            if reviews is None:
-                logger.warning(f"No reviews found for {rmp_link}")
-                continue
+            summary = _get_summary(rmp_link, session, deepseek_session)
+            if summary:
+                summaries_db.save_one_entry(supabase, rmp_link, summary)
+                logger.info(f"Saved summary for {rmp_link}")
+            else:
+                logger.warning(f"Failed to get summary for {rmp_link}")
+                summaries_db.save_one_entry(supabase, rmp_link, {})
 
-            reviews_count = len(reviews['data']['node']['ratings']['edges'])
-            logger.info(f"Found {reviews_count} reviews for {rmp_link}")
+def _get_summary(rmp_link, session, deepseek_session: DeepSeekSession) -> dict | None:
+    reviews = get_reviews(rmp_link, session)
+    if reviews == {}:
+        logger.warning(f"No reviews found for {rmp_link}")
+        return {}
 
-            summary = deepseek_session.get_summary(reviews)
-            if summary is None:
-                logger.warning(f"No summary found for {rmp_link}")
-                continue
-
-            summaries_db.save_one_entry(supabase, rmp_link, summary)
-            logger.info(f"Saved summary for {rmp_link} in {school}")
-
-def _get_available_schools(supabase: Client) -> list[str]:
-    # schools = schools_db.get(supabase)
-    # school_names = [school[db_keys.SCHOOL_KEY_SCHOOL_NAME] for school in schools]
-    # return school_names
-    return ["Testing School"]
+    try:
+        summary = deepseek_session.get_summary(reviews)
+        return summary
+    except openai.BadRequestError as e:
+        # TODO: retry with less reviews
+        return {}
 
 if __name__ == "__main__":
-    from supabase import create_client, Client
-    import os
-    from dotenv import load_dotenv
-
     load_dotenv()
-
     supabase = create_client(os.getenv("SUPABASE_URL"), os.getenv("SUPABASE_KEY"))
-    update_summaries_table(supabase)
+    session = get_session()
+    deepseek_session = DeepSeekSession()
+    
+    update_summaries_table(supabase, deepseek_session, session)

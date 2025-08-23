@@ -49,3 +49,10 @@ class DeepSeekSession:
         self.conversation_history = [
             {"role": "system", "content": DEEPSEEK_SYSTEM_PROMPT}
         ]
+
+if __name__ == "__main__":
+    deepseek_session = DeepSeekSession()
+    session = get_session()
+    reviews = get_reviews(professor_rmp_link="professor/89065", school_name="", session=session)
+    summary = deepseek_session.get_summary(reviews)
+    print(summary)
