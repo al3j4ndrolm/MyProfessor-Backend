@@ -1,24 +1,24 @@
-from data_fetchers.rmp.reviews.configs import RMP_BASE_URL, SESSION_HEADER, RMP_GRAPHQL_URL
-from data_fetchers.rmp.reviews.review_graphql import get_school_data_payload, get_professors_reviews_payload
-from helpers.soup_getter import html_url_to_soup
+from data_fetchers.rmp.reviews.configs import SESSION_HEADER, RMP_GRAPHQL_URL
+from data_fetchers.rmp.reviews.review_graphql import get_professors_reviews_payload
 import base64
 import requests
 from logger import logger
-import traceback
 
 # Public functions ------------------------------------------------------------
 
-def get_session() -> requests.Session:
+def setup_request_session() -> requests.Session:
     session = requests.Session()
     session.headers.update(SESSION_HEADER)
     return session
 
-def get_reviews(professor_rmp_link: str, session: requests.Session) -> dict | None:
-    reviews = _extract_reviews(professor_rmp_link, session)
+def get_reviews(professor_rmp_link: str, session: requests.Session) -> list[dict] | None:
+    result = _extract_reviews(professor_rmp_link, session)
 
-    if reviews["data"]["node"]["numRatings"] == 0:
+    if result["data"]["node"]["numRatings"] == 0:
         return {}
 
+    edges = result['data']['node']['ratings']['edges']
+    reviews = [edge['node'] for edge in edges]
     return reviews
 
 # Private functions ------------------------------------------------------------
@@ -35,9 +35,10 @@ def _extract_reviews(professor_rmp_link: str, session) -> dict:
 
 def _get_professor_id(rmp_link: str) -> str:
     code = rmp_link.split("/")[-1]
-    return base64.b64encode(f"Teacher-{code}".encode()).decode() # This is the format of the professor id in the RMP API
+    # This is the format of the professor id in the RMP API
+    return base64.b64encode(f"Teacher-{code}".encode()).decode()
 
 if __name__ == "__main__":
-    session = get_session()
+    session = setup_request_session()
     reviews = get_reviews(professor_rmp_link="professor/89065", school_name="", session=session)
     print(reviews)

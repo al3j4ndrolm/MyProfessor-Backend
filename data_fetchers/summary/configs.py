@@ -34,10 +34,9 @@ IMPORTANT:
 }
 
 **ANALYSIS GUIDELINES:**
-
 1. **Stats Calculation:**
    - aiScore: Calculate based on comments, trending, balance, popularity. Take bigger weight for the more recent comments.
-   - reviewCount: Total number of reviews
+   - reviewCount: Total number of reviews passed to generate this summary
 
 2. **Popular Tags:** MAX: 8 TAGS
    - Generate tags based on the writing comments.

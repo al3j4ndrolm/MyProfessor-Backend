@@ -13,10 +13,8 @@ def test_get_reviews():
     
     # Test parameters
     rmp_link = "professor/89065"
-    school_name = "Test School"
     
     print(f"Testing get_reviews with RMP link: {rmp_link}")
-    print(f"School name: {school_name}")
     
     try:
         # Get session
@@ -25,11 +23,11 @@ def test_get_reviews():
         
         # Get reviews
         print("Fetching reviews...")
-        reviews = get_reviews(rmp_link, school_name, session)
+        reviews = get_reviews(rmp_link, session)
         
         if reviews is None:
             print("❌ No reviews returned")
-            result = {"error": "No reviews returned", "rmp_link": rmp_link, "school_name": school_name}
+            result = {"error": "No reviews returned", "rmp_link": rmp_link}
         else:
             print("✓ Reviews fetched successfully")
             print(f"Response keys: {list(reviews.keys()) if isinstance(reviews, dict) else 'Not a dict'}")
@@ -38,7 +36,6 @@ def test_get_reviews():
             result = {
                 "success": True,
                 "rmp_link": rmp_link,
-                "school_name": school_name,
                 "reviews_data": reviews
             }
             
@@ -56,7 +53,6 @@ def test_get_reviews():
         result = {
             "error": str(e),
             "rmp_link": rmp_link,
-            "school_name": school_name
         }
     
     # Save result to JSON file

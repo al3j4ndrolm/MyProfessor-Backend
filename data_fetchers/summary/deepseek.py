@@ -1,58 +1,45 @@
 from .configs import DEEPSEEK_SYSTEM_PROMPT, DEEPSEEK_MODEL, DEEPSEEK_API_KEY, DEEPSEEK_BASE_URL
-from data_fetchers.rmp.reviews.reviews import get_reviews, get_session
+from data_fetchers.rmp.reviews.reviews import get_reviews, setup_request_session
 from logger import logger
 from openai import OpenAI
 import json
+import traceback
+import openai
+from dotenv import load_dotenv
 
 class DeepSeekSession:
     def __init__(self):
         self.client = OpenAI(api_key=DEEPSEEK_API_KEY, base_url=DEEPSEEK_BASE_URL).chat.completions
         self.model = DEEPSEEK_MODEL
-        self.conversation_history = [{"role": "system", "content": DEEPSEEK_SYSTEM_PROMPT}]
     
     def get_summary(self, reviews_data: list[dict]) -> dict:
-        # Add user message to conversation
-        self.conversation_history.append({
-            "role": "user", 
-            "content": json.dumps(reviews_data)
-        })
-        
-        response = self.client.create(
-            model=self.model,
-            messages=self.conversation_history,
-            stream=False
-        )
-        
-        try:
-            result = response.choices[0].message.content
-        except Exception as e:
-            logger.error(f"Failed to get summary from DeepSeek: {e}")
+        if not reviews_data:
+            logger.warning(f"No reviews data to generate summary.")
             return None
-        
-        # Add assistant response to conversation
-        self.conversation_history.append({
-            "role": "assistant",
-            "content": result
-        })
 
-        if isinstance(result, str):
-            try:
-                return json.loads(result)
-            except json.JSONDecodeError:
-                logger.error(f"Failed to parse response: {result}")
-                return None
-        else:
-            return result
-    
-    def reset_conversation(self):
-        """Reset conversation but keep system prompt"""
-        self.conversation_history = [
-            {"role": "system", "content": DEEPSEEK_SYSTEM_PROMPT}
+        messages = [
+            {"role": "system", "content": DEEPSEEK_SYSTEM_PROMPT},
+            {"role": "user", "content": json.dumps(reviews_data)}
         ]
 
+        try:
+            response = self.client.create(
+                model=self.model,
+                messages=messages,
+                stream=False
+            )
+            result = response.choices[0].message.content
+            return json.loads(result)
+        except openai.BadRequestError as e:
+            return self.get_summary(reviews_data[:len(reviews_data)//2]) # Retry with half the reviews
+        except Exception as e:
+            logger.error(f"Failed to get summary from DeepSeek: {traceback.format_exc()}")
+            return None
+    
 if __name__ == "__main__":
+    load_dotenv()
     deepseek_session = DeepSeekSession()
-    session = get_session()
-    reviews = get_reviews(professor_rmp_link="professor/89065", school_name="", session=session)
+    session = setup_request_session()
+    reviews = get_reviews(professor_rmp_link="professor/89065", session=session)
     summary = deepseek_session.get_summary(reviews)
     print(summary)

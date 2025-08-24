@@ -98,7 +98,7 @@ def get_all(supabase: Client, school: str, department: str) -> dict:
     else:
         return {}
 
-def get_unique_rmp_links(supabase: Client, school: str) -> set[str]:
+def get_unique_rmp_links(supabase: Client, school: str) -> list[str]:
     search_query = supabase.table(TABLE_NAME)\
         .select(db_keys.KEY_RMP_LINK)\
         .eq(db_keys.KEY_SCHOOL, school)\
@@ -109,7 +109,7 @@ def get_unique_rmp_links(supabase: Client, school: str) -> set[str]:
         if professor[db_keys.KEY_RMP_LINK] is not None:
             rmp_links.add(professor[db_keys.KEY_RMP_LINK])
 
-    return rmp_links
+    return list(rmp_links)
 
 # TODO: Remove after all data in database is fixed
 def update(supabase: Client, professors_data_list: list[dict]):
