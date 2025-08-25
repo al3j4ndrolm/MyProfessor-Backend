@@ -36,23 +36,29 @@ class DeepSeekSession:
             return None
         except openai.BadRequestError as e:
             return self.get_summary(reviews_data[:len(reviews_data)//2]) # Retry with half the reviews
+        except openai.APIStatusError as e:
+            logger.error(f"APIStatusError: {e.message}")
+            return None
         except Exception as e:
             logger.error(f"Failed to get summary from DeepSeek: {traceback.format_exc()}")
             return None
 
     def is_valid_summary(self, summary: dict) -> bool:
-        if not summary.get("stats"):
-            return False
-        if not summary.get("stats").get("aiScore"):
-            return False
-        if not summary.get("stats").get("reviewCount"):
+        if not self.is_valid_stats(summary.get("stats")):
             return False
         if not isinstance(summary.get("popularTags"), list):
             return False
         for tag in summary.get("popularTags"):
-            if not self.is_valid_tag(tag):
+            if not self.is_valid_tag(tag):    
                 return False
-        if not summary.get("recentCourseFeedback"):
+        if not isinstance(summary.get("recentCourseFeedback"), dict):
+            return False
+        return True
+
+    def is_valid_stats(self, stats: dict) -> bool:
+        if not stats.get("aiScore"):
+            return False
+        if not stats.get("reviewCount"):
             return False
         return True
 
@@ -63,6 +69,7 @@ class DeepSeekSession:
             return False
         if not tag.get("mentions"):
             return False
+        return True
     
 if __name__ == "__main__":
     load_dotenv()
