@@ -10,14 +10,10 @@ from helpers.data import data_creators
 from logger import logger
 from data_fetchers.schools.de_anza_college_selenium.selenium_config import SeleniumConfig
 
-driver = SeleniumConfig.create_driver()
-
-def get_terms() -> list[dict]:
-    driver.get("https://www.deanza.edu/schedule/")
+def get_terms(driver: webdriver.Chrome) -> list[dict]:
     terms_holder = extract_terms_holder(driver)
     terms_options = terms_holder.find_elements(By.CSS_SELECTOR, "button[type='button']")
     terms_data = build_term_data_list(terms_options)
-    input("Press Enter to continue... results: " + str(terms_data))
     return terms_data
 
 def extract_terms_holder(driver: webdriver.Chrome) -> WebElement:
@@ -40,5 +36,7 @@ def _wait_for_element(driver: webdriver.Chrome, by: By, value: str) -> WebElemen
         logger.error(f"Error waiting for {by} {value}: {e}")
         return None
 
+# TODO: Remove this
 if __name__ == "__main__":
-    get_terms()
+    driver = SeleniumConfig.create_driver(headless=False)
+    get_terms(driver)
