@@ -17,7 +17,11 @@ def get_classes_per_department(session_data: dict, department_code: str) -> dict
         for row in session_data["aaData"]:
 
             course_code = parse_html(row[0]).get_text().strip().split(" [")[0]
-            professor_name = parse_html(row[8]).get_text().strip()
+            unprocessed_professor_name = parse_html(row[8]).get_text().strip().split(" ")
+            if "To" in unprocessed_professor_name:
+                professor_name = "To be determined"
+            else:
+                professor_name = unprocessed_professor_name[0] + " " + unprocessed_professor_name[1]
             professor_email = _get_email(professor_name, department_code)
             professor_identifier = data_creators.create_professor_identifier(professor_name, professor_email)
             
@@ -74,3 +78,9 @@ def _parse_meeting(html):
 
 def _get_email(professor_name: str, department_code: str) -> str:
     pass
+
+if __name__ == "__main__":
+    from data_fetchers.schools.sfsu.main import get_session_data
+    
+    session_data = get_session_data("PHYS", "2257")
+    print(get_classes_per_department(session_data, "PHYS"))
