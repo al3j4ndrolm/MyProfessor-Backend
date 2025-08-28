@@ -1,19 +1,20 @@
-from selenium import webdriver
+import traceback
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.remote.webelement import WebElement
 import undetected_chromedriver as uc
 
+# Local imports
 from helpers.data import data_creators, data_keys
 from logger import logger
 from data_fetchers.schools.de_anza_college_selenium.selenium_config import SeleniumConfig
 
 def get_classes_per_department(department_code: str, driver: uc.Chrome) -> dict:
-    print("inside get_classes_per_department")
+
     schedules_holder = _wait_for_element(driver, By.CSS_SELECTOR, "table[class*='table-schedule']")
     if schedules_holder is None:
-        logger.error(f"schedules.py: No schedules found for {department_code}.")
+        logger.warning(f"schedules.py: No schedules found for {department_code}.")
         return {}
     
     try:
@@ -22,11 +23,11 @@ def get_classes_per_department(department_code: str, driver: uc.Chrome) -> dict:
         logger.info(f"Extracted classes for {len(schedule_data_table)} courses.")
         return schedule_data_table
     except Exception as e:
-        logger.error(f"Error getting classes per department: {e}")
+        logger.error(f"Error getting classes per department: {traceback.format_exc()}")
         return {}
 
 def build_classes_data_table(schedule_rows: list[WebElement], department_code: str) -> dict:
-    print("inside build_classes_data_table")
+
     classes_data_table = {}
     last_course_name = None
     last_professor_identifier = None
@@ -40,7 +41,7 @@ def build_classes_data_table(schedule_rows: list[WebElement], department_code: s
             try:
                 professor_id = schedule_tags[7].find_element(By.TAG_NAME, "a").get_attribute("href").split("=")[1]
             except Exception as e:
-                logger.error(f"schedules.py: Error getting professor ID")
+                logger.error(f"schedules.py: Error getting professor ID: {traceback.format_exc()}")
                 professor_id = None
 
             professor_email = f"{professor_id}@deanza.edu" if professor_id else None
@@ -50,7 +51,6 @@ def build_classes_data_table(schedule_rows: list[WebElement], department_code: s
             last_professor_identifier = professor_identifier
 
             if department_code not in course_code:
-                logger.error(f"schedules.py: Course code is not in department code. Skipping class.")
                 continue
 
             if course_code not in classes_data_table:
@@ -62,7 +62,6 @@ def build_classes_data_table(schedule_rows: list[WebElement], department_code: s
 
             class_data = _get_class_data(schedule_tags)
             if class_data == {}:
-                logger.error(f"schedules.py: Class data is empty. Skipping class.")
                 continue
 
             classes_data_table[course_code][professor_identifier][data_keys.PROFESSOR_CLASSES_KEY].append(class_data)
@@ -70,7 +69,6 @@ def build_classes_data_table(schedule_rows: list[WebElement], department_code: s
         else:
             meeting_data = _get_meeting_data(schedule_tags)
             if meeting_data == {}:
-                logger.error(f"schedules.py: Meeting data is empty. Skipping class.")
                 continue
             
             professor_data = classes_data_table[last_course_code][last_professor_identifier]
@@ -94,14 +92,13 @@ def _get_class_data(schedule_tags: list[WebElement]) -> dict:
     class_data = data_creators.create_class_data(class_crn, availability)
     meeting_data = data_creators.create_meeting_data(tag = "", days = days, time = time, location = location)
     class_data[data_keys.MEETINGS_KEY].append(meeting_data)
-    logger.info(f"Class data: {class_data}")
     return class_data
 
 def _get_meeting_data(schedule_tags: list[WebElement]) -> dict:
     tag = schedule_tags[0].text.strip()
 
     if tag == "":
-        logger.error(f"schedules.py: Tag is empty. Skipping meeting.")
+        logger.warning(f"schedules.py: Tag is empty. Skipping meeting.")
         return {}
     
     meeting_data = data_creators.create_meeting_data(
