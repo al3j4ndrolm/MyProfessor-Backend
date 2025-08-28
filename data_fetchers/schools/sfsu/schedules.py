@@ -78,9 +78,3 @@ def _parse_meeting(html):
 
 def _get_email(professor_name: str, department_code: str) -> str:
     pass
-
-if __name__ == "__main__":
-    from data_fetchers.schools.sfsu.main import get_session_data
-    
-    session_data = get_session_data("PHYS", "2257")
-    print(get_classes_per_department(session_data, "PHYS"))
