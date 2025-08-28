@@ -40,7 +40,7 @@ def main(supabase: Client, target_tables: set[str]) -> None:
                     logger.info(f"Saving classes data for {department_code} in term {term_code} to database `classes`.")
                     classes_db.save_one_entry(supabase, classes_one_department, SCHOOL_NAME, term_code, department_code)
     
-    logger.info(f"Completed fetching. Setting {SCHOOL_NAME} status to `supported`.")
+    logger.info(f"Completed fetching. Setting {SCHOOL_NAME} status to `ready`.")
     schools_db.set_status(supabase, SCHOOL_NAME, SchoolStatus.READY.value)
 
 def get_courses_and_classes(department_data_table: dict, term_codes: list) -> tuple[dict, dict]:

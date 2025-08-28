@@ -13,7 +13,7 @@ def response_start(supabase: Client, client_data: dict, user_data: dict) -> dict
     else:
         schools_data = schools_db.get(supabase, [])
 
-    school_list = [_create_school(entry) for entry in schools_data]
+    school_list = [_create_school(entry, client_data.get("build_type")) for entry in schools_data]
     broadcast_list = [_create_broadcast(entry) for entry in broadcasts_db.get_active(supabase)]
 
     return {
@@ -38,15 +38,23 @@ def response_schools(supabase: Client) -> dict:
         configs.SCHOOLS_KEY_BROADCASTS: broadcast_list
     }
 
-def _create_school(entry: dict) -> dict:
+def _create_school(entry: dict, build_type: str) -> dict:
     return {
         configs.SCHOOL_NAME: entry[db_keys.SCHOOL_KEY_SCHOOL_NAME],
         configs.SCHOOL_TERMS: entry[db_keys.SCHOOL_KEY_TERMS],
         configs.SCHOOL_NOTIFICATION: {"text": entry[db_keys.SCHOOL_KEY_NOTIFICATION]},
         configs.SCHOOL_UPDATED_AT: entry[db_keys.KEY_UPDATED_AT],
         configs.SCHOOL_COURSES_UPDATED_AT: entry[db_keys.SCHOOL_KEY_COURSES_UPDATED_AT],
-        configs.SCHOOL_FEATURES: entry[db_keys.SCHOOL_KEY_FEATURES]
+        configs.SCHOOL_FEATURES: _create_school_features(entry[db_keys.SCHOOL_KEY_FEATURES], build_type)
     }
+
+def _create_school_features(database_features: dict, build_type: str) -> {str: bool}:
+    if build_type == "dev":
+        for key, value in database_features.items():
+            database_features[key] = True
+        return database_features
+    elif build_type == "release":
+        return database_features
 
 def _create_school_old(entry: dict) -> dict:
     return {
