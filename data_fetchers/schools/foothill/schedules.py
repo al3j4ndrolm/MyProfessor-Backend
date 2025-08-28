@@ -49,11 +49,10 @@ def update_class_data_for_professor(course_element: BeautifulSoup, classes_per_c
 
     professor_data = None
     meeting_elements = course_element.find_all("div", class_="meet-tr")
-    print(f"meeting_elements: {len(meeting_elements)} for class {class_crn}")
+
     for meeting_element in meeting_elements:
         professor_identifier, meeting_data = _get_meeting_data(meeting_element)
 
-        print(f"professor_identifier: {professor_identifier} for class {class_crn}")
         if professor_data is None:
             if professor_identifier not in classes_per_course:
                 professor_data = data_creators.create_professor_data(email = None)

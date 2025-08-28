@@ -16,10 +16,9 @@ def get_ratings_and_merge(supabase: Client, classes_one_department: dict, school
                 professor_name, professor_email = data_creators.parse_professor_identifier(professor_identifier)
                 rmp_data = get_rating_data(supabase, school, department_code, professor_name, professor_email, rmp_code, rescan_null)
                 professor_data[data_keys.PROFESSOR_RMP_DATA_KEY] = rmp_data
-                professor_data[data_keys.PROFESSOR_HAS_SUMMARY_KEY] = False
                 professor_data_table[professor_identifier] = professor_data
             else:
-                professor_data.update(professor_data_table[professor_identifier])
+                professor_data[data_keys.PROFESSOR_RMP_DATA_KEY] = professor_data_table[professor_identifier][data_keys.PROFESSOR_RMP_DATA_KEY]
 
 def get_rating_data(supabase: Client, school: str, department: str, professor_name: str, professor_email: str, rmp_code: str, rescan_null: bool) -> dict:
     """
