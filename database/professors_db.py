@@ -111,6 +111,31 @@ def get_unique_rmp_links(supabase: Client, school: str) -> list[str]:
 
     return list(rmp_links)
 
+def get_unique_rmp_links_without_summaries(supabase: Client, school: str) -> list[str]:
+    """
+    Get unique RMP links from professors table that don't exist in summaries table.
+    Uses 2 queries: one for existing summaries, one for professors, then filters.
+    """
+    # First, get all existing summaries
+    summaries_response = supabase.table("summaries").select(db_keys.SUMMARIES_KEY_RMP_LINK).execute()
+    existing_summaries = {item[db_keys.SUMMARIES_KEY_RMP_LINK] for item in summaries_response.data}
+    
+    # Then get all RMP links from professors
+    professors_response = supabase.table(TABLE_NAME)\
+        .select(db_keys.KEY_RMP_LINK)\
+        .eq(db_keys.KEY_SCHOOL, school)\
+        .not_.is_(db_keys.KEY_RMP_LINK, "null")\
+        .execute()
+    
+    # Filter out existing summaries
+    unique_links = set()
+    for professor in professors_response.data:
+        rmp_link = professor[db_keys.KEY_RMP_LINK]
+        if rmp_link and rmp_link not in existing_summaries:
+            unique_links.add(rmp_link)
+    
+    return list(unique_links)
+
 # TODO: Remove after all data in database is fixed
 def update(supabase: Client, professors_data_list: list[dict]):
     logger.info(f"Saving {len(professors_data_list)} professors in database `{TABLE_NAME}`.")

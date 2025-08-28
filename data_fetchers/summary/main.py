@@ -10,20 +10,22 @@ from dotenv import load_dotenv
 import time
 
 def update_summaries_table(supabase: Client, deepseek_session: DeepSeekSession, session: requests.Session, only_add_new: bool = False):
-    schools = schools_db.get(supabase, [SchoolStatus.FETCHING])
+    schools = schools_db.get(supabase, [SchoolStatus.SUPPORTED])
 
     for school in schools:
         school_name = school[db_keys.SCHOOL_KEY_SCHOOL_NAME]
-        rmp_links = professors_db.get_unique_rmp_links(supabase, school_name)
-        logger.info(f"Found {len(rmp_links)} RMP links for {school_name}, now processing...")
+        
+        if only_add_new:
+            # Use the function that gets RMP links without summaries
+            rmp_links = professors_db.get_unique_rmp_links_without_summaries(supabase, school_name)
+            logger.info(f"Found {len(rmp_links)} RMP links without summaries for {school_name}, now processing...")
+        else:
+            # Get all RMP links (existing behavior)
+            rmp_links = professors_db.get_unique_rmp_links(supabase, school_name)
+            logger.info(f"Found {len(rmp_links)} RMP links for {school_name}, now processing...")
 
         for rmp_link in rmp_links:
-            if only_add_new:
-                summary = summaries_db.get_one_entry(supabase, rmp_link)
-                if summary:
-                    logger.info(f"Skipping {rmp_link} because summary already exists.")
-                    continue
-
+            # No need to check if summary exists when only_add_new=True since we already filtered
             summary = _get_summary(rmp_link, session, deepseek_session)
             if summary:
                 summaries_db.save_one_entry(supabase, rmp_link, summary)
