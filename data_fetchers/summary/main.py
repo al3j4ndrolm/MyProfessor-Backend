@@ -35,12 +35,11 @@ def _get_summary(rmp_link, session, deepseek_session: DeepSeekSession) -> dict |
     start_time = time.time()
     reviews = get_reviews(rmp_link, session)
     if not reviews:
-        logger.warning(f"No reviews found for {rmp_link}")
         return None
 
     summary = deepseek_session.get_summary(reviews)
     end_time = time.time()
-    logger.info(f"Time taken: {end_time - start_time:.1f} seconds.")
+    logger.debug(f"Time taken: {end_time - start_time:.1f} seconds.")
     return summary
 
 if __name__ == "__main__":
