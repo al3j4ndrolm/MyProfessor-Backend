@@ -61,7 +61,6 @@ def main(supabase: Client, target_tables: set[str]) -> None:
     schools_db.set_status(supabase, SCHOOL_NAME, SchoolStatus.SUPPORTED.value)
 
 def get_courses_and_classes(departments: list, term_codes: list, driver: webdriver.Chrome) -> tuple[dict, dict]:
-    logger.info("inside get_courses_and_classes")
     courses_data_table = {}
     classes_data_table = {term_code: {} for term_code in term_codes}
 
@@ -73,7 +72,6 @@ def get_courses_and_classes(departments: list, term_codes: list, driver: webdriv
             logger.info(f"getting new tab for schedules for {department_code} in {term_code} ...")
             driver.get(f"{SCHEDULES_BASE_URL}dept={department_code}&t={term_code}")
 
-            print("getting schedules ...")
             logger.info(f"Getting schedules for {department_code} in {term_code} ...")
             classes_per_department = get_classes_per_department(department_code, driver)
 
