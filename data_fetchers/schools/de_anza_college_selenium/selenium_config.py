@@ -1,9 +1,6 @@
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 import undetected_chromedriver as uc
-from selenium import webdriver
-from selenium.webdriver.chrome.options import Options
-import random
 
 try:
     import undetected_chromedriver as uc

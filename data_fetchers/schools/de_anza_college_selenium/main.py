@@ -26,7 +26,7 @@ from data_fetchers.schools.de_anza_college_selenium.selenium_config import Selen
 
 def main(supabase: Client, target_tables: set[str]) -> None:
 
-    driver = SeleniumConfig.create_driver(headless=False)
+    driver = SeleniumConfig.create_driver(headless=True)
     driver.get(TERMS_BASE_URL)
     time.sleep(3)
 
