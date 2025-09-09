@@ -10,7 +10,6 @@ try:
     UNDETECTED_AVAILABLE = True
 except ImportError:
     UNDETECTED_AVAILABLE = False
-    print("undetected_chromedriver not available, using regular selenium")
 
 class SeleniumConfig:
     @staticmethod

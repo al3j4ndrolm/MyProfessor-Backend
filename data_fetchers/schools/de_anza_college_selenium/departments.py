@@ -10,7 +10,6 @@ from data_fetchers.schools.de_anza_college_selenium.selenium_config import Selen
 
 def get_department_data_table(driver: uc.Chrome) -> dict:
 
-    logger.info("inside get_department_data_table")
     department_elements_holder = _wait_for_element(driver, By.NAME, "dept-select")
     department_elements = department_elements_holder.find_elements(By.TAG_NAME, "option")
     department_data_table = {}
@@ -22,7 +21,6 @@ def get_department_data_table(driver: uc.Chrome) -> dict:
         department_code = element.get_attribute("value").strip()
         department_data_table[department_code] = department_name
 
-    logger.info(f"department_data_table: {department_data_table}")
     return department_data_table
 
 def _wait_for_element(driver: webdriver.Chrome, by: By, value: str) -> WebElement:
