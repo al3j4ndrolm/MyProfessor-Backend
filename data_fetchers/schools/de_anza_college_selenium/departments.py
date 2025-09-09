@@ -29,9 +29,3 @@ def _wait_for_element(driver: webdriver.Chrome, by: By, value: str) -> WebElemen
     except Exception as e:
         logger.error(f"departments.py: Error waiting for {by} {value}: {e}")
         return None
-
-# TODO: Remove this
-if __name__ == "__main__":
-    driver = SeleniumConfig.create_driver(headless=False)
-    driver.get("https://www.deanza.edu/schedule/")
-    print(get_department_data_table(driver))

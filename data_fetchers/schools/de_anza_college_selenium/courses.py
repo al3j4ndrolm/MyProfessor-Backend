@@ -30,9 +30,3 @@ def get_course_full_name(course_element: WebElement) -> str:
 
 def _wait_for_element(driver: webdriver.Chrome, by: By, value: str) -> WebElement:
     return WebDriverWait(driver, 10).until(EC.presence_of_element_located((by, value)))
-
-# TODO: Remove this
-if __name__ == "__main__":
-    driver = SeleniumConfig.create_driver(headless=False)
-    driver.get("https://www.deanza.edu/schedule/listings.html?dept=ACCT&t=F2025")
-    print(get_courses_per_department("ACCT", driver))
