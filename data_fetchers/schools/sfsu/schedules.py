@@ -19,7 +19,7 @@ def get_classes_per_department(session_data: dict, department_code: str) -> dict
             course_code = parse_html(row[0]).get_text().strip().split(" [")[0]
             unprocessed_professor_name = parse_html(row[8]).get_text().strip().split(" ")
             if "To" in unprocessed_professor_name:
-                professor_name = "To be determined"
+                professor_name = "To be announced"
             else:
                 professor_name = unprocessed_professor_name[0] + " " + unprocessed_professor_name[1]
             professor_email = _get_email(professor_name, department_code)
