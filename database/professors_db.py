@@ -19,6 +19,7 @@ class Professor(BaseModel):
     rmp_reviews_count: Optional[int] = None
     rmp_score: Optional[float] = None
     rmp_link: Optional[str] = None
+    ai_summary: Optional[dict] = None
 
 def get_one_entry(supabase: Client, school: str, department: str, professor_name: str, professor_email: str) -> Optional[Professor]:
     search_query = _select_one_query(supabase, school, department, professor_name, professor_email)
@@ -113,28 +114,33 @@ def get_unique_rmp_links(supabase: Client, school: str) -> list[str]:
 
 def get_unique_rmp_links_without_summaries(supabase: Client, school: str) -> list[str]:
     """
-    Get unique RMP links from professors table that don't exist in summaries table.
-    Uses 2 queries: one for existing summaries, one for professors, then filters.
+    Get unique RMP links from professors table whose ai_summary field is not yet set.
     """
-    # First, get all existing summaries
-    summaries_response = supabase.table("summaries").select(db_keys.SUMMARIES_KEY_RMP_LINK).execute()
-    existing_summaries = {item[db_keys.SUMMARIES_KEY_RMP_LINK] for item in summaries_response.data}
-    
-    # Then get all RMP links from professors
+    # Get RMP link and ai_summary for every professor with a non-null RMP link
     professors_response = supabase.table(TABLE_NAME)\
-        .select(db_keys.KEY_RMP_LINK)\
+        .select(f"{db_keys.KEY_RMP_LINK},{db_keys.KEY_AI_SUMMARY}")\
         .eq(db_keys.KEY_SCHOOL, school)\
         .not_.is_(db_keys.KEY_RMP_LINK, "null")\
         .execute()
-    
-    # Filter out existing summaries
+
+    # Keep links for professors that don't have an ai_summary yet
     unique_links = set()
     for professor in professors_response.data:
         rmp_link = professor[db_keys.KEY_RMP_LINK]
-        if rmp_link and rmp_link not in existing_summaries:
+        ai_summary = professor[db_keys.KEY_AI_SUMMARY]
+        if rmp_link and not ai_summary:
             unique_links.add(rmp_link)
     
     return list(unique_links)
+
+def update_ai_summary(supabase: Client, rmp_link: str, ai_summary: dict):
+    """
+    Find all professor entries matching the given rmp_link and update their ai_summary.
+    """
+    supabase.table(TABLE_NAME)\
+        .update({db_keys.KEY_AI_SUMMARY: ai_summary})\
+        .eq(db_keys.KEY_RMP_LINK, rmp_link)\
+        .execute()
 
 # TODO: Remove after all data in database is fixed
 def update(supabase: Client, professors_data_list: list[dict]):

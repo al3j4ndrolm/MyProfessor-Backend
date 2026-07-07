@@ -14,6 +14,9 @@ def setup_request_session() -> requests.Session:
 def get_reviews(professor_rmp_link: str, session: requests.Session) -> list[dict] | None:
     result = _extract_reviews(professor_rmp_link, session)
 
+    if not result["data"]["node"] or "numRatings" not in result["data"]["node"]:
+        logger.warning(f"Unexpected review json: {result["data"]} for professor {professor_rmp_link}")
+        return {}
     if result["data"]["node"]["numRatings"] == 0:
         return {}
 

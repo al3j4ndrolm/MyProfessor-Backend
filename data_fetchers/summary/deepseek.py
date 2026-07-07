@@ -1,4 +1,5 @@
-from .configs import DEEPSEEK_SYSTEM_PROMPT, DEEPSEEK_MODEL, DEEPSEEK_API_KEY, DEEPSEEK_BASE_URL
+import os
+from .configs import DEEPSEEK_SYSTEM_PROMPT, DEEPSEEK_MODEL, DEEPSEEK_BASE_URL
 from data_fetchers.rmp.reviews.reviews import get_reviews, setup_request_session
 from logger import logger
 from openai import OpenAI
@@ -8,8 +9,8 @@ import openai
 from dotenv import load_dotenv
 
 class DeepSeekSession:
-    def __init__(self):
-        self.client = OpenAI(api_key=DEEPSEEK_API_KEY, base_url=DEEPSEEK_BASE_URL).chat.completions
+    def __init__(self, deepseek_api_key):
+        self.client = OpenAI(api_key=deepseek_api_key, base_url=DEEPSEEK_BASE_URL).chat.completions
         self.model = DEEPSEEK_MODEL
     
     def get_summary(self, reviews_data: list[dict]) -> dict:
@@ -73,7 +74,7 @@ class DeepSeekSession:
     
 if __name__ == "__main__":
     load_dotenv()
-    deepseek_session = DeepSeekSession()
+    deepseek_session = DeepSeekSession(os.getenv("DEEPSEEK_API_KEY"))
     session = setup_request_session()
     reviews = get_reviews(professor_rmp_link="professor/89065", session=session)
     summary = deepseek_session.get_summary(reviews)
