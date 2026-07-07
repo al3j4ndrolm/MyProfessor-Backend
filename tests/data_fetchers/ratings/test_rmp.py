@@ -7,9 +7,9 @@ from bs4 import Tag, BeautifulSoup
 # Add the parent directory to the path so we can import our modules
 sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))))
 
-# Temporarily comment out import to fix module not found error
-# from data_fetchers.ratings.rmp import _get_best_match_data, get_rmp_data
-from data_fetchers.ratings.rating_configs import RMP_DEFAULTS
+# Import the functions we need to test
+from data_fetchers.rmp.ratings.ratings import _get_best_match_data, get_rmp_data
+from data_fetchers.rmp.ratings.configs import RMP_DEFAULTS
 from helpers.data import data_keys
 
 class TestGetRMPData:

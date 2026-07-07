@@ -8,7 +8,6 @@ from datetime import datetime, timedelta
 sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
 
 # Temporarily comment out Supabase-dependent import to fix websockets issue
-# from database.summaries_db import get_one_entry, save_one_entry, Summary
 from database.summaries_db import get_one_entry, save_one_entry, Summary
 
 # Test data constants

@@ -7,7 +7,7 @@ from unittest.mock import Mock
 sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
 
 # Temporarily comment out Supabase-dependent import to fix websockets issue
-# from database.schools_db import get, SchoolStatus
+from database.schools_db import get, SchoolStatus
 from database import db_keys
 
 # Test data constants
@@ -37,12 +37,14 @@ class TestSchoolsDB:
         mock_table = Mock()
         mock_select = Mock()
         mock_in = Mock()
+        mock_order = Mock()
         mock_execute = Mock()
         
         mock_supabase.table.return_value = mock_table
         mock_table.select.return_value = mock_select
         mock_select.in_.return_value = mock_in
-        mock_in.execute.return_value = mock_response
+        mock_in.order.return_value = mock_order
+        mock_order.execute.return_value = mock_response
         
         # Call get function with multiple statuses
         result = get(mock_supabase, [SchoolStatus.SUPPORTED, SchoolStatus.TESTING])
@@ -51,7 +53,8 @@ class TestSchoolsDB:
         mock_supabase.table.assert_called_once_with("schools")
         mock_table.select.assert_called_once_with("*")
         mock_select.in_.assert_called_once_with(db_keys.SCHOOL_KEY_STATUS, [SchoolStatus.SUPPORTED, SchoolStatus.TESTING])
-        mock_in.execute.assert_called_once()
+        mock_in.order.assert_called_once_with(db_keys.SCHOOL_KEY_SCHOOL_NAME)
+        mock_order.execute.assert_called_once()
         
         # Verify result contains only schools with specified statuses
         assert len(result) == 2
@@ -74,12 +77,14 @@ class TestSchoolsDB:
         mock_table = Mock()
         mock_select = Mock()
         mock_in = Mock()
+        mock_order = Mock()
         mock_execute = Mock()
         
         mock_supabase.table.return_value = mock_table
         mock_table.select.return_value = mock_select
         mock_select.in_.return_value = mock_in
-        mock_in.execute.return_value = mock_response
+        mock_in.order.return_value = mock_order
+        mock_order.execute.return_value = mock_response
         
         # Call get function with single status
         result = get(mock_supabase, [SchoolStatus.SUPPORTED])
@@ -88,7 +93,8 @@ class TestSchoolsDB:
         mock_supabase.table.assert_called_once_with("schools")
         mock_table.select.assert_called_once_with("*")
         mock_select.in_.assert_called_once_with(db_keys.SCHOOL_KEY_STATUS, [SchoolStatus.SUPPORTED])
-        mock_in.execute.assert_called_once()
+        mock_in.order.assert_called_once_with(db_keys.SCHOOL_KEY_SCHOOL_NAME)
+        mock_order.execute.assert_called_once()
         
         # Verify result
         assert len(result) == 1
@@ -106,12 +112,14 @@ class TestSchoolsDB:
         mock_table = Mock()
         mock_select = Mock()
         mock_in = Mock()
+        mock_order = Mock()
         mock_execute = Mock()
         
         mock_supabase.table.return_value = mock_table
         mock_table.select.return_value = mock_select
         mock_select.in_.return_value = mock_in
-        mock_in.execute.return_value = mock_response
+        mock_in.order.return_value = mock_order
+        mock_order.execute.return_value = mock_response
         
         # Call get function
         result = get(mock_supabase, [SchoolStatus.SUPPORTED])

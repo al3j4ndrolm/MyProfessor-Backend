@@ -19,7 +19,7 @@ def get_supabase_client():
     key = os.getenv("SUPABASE_KEY")
     
     if not url or not key:
-        pytest.skip("SUPABASE_URL and SUPABASE_KEY environment variables are required")
+        pytest.skip("SUPABASE_URL and SUPABASE_KEY environment variables are required", allow_module_level=True)
     
     return create_client(url, key)
 

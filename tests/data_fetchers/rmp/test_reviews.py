@@ -6,7 +6,7 @@ from pathlib import Path
 # Add the parent directory to the path so we can import the modules
 sys.path.append(str(Path(__file__).parent.parent.parent.parent))
 
-from data_fetchers.rmp.reviews.reviews import get_reviews, get_session
+from data_fetchers.rmp.reviews.reviews import get_reviews, setup_request_session
 
 def test_get_reviews():
     """Test the get_reviews function with a specific professor RMP link"""
@@ -18,7 +18,7 @@ def test_get_reviews():
     
     try:
         # Get session
-        session = get_session()
+        session = setup_request_session()
         print("✓ Session created successfully")
         
         # Get reviews
