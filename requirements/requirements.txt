@@ -9,3 +9,5 @@ uvicorn
 fastapi
 dotenv
 openai
+selenium
+undetected_chromedriver

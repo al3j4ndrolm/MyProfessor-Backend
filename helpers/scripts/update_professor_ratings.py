@@ -2,7 +2,7 @@ from supabase import create_client, Client
 from database import schools_db, courses_db, professors_db
 from helpers.data import data_keys
 from helpers.data import data_creators
-from data_fetchers.ratings.rmp import get_rmp_data
+from data_fetchers.rmp.ratings.rating_provider import get_rmp_data
 from database import db_keys
 from logger import logger
 from dotenv import load_dotenv
@@ -12,7 +12,7 @@ import os
 # TODO: Remove after all data in database is fixed
 
 def main(supabase: Client):
-    schools = schools_db.get(supabase)
+    schools = schools_db.get(supabase, [schools_db.SchoolStatus.SUPPORTED])
     
     for school_entry in schools:
         school_name = school_entry[db_keys.SCHOOL_KEY_SCHOOL_NAME]
