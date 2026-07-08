@@ -1,3 +1,7 @@
+import platform
+import re
+import subprocess
+
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 import undetected_chromedriver as uc
@@ -7,6 +11,35 @@ try:
     UNDETECTED_AVAILABLE = True
 except ImportError:
     UNDETECTED_AVAILABLE = False
+
+
+def _get_installed_chrome_major_version():
+    """Detect the installed Chrome major version so undetected_chromedriver
+    downloads a matching chromedriver instead of defaulting to latest.
+
+    On Windows, `chrome.exe --version` forwards to an already-running
+    session instead of printing the version, so we read the file's
+    ProductVersion via PowerShell instead.
+    """
+    exe = uc.find_chrome_executable()
+    if not exe:
+        return None
+    try:
+        if platform.system() == "Windows":
+            output = subprocess.check_output(
+                ["powershell", "-NoProfile", "-Command",
+                 f"(Get-Item '{exe}').VersionInfo.ProductVersion"],
+                stderr=subprocess.STDOUT, text=True, timeout=10,
+            )
+        else:
+            output = subprocess.check_output(
+                [exe, "--version"], stderr=subprocess.STDOUT, text=True, timeout=10
+            )
+    except Exception:
+        return None
+    match = re.search(r"(\d+)\.\d+\.\d+\.\d+", output)
+    return int(match.group(1)) if match else None
+
 
 class SeleniumConfig:
     @staticmethod
@@ -60,7 +93,7 @@ class SeleniumConfig:
             options.add_argument("--disable-dev-shm-usage")
             options.add_argument("--window-size=1920,1080")
             
-            driver = uc.Chrome(options=options)
+            driver = uc.Chrome(options=options, version_main=_get_installed_chrome_major_version())
             return driver
         else:
             # Fallback to regular selenium

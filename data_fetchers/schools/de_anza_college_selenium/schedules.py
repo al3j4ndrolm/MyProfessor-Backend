@@ -38,11 +38,13 @@ def build_classes_data_table(schedule_rows: list[WebElement], department_code: s
             course_code = schedule_tags[1].text
             professor_name = schedule_tags[7].text
 
-            try:
-                professor_id = schedule_tags[7].find_element(By.TAG_NAME, "a").get_attribute("href").split("=")[1]
-            except Exception as e:
-                logger.error(f"schedules.py: Error getting professor ID: {traceback.format_exc()}")
-                professor_id = None
+            professor_links = schedule_tags[7].find_elements(By.TAG_NAME, "a")
+            professor_id = None
+            if professor_links:
+                try:
+                    professor_id = professor_links[0].get_attribute("href").split("=")[1]
+                except Exception:
+                    logger.error(f"schedules.py: Error parsing professor ID: {traceback.format_exc()}")
 
             professor_email = f"{professor_id}@deanza.edu" if professor_id else None
             professor_identifier = data_creators.create_professor_identifier(professor_name, professor_email)
