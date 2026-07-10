@@ -3,13 +3,19 @@ import sys
 import pytest
 from time import sleep
 from datetime import datetime, timedelta
-# Temporarily comment out Supabase import to fix websockets issue
-# from supabase import create_client
+from supabase import create_client
 
 # Add the parent directory to the path so we can import our modules
 sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
 
-from database.professors_db import save_one_entry, get_one_entry, should_update
+from database.professors_db import (
+    save_one_entry,
+    get_one_entry,
+    should_update,
+    get_unique_rmp_links,
+    get_unique_rmp_links_without_summary,
+    update_ai_summary,
+)
 from helpers.data import data_keys
 from database import db_keys
 
@@ -30,6 +36,12 @@ TEST_PROFESSOR_NAME = "Dr. Test Professor"
 TEST_PROFESSOR_EMAIL = "test.professor@testuniversity.edu"
 TEST_UPDATE_PROFESSOR_NAME = "Dr. Update Test Professor"
 TEST_UPDATE_PROFESSOR_EMAIL = "update.test.professor@testuniversity.edu"
+TEST_RMP_LINK_PROFESSOR_A_NAME = "Dr. RMP Link Professor A"
+TEST_RMP_LINK_PROFESSOR_A_EMAIL = "rmp.link.professor.a@testuniversity.edu"
+TEST_RMP_LINK_PROFESSOR_B_NAME = "Dr. RMP Link Professor B"
+TEST_RMP_LINK_PROFESSOR_B_EMAIL = "rmp.link.professor.b@testuniversity.edu"
+TEST_RMP_LINK_SHARED = "https://www.ratemyprofessors.com/professor/shared-link"
+TEST_RMP_LINK_OTHER = "https://www.ratemyprofessors.com/professor/other-link"
 
 def get_test_rmp_data():
     """Get mock RMP data for testing"""
@@ -153,8 +165,76 @@ class TestProfessorsDB:
         
         # Try to get a professor that doesn't exist
         result = get_one_entry(self.supabase, "NonExistentSchool", "NonExistentDept", "NonExistentProfessor", "nonexistent@test.edu")
-        
+
         assert result is None, "Should return None for non-existent professor"
+
+    def test_get_unique_rmp_links(self):
+        """Test that get_unique_rmp_links returns deduplicated, non-null RMP links for a school"""
+
+        try:
+            self.cleanup_test_data(self.supabase, TEST_SCHOOL, TEST_DEPARTMENT, TEST_RMP_LINK_PROFESSOR_A_NAME, TEST_RMP_LINK_PROFESSOR_A_EMAIL)
+
+            rmp_data_a = get_test_rmp_data()
+            rmp_data_a[data_keys.PROFESSOR_LINK_KEY] = TEST_RMP_LINK_SHARED
+            rmp_data_b = get_test_rmp_data()
+            rmp_data_b[data_keys.PROFESSOR_LINK_KEY] = TEST_RMP_LINK_SHARED
+
+            # Two professors sharing the same rmp_link should be deduplicated
+            save_one_entry(self.supabase, TEST_SCHOOL, TEST_DEPARTMENT, TEST_RMP_LINK_PROFESSOR_A_NAME, TEST_RMP_LINK_PROFESSOR_A_EMAIL, rmp_data_a)
+            save_one_entry(self.supabase, TEST_SCHOOL, TEST_DEPARTMENT, TEST_RMP_LINK_PROFESSOR_B_NAME, TEST_RMP_LINK_PROFESSOR_B_EMAIL, rmp_data_b)
+
+            rmp_links = get_unique_rmp_links(self.supabase, TEST_SCHOOL)
+
+            assert TEST_RMP_LINK_SHARED in rmp_links
+            assert rmp_links.count(TEST_RMP_LINK_SHARED) == 1, "Duplicate rmp_link values should be deduplicated"
+
+        finally:
+            self.cleanup_test_data(self.supabase, TEST_SCHOOL, TEST_DEPARTMENT, TEST_RMP_LINK_PROFESSOR_A_NAME, TEST_RMP_LINK_PROFESSOR_A_EMAIL)
+
+    def test_get_unique_rmp_links_without_summary(self):
+        """Test that get_unique_rmp_links_without_summary excludes professors that already have an ai_summary"""
+
+        try:
+            self.cleanup_test_data(self.supabase, TEST_SCHOOL, TEST_DEPARTMENT, TEST_RMP_LINK_PROFESSOR_A_NAME, TEST_RMP_LINK_PROFESSOR_A_EMAIL)
+
+            rmp_data_a = get_test_rmp_data()
+            rmp_data_a[data_keys.PROFESSOR_LINK_KEY] = TEST_RMP_LINK_SHARED
+            rmp_data_b = get_test_rmp_data()
+            rmp_data_b[data_keys.PROFESSOR_LINK_KEY] = TEST_RMP_LINK_OTHER
+
+            save_one_entry(self.supabase, TEST_SCHOOL, TEST_DEPARTMENT, TEST_RMP_LINK_PROFESSOR_A_NAME, TEST_RMP_LINK_PROFESSOR_A_EMAIL, rmp_data_a)
+            save_one_entry(self.supabase, TEST_SCHOOL, TEST_DEPARTMENT, TEST_RMP_LINK_PROFESSOR_B_NAME, TEST_RMP_LINK_PROFESSOR_B_EMAIL, rmp_data_b)
+
+            # Give professor B an ai_summary so it should be excluded from the results
+            update_ai_summary(self.supabase, TEST_RMP_LINK_OTHER, {"summary": "already summarized"})
+
+            rmp_links_without_summary = get_unique_rmp_links_without_summary(self.supabase, TEST_SCHOOL)
+
+            assert TEST_RMP_LINK_SHARED in rmp_links_without_summary
+            assert TEST_RMP_LINK_OTHER not in rmp_links_without_summary
+
+        finally:
+            self.cleanup_test_data(self.supabase, TEST_SCHOOL, TEST_DEPARTMENT, TEST_RMP_LINK_PROFESSOR_A_NAME, TEST_RMP_LINK_PROFESSOR_A_EMAIL)
+
+    def test_update_ai_summary(self):
+        """Test that update_ai_summary sets the ai_summary field for all professors with a matching rmp_link"""
+
+        try:
+            self.cleanup_test_data(self.supabase, TEST_SCHOOL, TEST_DEPARTMENT, TEST_RMP_LINK_PROFESSOR_A_NAME, TEST_RMP_LINK_PROFESSOR_A_EMAIL)
+
+            rmp_data = get_test_rmp_data()
+            rmp_data[data_keys.PROFESSOR_LINK_KEY] = TEST_RMP_LINK_SHARED
+            save_one_entry(self.supabase, TEST_SCHOOL, TEST_DEPARTMENT, TEST_RMP_LINK_PROFESSOR_A_NAME, TEST_RMP_LINK_PROFESSOR_A_EMAIL, rmp_data)
+
+            new_summary = {"summary": "This professor is great"}
+            update_ai_summary(self.supabase, TEST_RMP_LINK_SHARED, new_summary)
+
+            updated_professor = get_one_entry(self.supabase, TEST_SCHOOL, TEST_DEPARTMENT, TEST_RMP_LINK_PROFESSOR_A_NAME, TEST_RMP_LINK_PROFESSOR_A_EMAIL)
+
+            assert updated_professor[db_keys.KEY_AI_SUMMARY] == new_summary
+
+        finally:
+            self.cleanup_test_data(self.supabase, TEST_SCHOOL, TEST_DEPARTMENT, TEST_RMP_LINK_PROFESSOR_A_NAME, TEST_RMP_LINK_PROFESSOR_A_EMAIL)
 
 if __name__ == "__main__":
     pytest.main([__file__]) 
