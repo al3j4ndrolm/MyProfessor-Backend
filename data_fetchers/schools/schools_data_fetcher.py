@@ -2,19 +2,37 @@ import importlib
 import os
 import sys
 import logging
+from datetime import datetime
 from dotenv import load_dotenv
 from supabase import create_client
 import argparse
 import traceback
 
+from data_fetchers.schools.schools_config import SCHOOL_FOLDERS
+
 # Get the path to the schools directory
 SCHOOLS_DIR = os.path.dirname(os.path.abspath(__file__))
 
-# List all subdirectories in the schools directory
-school_folders = [
-    name for name in os.listdir(SCHOOLS_DIR)
-    if os.path.isdir(os.path.join(SCHOOLS_DIR, name))
-]
+# One error log and one run (start/complete) log per run, under generated/ (gitignored)
+REPO_ROOT = os.path.dirname(os.path.dirname(SCHOOLS_DIR))
+GENERATED_DIR = os.path.join(REPO_ROOT, "generated")
+os.makedirs(GENERATED_DIR, exist_ok=True)
+RUN_TIMESTAMP = datetime.now().strftime("%Y%m%d_%H%M%S")
+ERROR_LOG_PATH = os.path.join(GENERATED_DIR, f"error_log_{RUN_TIMESTAMP}.log")
+RUN_LOG_PATH = os.path.join(GENERATED_DIR, f"run_log_{RUN_TIMESTAMP}.log")
+
+
+def log_school_error(school_name: str, error_text: str) -> None:
+    with open(ERROR_LOG_PATH, "a", encoding="utf-8") as f:
+        f.write(f"[{datetime.now().isoformat()}] School: {school_name}\n{error_text}\n{'-' * 80}\n")
+
+
+def log_run_event(school_name: str, event: str) -> None:
+    with open(RUN_LOG_PATH, "a", encoding="utf-8") as f:
+        f.write(f"[{datetime.now().isoformat()}] School: {school_name} - {event}\n")
+
+# The schools to run, as listed in schools_config.py
+school_folders = SCHOOL_FOLDERS
 
 # Initialize Supabase client
 load_dotenv()
@@ -71,6 +89,7 @@ for folder in filtered_school_folders:
         school_name = getattr(school_config, "SCHOOL_NAME", folder)  # fallback to folder name
 
         logger.info(f'Start fetching data for {school_name}...')
+        log_run_event(school_name, "STARTED")
         try:
             import inspect
             main_sig = inspect.signature(main_module.main)
@@ -79,9 +98,12 @@ for folder in filtered_school_folders:
             else:
                 main_module.main(supabase, {"courses", "classes", "professors", "schools"})
             logger.info(f'Finished updating data for {school_name}.\n\n')
+            log_run_event(school_name, "COMPLETED")
         except Exception as e:
-            logger.error(f'Error fetching or updating data for {school_name}: {traceback.format_exc()}\n\n')
-            exit(1)
+            error_text = traceback.format_exc()
+            logger.error(f'Error fetching or updating data for {school_name}: {error_text}\n\n')
+            log_school_error(school_name, error_text)
+            log_run_event(school_name, "FAILED")
         finally:
             sys.path.pop(0)
     elif not folder.startswith('__'):
