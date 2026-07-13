@@ -1,7 +1,5 @@
-import logging
 from bs4 import BeautifulSoup
-
-logger = logging.getLogger(__name__)
+from logger import logger
 
 def get_department_data_table(soup: BeautifulSoup) -> dict:
     """   

@@ -4,9 +4,10 @@ import traceback
 # Local imports
 from helpers.data import data_keys, data_creators
 from helpers.data import data_parser
+from data_fetchers.schools.foothill.professors import get_professor_email
 from logger import logger
 
-def get_classes_per_department(department_soup: BeautifulSoup) -> dict:
+def get_classes_per_department(department_soup: BeautifulSoup, professor_data_table: dict, department_code: str) -> dict:
     """
     Fetch the schedules for a given term and department for Foothill College.
     Returns a nested dict in the same format as De Anza College.
@@ -36,14 +37,14 @@ def get_classes_per_department(department_soup: BeautifulSoup) -> dict:
                 and result_element.find("section", class_="fh_section-head")
                 and last_course_code
             ):
-                update_class_data_for_professor(result_element, classes_data_table[last_course_code])
+                update_class_data_for_professor(result_element, classes_data_table[last_course_code], professor_data_table, department_code)
         return classes_data_table
 
     except Exception:
         logger.error(f"Error getting classes per department: {traceback.format_exc()}")
         return {}
 
-def update_class_data_for_professor(course_element: BeautifulSoup, classes_per_course: dict) -> None:
+def update_class_data_for_professor(course_element: BeautifulSoup, classes_per_course: dict, professor_data_table: dict, department_code: str) -> None:
     class_crn = None
 
     sessid_dates = course_element.find_all("div", class_="fh_sessid-dates")
@@ -66,11 +67,11 @@ def update_class_data_for_professor(course_element: BeautifulSoup, classes_per_c
     ]
 
     for meeting_row in meeting_rows:
-        professor_identifier, meeting_data = _get_meeting_data(meeting_row)
+        professor_identifier, professor_email, meeting_data = _get_meeting_data(meeting_row, professor_data_table, department_code)
 
         if professor_data is None:
             if professor_identifier not in classes_per_course:
-                professor_data = data_creators.create_professor_data(email = None)
+                professor_data = data_creators.create_professor_data(email = professor_email)
                 classes_per_course[professor_identifier] = professor_data
             else:
                 professor_data = classes_per_course[professor_identifier]
@@ -79,7 +80,7 @@ def update_class_data_for_professor(course_element: BeautifulSoup, classes_per_c
     professor_data[data_keys.PROFESSOR_CLASSES_KEY].append(class_data)
     return
 
-def _get_meeting_data(meeting_row: BeautifulSoup) -> tuple[str, dict]:
+def _get_meeting_data(meeting_row: BeautifulSoup, professor_data_table: dict, department_code: str) -> tuple[str, str, dict]:
     """
     <tr>
     <td data-label="Type">Lecture</td>
@@ -94,10 +95,12 @@ def _get_meeting_data(meeting_row: BeautifulSoup) -> tuple[str, dict]:
     location = meeting_row.find("td", attrs={"data-label": "Room"}).text.strip()
     days, time = _get_days_and_time(meeting_row.find("td", attrs={"data-label": "Day & Time"}).text.strip())
 
-    # Instructor is plain text now; the site no longer links to a profile page with an email.
+    # Instructor is plain text; the site no longer links to a profile page with an email, so
+    # the email is looked up from the department directory page instead.
     professor_name = meeting_row.find("td", attrs={"data-label": "Instructor"}).text.strip()
-    professor_identifier = data_creators.create_professor_identifier(professor_name, None)
-    return professor_identifier, data_creators.create_meeting_data(tag=tag, days=days, time=time, location=location)
+    professor_email = get_professor_email(professor_data_table, professor_name, department_code)
+    professor_identifier = data_creators.create_professor_identifier(professor_name, professor_email)
+    return professor_identifier, professor_email, data_creators.create_meeting_data(tag=tag, days=days, time=time, location=location)
 
 def _get_availability(availability_element: BeautifulSoup) -> str:
     """

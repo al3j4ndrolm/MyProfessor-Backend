@@ -1,5 +1,6 @@
 import sys
 import os
+import re
 import time
 from supabase import Client
 sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
@@ -9,7 +10,8 @@ from data_fetchers.schools.foothill.terms import get_terms
 from data_fetchers.schools.foothill.departments import get_department_data_table
 from data_fetchers.schools.foothill.courses import update_courses_data_table
 from data_fetchers.schools.foothill.schedules import get_classes_per_department
-from data_fetchers.schools.foothill.school_config import SCHEDULES_BASE_URL, TERMS_BASE_URL, SCHOOL_NAME, RMP_CODE
+from data_fetchers.schools.foothill.professors import get_professor_data_table, update_professor_data_table
+from data_fetchers.schools.foothill.school_config import FACULTY_ALL_URL, SCHEDULES_BASE_URL, TERMS_BASE_URL, FACULTY_BASE_URL, SCHOOL_NAME, RMP_CODE
 from data_fetchers.schools.common.pipeline import run_school_fetch
 from helpers.soup_getter import html_url_to_soup
 from logger import logger
@@ -30,9 +32,23 @@ def get_courses_and_classes(department_data_table: dict, term_codes: list) -> tu
     """
     Get the courses and classes from the soup.
     """
+
+    all_faculty_soup = html_url_to_soup(FACULTY_ALL_URL)
+    professor_data_table = get_professor_data_table(all_faculty_soup)
+
     courses_data_table = {}
     classes_data_table = {term_code: {} for term_code in term_codes}
     for department_code, department_full_name in department_data_table.items():
+
+        faculty_url = FACULTY_BASE_URL.replace("[dpmt]", _get_department_slug(department_full_name))
+        faculty_soup = html_url_to_soup(faculty_url)
+        if not faculty_soup:
+            faculty_url = FACULTY_BASE_URL.replace("[dpmt]", department_code)
+            faculty_soup = html_url_to_soup(faculty_url)
+        if not faculty_soup:
+            faculty_url = FACULTY_BASE_URL.replace("[dpmt]", department_code.replace("-", ""))
+            faculty_soup = html_url_to_soup(faculty_url)
+        update_professor_data_table(faculty_soup, department_code, professor_data_table)
 
         courses = set()
         for term_code in term_codes:
@@ -40,7 +56,7 @@ def get_courses_and_classes(department_data_table: dict, term_codes: list) -> tu
             department_soup = html_url_to_soup(department_url)
 
             logger.debug(f"Getting classes for {department_code} in {term_code} ...")
-            classes_per_department = get_classes_per_department(department_soup)
+            classes_per_department = get_classes_per_department(department_soup, professor_data_table, department_code)
             classes_data_table[term_code][department_code] = classes_per_department
 
             logger.debug(f"Extracting courses for {department_code} in {term_code} ...")
@@ -52,3 +68,15 @@ def get_courses_and_classes(department_data_table: dict, term_codes: list) -> tu
         courses_data_table[department_code] = courses
 
     return courses_data_table, classes_data_table
+
+def _get_department_slug(department_full_name: str) -> str:
+    """
+    Best-effort mapping from a department's dropdown display name (e.g. "Allied Health
+    Sciences") to its directory page URL slug (e.g. "allied-health-sciences"). Foothill's
+    slugs aren't derived programmatically from the display name for every department (e.g.
+    parenthetical/slash suffixes are dropped), so this won't resolve correctly in all cases.
+    """
+    slug = department_full_name.lower().strip()
+    slug = re.sub(r"[^a-z0-9\s-]", "", slug)
+    slug = re.sub(r"[\s-]+", "-", slug).strip("-")
+    return slug
