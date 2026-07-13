@@ -4,7 +4,7 @@ import traceback
 # Local imports
 from helpers.data import data_keys, data_creators
 from helpers.data import data_parser
-from data_fetchers.schools.foothill.professors import get_professor_email
+from data_fetchers.school_data.foothill.professors import get_professor_email
 from logger import logger
 
 def get_classes_per_department(department_soup: BeautifulSoup, professor_data_table: dict, department_code: str) -> dict:

@@ -4,7 +4,7 @@ from bs4 import BeautifulSoup
 
 # Local imports
 from helpers.data import data_creators
-from data_fetchers.schools.ccsf.school_config import SCHOOL_NAME
+from data_fetchers.school_data.ccsf.school_config import SCHOOL_NAME
 
 from logger import logger
 

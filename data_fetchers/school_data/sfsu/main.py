@@ -4,12 +4,12 @@ from logger import logger
 
 from helpers.soup_getter import html_url_to_soup
 from helpers.data import data_keys
-from data_fetchers.schools.sfsu.school_config import SCHEDULES_BASE_URL, SCHEDULES_RESULT_JSON_URL, SCHOOL_NAME, RMP_CODE, TERMS_BASE_URL
-from data_fetchers.schools.sfsu.terms import get_terms
-from data_fetchers.schools.sfsu.departments import get_department_data_table
-from data_fetchers.schools.sfsu.courses import update_courses_set_per_term
-from data_fetchers.schools.sfsu.schedules import get_classes_per_department
-from data_fetchers.schools.common.pipeline import run_school_fetch
+from data_fetchers.school_data.sfsu.school_config import SCHEDULES_BASE_URL, SCHEDULES_RESULT_JSON_URL, SCHOOL_NAME, RMP_CODE, TERMS_BASE_URL
+from data_fetchers.school_data.sfsu.terms import get_terms
+from data_fetchers.school_data.sfsu.departments import get_department_data_table
+from data_fetchers.school_data.sfsu.courses import update_courses_set_per_term
+from data_fetchers.school_data.sfsu.schedules import get_classes_per_department
+from data_fetchers.school_data.common.pipeline import run_school_fetch
 
 def main(supabase: Client, target_tables: set[str]) -> None:
 

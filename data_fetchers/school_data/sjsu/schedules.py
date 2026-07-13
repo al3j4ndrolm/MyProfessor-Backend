@@ -7,7 +7,7 @@ sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(
 # Local imports
 from bs4 import BeautifulSoup, Tag
 from helpers.data import data_creators, data_keys
-from data_fetchers.schools.sjsu.school_config import SCHOOL_NAME
+from data_fetchers.school_data.sjsu.school_config import SCHOOL_NAME
 import logging
 
 logger = logging.getLogger(__name__)

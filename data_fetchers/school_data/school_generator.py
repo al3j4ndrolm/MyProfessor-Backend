@@ -168,16 +168,16 @@ def update_main_imports(target_dir, school_folder_name):
         content = f.read()
     
     # Replace template imports with school-specific imports
-    content = content.replace('from data_fetchers.schools.template.terms import get_terms',
-                             f'from data_fetchers.schools.{school_folder_name}.terms import get_terms')
-    content = content.replace('from data_fetchers.schools.template.courses import get_courses_per_department',
-                             f'from data_fetchers.schools.{school_folder_name}.courses import get_courses_per_department')
-    content = content.replace('from data_fetchers.schools.template.schedules import get_classes_per_department',
-                             f'from data_fetchers.schools.{school_folder_name}.schedules import get_classes_per_department')
-    content = content.replace('from data_fetchers.schools.template.departments import get_department_data_table',
-                             f'from data_fetchers.schools.{school_folder_name}.departments import get_department_data_table')
-    content = content.replace('from data_fetchers.schools.template.school_config import TERMS_BASE_URL, SCHEDULES_BASE_URL, SCHOOL_NAME, RMP_CODE',
-                             f'from data_fetchers.schools.{school_folder_name}.school_config import TERMS_BASE_URL, SCHEDULES_BASE_URL, SCHOOL_NAME, RMP_CODE')
+    content = content.replace('from data_fetchers.school_data.template.terms import get_terms',
+                             f'from data_fetchers.school_data.{school_folder_name}.terms import get_terms')
+    content = content.replace('from data_fetchers.school_data.template.courses import get_courses_per_department',
+                             f'from data_fetchers.school_data.{school_folder_name}.courses import get_courses_per_department')
+    content = content.replace('from data_fetchers.school_data.template.schedules import get_classes_per_department',
+                             f'from data_fetchers.school_data.{school_folder_name}.schedules import get_classes_per_department')
+    content = content.replace('from data_fetchers.school_data.template.departments import get_department_data_table',
+                             f'from data_fetchers.school_data.{school_folder_name}.departments import get_department_data_table')
+    content = content.replace('from data_fetchers.school_data.template.school_config import TERMS_BASE_URL, SCHEDULES_BASE_URL, SCHOOL_NAME, RMP_CODE',
+                             f'from data_fetchers.school_data.{school_folder_name}.school_config import TERMS_BASE_URL, SCHEDULES_BASE_URL, SCHOOL_NAME, RMP_CODE')
     
     with open(main_file, 'w', encoding='utf-8') as f:
         f.write(content)
@@ -191,7 +191,7 @@ def update_terms_imports(target_dir, school_folder_name):
     
     # Replace the school_config import
     content = content.replace('from school_config import SCHOOL_NAME',
-                             f'from data_fetchers.schools.{school_folder_name}.school_config import SCHOOL_NAME')
+                             f'from data_fetchers.school_data.{school_folder_name}.school_config import SCHOOL_NAME')
     
     with open(terms_file, 'w', encoding='utf-8') as f:
         f.write(content)

@@ -8,7 +8,7 @@ from supabase import create_client
 import argparse
 import traceback
 
-from data_fetchers.schools.schools_config import SCHOOL_FOLDERS
+from data_fetchers.school_data.fetch_config import SCHOOL_FOLDERS
 
 # Get the path to the schools directory
 SCHOOLS_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -31,7 +31,7 @@ def log_run_event(school_name: str, event: str) -> None:
     with open(RUN_LOG_PATH, "a", encoding="utf-8") as f:
         f.write(f"[{datetime.now().isoformat()}] School: {school_name} - {event}\n")
 
-# The schools to run, as listed in schools_config.py
+# The schools to run, as listed in fetch_config.py
 school_folders = SCHOOL_FOLDERS
 
 # Initialize Supabase client
@@ -81,8 +81,8 @@ for folder in filtered_school_folders:
         # Add the school's folder to sys.path so we can import main
         sys.path.insert(0, os.path.join(SCHOOLS_DIR, folder))
 
-        main_module_name = f'data_fetchers.schools.{folder}.main'
-        school_config_module_name = f'data_fetchers.schools.{folder}.school_config'
+        main_module_name = f'data_fetchers.school_data.{folder}.main'
+        school_config_module_name = f'data_fetchers.school_data.{folder}.school_config'
 
         main_module = importlib.import_module(main_module_name)
         school_config = importlib.import_module(school_config_module_name)

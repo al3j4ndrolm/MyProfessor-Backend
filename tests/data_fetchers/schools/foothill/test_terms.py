@@ -2,7 +2,7 @@ import os
 import pytest
 import sys
 
-from data_fetchers.schools.foothill import terms
+from data_fetchers.school_data.foothill import terms
 from tests.data_fetchers.schools.base_test import BaseSchoolTest
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))) )

@@ -5,12 +5,12 @@ from supabase import Client
 # Local Imports
 from helpers.soup_getter import html_url_to_soup
 from helpers.data import data_keys
-from data_fetchers.schools.template.terms import get_terms
-from data_fetchers.schools.template.courses import update_courses_data_table
-from data_fetchers.schools.template.schedules import get_classes_per_department
-from data_fetchers.schools.template.departments import get_department_data_table
-from data_fetchers.schools.template.school_config import TERMS_BASE_URL, SCHEDULES_BASE_URL, SCHOOL_NAME, RMP_CODE
-from data_fetchers.schools.common.pipeline import run_school_fetch
+from data_fetchers.school_data.template.terms import get_terms
+from data_fetchers.school_data.template.courses import update_courses_data_table
+from data_fetchers.school_data.template.schedules import get_classes_per_department
+from data_fetchers.school_data.template.departments import get_department_data_table
+from data_fetchers.school_data.template.school_config import TERMS_BASE_URL, SCHEDULES_BASE_URL, SCHOOL_NAME, RMP_CODE
+from data_fetchers.school_data.common.pipeline import run_school_fetch
 from logger import logger
 
 def main(supabase: Client, target_tables: set[str]) -> None:
