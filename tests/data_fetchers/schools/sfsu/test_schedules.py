@@ -2,7 +2,7 @@ import os
 import pytest
 import sys
 
-from data_fetchers.schools.sfsu import schedules
+from data_fetchers.school_data.sfsu import schedules
 from tests import data_verify
 from tests.data_fetchers.schools.base_test import BaseSchoolTest
 

@@ -87,18 +87,6 @@ def should_update(professor_entry: dict) -> bool:
         updated_at = updated_at.replace(tzinfo=None)
     return updated_at < datetime.now() - timedelta(days=30)
 
-# TODO: Remove after all data in database is fixed
-def get_all(supabase: Client, school: str, department: str) -> dict:
-    search_query = supabase.table(TABLE_NAME)\
-        .select("*").eq(db_keys.KEY_SCHOOL, school)\
-        .eq(db_keys.KEY_DEPARTMENT, department)\
-        .execute()
-    
-    if search_query.data:
-        return {professor[db_keys.KEY_PROFESSOR_NAME]: professor for professor in search_query.data}
-    else:
-        return {}
-
 def get_unique_rmp_links(supabase: Client, school: str) -> list[str]:
     search_query = supabase.table(TABLE_NAME)\
         .select(db_keys.KEY_RMP_LINK)\
@@ -112,7 +100,7 @@ def get_unique_rmp_links(supabase: Client, school: str) -> list[str]:
 
     return list(rmp_links)
 
-def get_unique_rmp_links_without_summaries(supabase: Client, school: str) -> list[str]:
+def get_unique_rmp_links_without_summary(supabase: Client, school: str) -> list[str]:
     """
     Get unique RMP links from professors table whose ai_summary field is not yet set.
     """
@@ -141,15 +129,3 @@ def update_ai_summary(supabase: Client, rmp_link: str, ai_summary: dict):
         .update({db_keys.KEY_AI_SUMMARY: ai_summary})\
         .eq(db_keys.KEY_RMP_LINK, rmp_link)\
         .execute()
-
-# TODO: Remove after all data in database is fixed
-def update(supabase: Client, professors_data_list: list[dict]):
-    logger.info(f"Saving {len(professors_data_list)} professors in database `{TABLE_NAME}`.")
-    for professor in professors_data_list:
-        # Use all identifying fields to ensure correct row is updated
-        supabase.table(TABLE_NAME).update(professor)\
-            .eq(db_keys.KEY_PROFESSOR_NAME, professor[db_keys.KEY_PROFESSOR_NAME])\
-            .eq(db_keys.KEY_SCHOOL, professor[db_keys.KEY_SCHOOL])\
-            .eq(db_keys.KEY_DEPARTMENT, professor[db_keys.KEY_DEPARTMENT])\
-            .eq(db_keys.KEY_EMAIL, professor[db_keys.KEY_EMAIL])\
-            .execute()

@@ -17,7 +17,7 @@ def update_summaries_table(supabase: Client, deepseek_session: DeepSeekSession, 
         
         if only_add_new:
             # Use the function that gets RMP links without summaries
-            rmp_links = professors_db.get_unique_rmp_links_without_summaries(supabase, school_name)
+            rmp_links = professors_db.get_unique_rmp_links_without_summary(supabase, school_name)
             logger.info(f"Found {len(rmp_links)} RMP links without summaries for {school_name}, now processing...")
 
             for rmp_link in rmp_links:

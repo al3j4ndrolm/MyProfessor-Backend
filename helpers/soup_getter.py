@@ -19,9 +19,10 @@ def html_url_to_soup(url):
     if response.status_code == 200:
         soup = BeautifulSoup(response.text, "html.parser")
         return soup
+    elif response.status_code == 404:
+        logger.warning(f"Page {url} does not exist.")
     else:
         logger.error(f"Failed to fetch URL {url}: HTTP {response.status_code}")
-        return None
 
 def get_soup_zenrows(url):
     """Convert HTML from URL to BeautifulSoup object"""
