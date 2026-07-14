@@ -52,12 +52,6 @@ def summary_get(
         summary_entry = summaries_db.get_one_entry(supabase, rmp_link)
         return None if not summary_entry else summary_entry[db_keys.SUMMARIES_KEY_SUMMARY]
 
-# TODO: Remove after client migrates to new classes endpoints
-@router.get("/schools/")
-@router.get("/schools")
-def schools_get():
-    return response.response_schools(supabase)
-
 # POST ENDPOINTS ---------------------------------------------------------------
 
 class StartPostRequest(BaseModel):
@@ -101,12 +95,6 @@ class ReportsErrorsPostRequest(BaseModel):
 def reports_errors_post(
     body: ReportsErrorsPostRequest = Body(...)
 ):
-    reports_db.save(supabase, body, is_error=True)
-
-# TODO: Remove after client migrates to new classes endpoints
-class ClassesPostRequest(BaseModel):
-    school: str
-    term: str
-    department: str
+    reports_db.save_error(supabase, body.version, body.critical, body.details, body.platform, body.build)
 
 app.include_router(router)
