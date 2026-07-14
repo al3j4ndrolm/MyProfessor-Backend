@@ -7,7 +7,7 @@ TABLE_NAME = "schools"
 
 class SchoolStatus(IntEnum):
     FETCHING = 0
-    UPCOMING = 1
+    READY_SOON = 1
     SUPPORTED = 2
     MAINTENANCE = 3
     TESTING = 4
