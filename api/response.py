@@ -9,9 +9,9 @@ from api import configs
 def response_start(supabase: Client, client_data: dict, user_data: dict) -> dict:
     
     if client_data.get("build_type") == "dev":
-        schools_data = schools_db.get(supabase, [SchoolStatus.SUPPORTED, SchoolStatus.TESTING])
+        schools_data = schools_db.get(supabase, list(SchoolStatus))
     elif client_data.get("build_type") == "release":
-        schools_data = schools_db.get(supabase, [SchoolStatus.SUPPORTED])
+        schools_data = schools_db.get(supabase, list(set(SchoolStatus) - {SchoolStatus.TESTING}))
     else:
         schools_data = schools_db.get(supabase, [])
 
