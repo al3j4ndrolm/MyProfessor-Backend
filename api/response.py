@@ -6,12 +6,20 @@ from database import schools_db, broadcasts_db, db_keys
 from database.schools_db import SchoolStatus
 from api import configs
 
+_SCHOOL_STATUS_SUFFIXES = {
+    SchoolStatus.FETCHING: "(updating)",
+    SchoolStatus.UPCOMING: "(upcoming)",
+    SchoolStatus.SUPPORTED: "",
+    SchoolStatus.MAINTENANCE: "(in maintanence)",
+    SchoolStatus.TESTING: "(test)",
+}
+
 def response_start(supabase: Client, client_data: dict, user_data: dict) -> dict:
     
     if client_data.get("build_type") == "dev":
-        schools_data = schools_db.get(supabase, [SchoolStatus.SUPPORTED, SchoolStatus.TESTING])
+        schools_data = schools_db.get(supabase, list(SchoolStatus))
     elif client_data.get("build_type") == "release":
-        schools_data = schools_db.get(supabase, [SchoolStatus.SUPPORTED])
+        schools_data = schools_db.get(supabase, list(set(SchoolStatus) - {SchoolStatus.TESTING}))
     else:
         schools_data = schools_db.get(supabase, [])
 
@@ -23,9 +31,13 @@ def response_start(supabase: Client, client_data: dict, user_data: dict) -> dict
         configs.SCHOOLS_KEY_BROADCASTS: broadcast_list
     }
 
+def _format_school_name(school_name: str, status: int) -> str:
+    suffix = _SCHOOL_STATUS_SUFFIXES.get(status, "")
+    return f"{school_name} {suffix}".strip() if suffix else school_name
+
 def _create_school(entry: dict, build_type: str) -> dict:
     return {
-        configs.SCHOOL_NAME: entry[db_keys.SCHOOL_KEY_SCHOOL_NAME],
+        configs.SCHOOL_NAME: _format_school_name(entry[db_keys.SCHOOL_KEY_SCHOOL_NAME], entry[db_keys.SCHOOL_KEY_STATUS]),
         configs.SCHOOL_TERMS: entry[db_keys.SCHOOL_KEY_TERMS],
         configs.SCHOOL_NOTIFICATION: {"text": entry[db_keys.SCHOOL_KEY_NOTIFICATION]},
         configs.SCHOOL_STATUS: entry[db_keys.SCHOOL_KEY_STATUS],
