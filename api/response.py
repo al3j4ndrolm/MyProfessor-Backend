@@ -28,7 +28,7 @@ def _create_school(entry: dict, build_type: str) -> dict:
         configs.SCHOOL_NAME: entry[db_keys.SCHOOL_KEY_SCHOOL_NAME],
         configs.SCHOOL_TERMS: entry[db_keys.SCHOOL_KEY_TERMS],
         configs.SCHOOL_NOTIFICATION: {"text": entry[db_keys.SCHOOL_KEY_NOTIFICATION]},
-        configs.SCHOOL_STATUS: entry[db_keys.SCHOOL_KEY_STATUS],
+        # configs.SCHOOL_STATUS: entry[db_keys.SCHOOL_KEY_STATUS],
         configs.SCHOOL_UPDATED_AT: entry[db_keys.KEY_UPDATED_AT],
         configs.SCHOOL_COURSES_UPDATED_AT: entry[db_keys.SCHOOL_KEY_COURSES_UPDATED_AT],
         configs.SCHOOL_FEATURES: _create_school_features(entry[db_keys.SCHOOL_KEY_FEATURES], build_type)
