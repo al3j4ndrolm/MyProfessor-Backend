@@ -7,11 +7,11 @@ from database.schools_db import SchoolStatus
 from api import configs
 
 _SCHOOL_STATUS_SUFFIXES = {
-    SchoolStatus.FETCHING: "(updating)",
-    SchoolStatus.READY_SOON: "(upcoming)",
+    SchoolStatus.FETCHING: " (Updating)",
+    SchoolStatus.READY_SOON: " (Upcoming)",
     SchoolStatus.SUPPORTED: "",
-    SchoolStatus.MAINTENANCE: "(in maintanence)",
-    SchoolStatus.TESTING: "(test)",
+    SchoolStatus.MAINTENANCE: " (In maintanence)",
+    SchoolStatus.TESTING: " (Test)",
 }
 
 def response_start(supabase: Client, client_data: dict, user_data: dict) -> dict:

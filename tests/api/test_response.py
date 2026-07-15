@@ -60,8 +60,8 @@ class TestResponse:
             # Call response_start with dev build type
             result = response_start(mock_supabase, {"build_type": "dev"}, {})
             
-            # Verify schools_db.get was called with correct statuses
-            mock_get_schools.assert_called_once_with(mock_supabase, [SchoolStatus.SUPPORTED, SchoolStatus.TESTING])
+            # Verify schools_db.get was called with all statuses
+            mock_get_schools.assert_called_once_with(mock_supabase, list(SchoolStatus))
             
             # Verify broadcasts_db.get_active was called
             mock_get_broadcasts.assert_called_once_with(mock_supabase)
@@ -112,8 +112,11 @@ class TestResponse:
             # Call response_start with prod build type
             result = response_start(mock_supabase, {"build_type": "release"}, {})
             
-            # Verify schools_db.get was called with only SUPPORTED status
-            mock_get_schools.assert_called_once_with(mock_supabase, [SchoolStatus.SUPPORTED])
+            # Verify schools_db.get was called with all statuses except TESTING
+            mock_get_schools.assert_called_once()
+            call_supabase, call_statuses = mock_get_schools.call_args[0]
+            assert call_supabase is mock_supabase
+            assert set(call_statuses) == set(SchoolStatus) - {SchoolStatus.TESTING}
             
             # Verify result
             school_list = result[configs.SCHOOLS_KEY_SCHOOL_LIST]
