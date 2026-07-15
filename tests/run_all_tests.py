@@ -13,6 +13,7 @@ Usage:
 """
 
 import os
+import re
 import sys
 import subprocess
 import argparse
@@ -26,22 +27,51 @@ import traceback
 project_root = Path(__file__).parent.parent
 sys.path.insert(0, str(project_root))
 
+# Ensure emoji/unicode output doesn't crash on Windows consoles using cp1252
+if hasattr(sys.stdout, "reconfigure"):
+    sys.stdout.reconfigure(encoding="utf-8")
+if hasattr(sys.stderr, "reconfigure"):
+    sys.stderr.reconfigure(encoding="utf-8")
+
+# Matches lines like: tests/foo/test_bar.py::TestClass::test_thing PASSED
+_RESULT_LINE_RE = re.compile(
+    r"^(?P<nodeid>\S+::\S+)\s+(?P<outcome>PASSED|FAILED|ERROR|SKIPPED|XFAIL|XPASS)\b"
+)
+# Matches collection error headers like: ERROR tests/foo/test_bar.py
+_COLLECT_ERROR_RE = re.compile(r"^ERROR\s+(?P<nodeid>\S+\.py)\s*$")
+
+
+def parse_test_results(stdout: str) -> Dict[str, List[str]]:
+    """Parse pytest -v output into per-outcome lists of test node ids."""
+    results: Dict[str, List[str]] = {
+        "PASSED": [], "FAILED": [], "ERROR": [], "SKIPPED": [], "XFAIL": [], "XPASS": [],
+    }
+    for line in stdout.splitlines():
+        match = _RESULT_LINE_RE.match(line.strip())
+        if match:
+            results[match.group("outcome")].append(match.group("nodeid"))
+            continue
+        collect_match = _COLLECT_ERROR_RE.match(line.strip())
+        if collect_match:
+            results["ERROR"].append(f"{collect_match.group('nodeid')} (collection error)")
+    return results
+
+
 def run_pytest_on_directory(tests_dir: Path, verbose: bool = False) -> Dict[str, Any]:
     """
     Run pytest on the entire tests directory to discover and run all tests.
-    
+
     Args:
         tests_dir: Path to the tests directory
         verbose: Whether to run in verbose mode
-    
+
     Returns:
         Dictionary with test results
     """
-    cmd = ["python", "-m", "pytest", str(tests_dir)]
-    
-    if verbose:
-        cmd.append("-v")
-    
+    # Always run in verbose mode internally so we can parse per-test outcomes,
+    # and keep going even if some modules fail to import/collect.
+    cmd = ["python", "-m", "pytest", str(tests_dir), "-v", "--continue-on-collection-errors"]
+
     try:
         start_time = time.time()
         result = subprocess.run(
@@ -51,13 +81,14 @@ def run_pytest_on_directory(tests_dir: Path, verbose: bool = False) -> Dict[str,
             cwd=project_root
         )
         end_time = time.time()
-        
+
         return {
             "success": result.returncode == 0,
             "returncode": result.returncode,
             "stdout": result.stdout,
             "stderr": result.stderr,
-            "duration": end_time - start_time
+            "duration": end_time - start_time,
+            "results": parse_test_results(result.stdout),
         }
     except Exception as e:
         return {
@@ -131,6 +162,42 @@ def run_coverage_tests(tests_dir: Path, verbose: bool = False) -> Dict[str, Any]
             "error": True
         }
 
+def print_results(result: Dict[str, Any]) -> None:
+    """Print a per-test PASSED/FAILED/ERROR breakdown from a pytest run result."""
+    results = result.get("results")
+    if not results:
+        return
+
+    print(f"\n⏱  Duration: {result['duration']:.2f}s")
+
+    if results["PASSED"]:
+        print(f"\n✅ PASSED ({len(results['PASSED'])}):")
+        for node_id in results["PASSED"]:
+            print(f"   {node_id}")
+
+    if results["FAILED"]:
+        print(f"\n❌ FAILED ({len(results['FAILED'])}):")
+        for node_id in results["FAILED"]:
+            print(f"   {node_id}")
+
+    if results["ERROR"]:
+        print(f"\n💥 ERROR ({len(results['ERROR'])}):")
+        for node_id in results["ERROR"]:
+            print(f"   {node_id}")
+
+    if results["SKIPPED"]:
+        print(f"\n⏭  SKIPPED ({len(results['SKIPPED'])}):")
+        for node_id in results["SKIPPED"]:
+            print(f"   {node_id}")
+
+    total = sum(len(v) for v in results.values())
+    print(f"\n📊 Summary: {total} collected — "
+          f"{len(results['PASSED'])} passed, "
+          f"{len(results['FAILED'])} failed, "
+          f"{len(results['ERROR'])} errors, "
+          f"{len(results['SKIPPED'])} skipped")
+
+
 def main():
     """Main function to run all tests."""
     parser = argparse.ArgumentParser(description="Run all tests in the MyProfessor Backend")
@@ -184,12 +251,7 @@ def main():
     else:
         # Run standard tests
         result = run_pytest_on_directory(tests_dir, args.verbose)
-        
-        if result["success"]:
-            print("✅ All tests passed!")
-        else:
-            print("❌ Some tests failed!")
-        
+
         # Print output if verbose
         if args.verbose:
             if result["stdout"]:
@@ -198,7 +260,14 @@ def main():
             if result["stderr"]:
                 print("\nSTDERR:")
                 print(result["stderr"])
-        
+
+        print_results(result)
+
+        if result["success"]:
+            print("\n✅ All tests passed!")
+        else:
+            print("\n❌ Some tests failed!")
+
         return 0 if result["success"] else 1
 
 if __name__ == "__main__":
