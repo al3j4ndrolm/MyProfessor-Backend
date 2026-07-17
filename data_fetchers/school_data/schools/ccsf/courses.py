@@ -6,7 +6,7 @@ import traceback
 from bs4 import BeautifulSoup, Tag
 
 from logger import logger
-from data_fetchers.school_data.ccsf.school_config import SCHOOL_NAME
+from data_fetchers.school_data.schools.ccsf.school_config import SCHOOL_NAME
 
 def update_courses_data_table(department_soup: BeautifulSoup, courses_data_table: dict, department_code: str) -> None:
     """

@@ -8,7 +8,7 @@ import undetected_chromedriver as uc
 # Local imports
 from helpers.data import data_creators, data_keys
 from logger import logger
-from data_fetchers.school_data.de_anza_college_selenium.selenium_config import SeleniumConfig
+from data_fetchers.school_data.schools.de_anza_college_selenium.selenium_config import SeleniumConfig
 
 def get_classes_per_department(department_code: str, driver: uc.Chrome) -> dict:
 

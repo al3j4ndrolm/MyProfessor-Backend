@@ -6,12 +6,12 @@ from supabase import Client
 sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
 
 from helpers.data import data_keys
-from data_fetchers.school_data.foothill.terms import get_terms
-from data_fetchers.school_data.foothill.departments import get_department_data_table
-from data_fetchers.school_data.foothill.courses import update_courses_data_table
-from data_fetchers.school_data.foothill.schedules import get_classes_per_department
-from data_fetchers.school_data.foothill.professors import get_professor_data_table, update_professor_data_table
-from data_fetchers.school_data.foothill.school_config import FACULTY_ALL_URL, SCHEDULES_BASE_URL, TERMS_BASE_URL, FACULTY_BASE_URL, SCHOOL_NAME, RMP_CODE
+from data_fetchers.school_data.schools.foothill.terms import get_terms
+from data_fetchers.school_data.schools.foothill.departments import get_department_data_table
+from data_fetchers.school_data.schools.foothill.courses import update_courses_data_table
+from data_fetchers.school_data.schools.foothill.schedules import get_classes_per_department
+from data_fetchers.school_data.schools.foothill.professors import get_professor_data_table, update_professor_data_table
+from data_fetchers.school_data.schools.foothill.school_config import FACULTY_ALL_URL, SCHEDULES_BASE_URL, TERMS_BASE_URL, FACULTY_BASE_URL, SCHOOL_NAME, RMP_CODE
 from data_fetchers.school_data.common.pipeline import run_school_fetch
 from helpers.soup_getter import html_url_to_soup
 from logger import logger

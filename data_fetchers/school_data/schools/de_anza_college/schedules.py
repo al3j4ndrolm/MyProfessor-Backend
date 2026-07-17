@@ -5,7 +5,7 @@ from bs4 import BeautifulSoup, Tag
 
 # Local imports
 from helpers.data import data_keys, data_creators
-from data_fetchers.school_data.de_anza_college.school_config import SCHOOL_NAME
+from data_fetchers.school_data.schools.de_anza_college.school_config import SCHOOL_NAME
 
 logger = logging.getLogger(__name__)
 

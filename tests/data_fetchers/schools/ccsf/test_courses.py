@@ -2,7 +2,7 @@ import os
 import pytest
 import sys
 
-from data_fetchers.school_data.ccsf import courses
+from data_fetchers.school_data.schools.ccsf import courses
 from tests.data_fetchers.schools.base_test import BaseSchoolTest
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))) )

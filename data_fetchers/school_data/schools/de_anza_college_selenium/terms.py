@@ -8,7 +8,7 @@ from selenium.webdriver.remote.webelement import WebElement
 
 from helpers.data import data_creators
 from logger import logger
-from data_fetchers.school_data.de_anza_college_selenium.selenium_config import SeleniumConfig
+from data_fetchers.school_data.schools.de_anza_college_selenium.selenium_config import SeleniumConfig
 
 def get_terms(driver: webdriver.Chrome) -> list[dict]:
     terms_holder = extract_terms_holder(driver)

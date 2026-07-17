@@ -6,11 +6,11 @@ from supabase import Client
 # Local Imports
 from helpers.soup_getter import html_url_to_soup
 from helpers.data import data_keys
-from data_fetchers.school_data.de_anza_college_selenium.departments import get_department_data_table
-from data_fetchers.school_data.de_anza_college_selenium.terms import get_terms
-from data_fetchers.school_data.de_anza_college_selenium.courses import get_courses_per_department
-from data_fetchers.school_data.de_anza_college_selenium.schedules import get_classes_per_department
-from data_fetchers.school_data.de_anza_college_selenium.school_config import TERMS_BASE_URL, SCHEDULES_BASE_URL, SCHOOL_NAME, RMP_CODE
+from data_fetchers.school_data.schools.de_anza_college_selenium.departments import get_department_data_table
+from data_fetchers.school_data.schools.de_anza_college_selenium.terms import get_terms
+from data_fetchers.school_data.schools.de_anza_college_selenium.courses import get_courses_per_department
+from data_fetchers.school_data.schools.de_anza_college_selenium.schedules import get_classes_per_department
+from data_fetchers.school_data.schools.de_anza_college_selenium.school_config import TERMS_BASE_URL, SCHEDULES_BASE_URL, SCHOOL_NAME, RMP_CODE
 from data_fetchers.school_data.common.pipeline import run_school_fetch
 from logger import logger
 
@@ -20,7 +20,7 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.remote.webelement import WebElement
-from data_fetchers.school_data.de_anza_college_selenium.selenium_config import SeleniumConfig
+from data_fetchers.school_data.schools.de_anza_college_selenium.selenium_config import SeleniumConfig
 
 def main(supabase: Client, target_tables: set[str]) -> None:
 

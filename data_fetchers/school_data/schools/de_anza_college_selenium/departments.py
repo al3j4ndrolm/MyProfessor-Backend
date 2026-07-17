@@ -6,7 +6,7 @@ from selenium.webdriver.remote.webelement import WebElement
 import undetected_chromedriver as uc
 
 from logger import logger
-from data_fetchers.school_data.de_anza_college_selenium.selenium_config import SeleniumConfig
+from data_fetchers.school_data.schools.de_anza_college_selenium.selenium_config import SeleniumConfig
 
 def get_department_data_table(driver: uc.Chrome) -> dict:
 

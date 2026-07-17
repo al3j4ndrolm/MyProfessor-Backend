@@ -6,7 +6,7 @@ from selenium.webdriver.remote.webelement import WebElement
 import undetected_chromedriver as uc
 
 from logger import logger
-from data_fetchers.school_data.de_anza_college_selenium.selenium_config import SeleniumConfig
+from data_fetchers.school_data.schools.de_anza_college_selenium.selenium_config import SeleniumConfig
 
 def get_courses_per_department(department_code: str, driver: uc.Chrome) -> set:
     courses_elements_holder = _wait_for_element(driver, By.CSS_SELECTOR, ".table.table-schedule.table-hover.mix-container")
