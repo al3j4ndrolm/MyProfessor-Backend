@@ -1,35 +1,53 @@
-import os
+import re
+
 import pytest
-import sys
 
 from data_fetchers.school_data.schools.sjsu import terms
+from data_fetchers.school_data.schools.sjsu.school_config import TERMS_BASE_URL
+from helpers.soup_getter import html_url_to_soup
 from tests.data_fetchers.schools.base_test import BaseSchoolTest
+from tests.data_fetchers.schools.tests_constants import SEASON_CODE_MAP
 
-sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))))
+TERM_NAME_PATTERN = re.compile(
+    r"^(" + "|".join(SEASON_CODE_MAP.keys()) + r") (\d{4})$"
+)
 
 class TestSJSUTerms(BaseSchoolTest):
     @property
     def school_name(self):
         return "sjsu"
-    
+
     @property
     def test_type(self):
         return "terms"
-    
+
     def test_get_terms(self):
-        """Test getting terms from HTML"""
-        soup = self.load_test_html_data("terms_test_sample.html")
-        
-        def run_test():
-            result = terms.get_terms(soup)
-            return result
-        
-        # Run test with automatic result saving and data loading
-        result = self.run_test_with_result_saving(run_test)
-        
-        # Additional verification
+        """Test getting terms from the live SJSU schedules index page"""
+        soup = html_url_to_soup(TERMS_BASE_URL)
+        assert soup is not None, f"Failed to fetch terms page at {TERMS_BASE_URL}"
+
+        result = terms.get_terms(soup)
+
         assert isinstance(result, list)
-        assert all(isinstance(item, dict) and "termName" in item and "termCode" in item for item in result)
+        assert len(result) > 0
+
+        for item in result:
+            assert isinstance(item, dict)
+            assert "termName" in item
+            assert "termCode" in item
+
+            term_name = item["termName"]
+            term_code = item["termCode"]
+
+            match = TERM_NAME_PATTERN.match(term_name)
+            assert match, f"termName '{term_name}' does not match expected pattern '<Season> YYYY'"
+
+            season, year = match.groups()
+            expected_code = f"{season.lower()}-{year}"
+            assert term_code == expected_code, (
+                f"termCode '{term_code}' does not match expected code "
+                f"'{expected_code}' derived from termName '{term_name}'"
+            )
 
 if __name__ == "__main__":
-    pytest.main([__file__]) 
+    pytest.main([__file__])
