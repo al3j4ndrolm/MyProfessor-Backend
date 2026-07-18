@@ -41,25 +41,23 @@ _RESULT_LINE_RE = re.compile(
 _COLLECT_ERROR_RE = re.compile(r"^ERROR\s+(?P<nodeid>\S+\.py)\s*$")
 
 
-def parse_test_results(stdout: str) -> Dict[str, List[str]]:
-    """Parse pytest -v output into per-outcome lists of test node ids."""
-    results: Dict[str, List[str]] = {
-        "PASSED": [], "FAILED": [], "ERROR": [], "SKIPPED": [], "XFAIL": [], "XPASS": [],
-    }
-    for line in stdout.splitlines():
-        match = _RESULT_LINE_RE.match(line.strip())
-        if match:
-            results[match.group("outcome")].append(match.group("nodeid"))
-            continue
-        collect_match = _COLLECT_ERROR_RE.match(line.strip())
-        if collect_match:
-            results["ERROR"].append(f"{collect_match.group('nodeid')} (collection error)")
-    return results
+_OUTCOME_SYMBOLS = {
+    "PASSED": "✅",
+    "FAILED": "❌",
+    "ERROR": "💥",
+    "SKIPPED": "⏭",
+    "XFAIL": "⏭",
+    "XPASS": "⚠",
+}
 
 
 def run_pytest_on_directory(tests_dir: Path, verbose: bool = False) -> Dict[str, Any]:
     """
     Run pytest on the entire tests directory to discover and run all tests.
+
+    Prints each test's outcome as soon as it completes (with a leading
+    passed/failed/error symbol), then returns the aggregated results so a
+    summary can be printed once everything has finished.
 
     Args:
         tests_dir: Path to the tests directory
@@ -72,23 +70,50 @@ def run_pytest_on_directory(tests_dir: Path, verbose: bool = False) -> Dict[str,
     # and keep going even if some modules fail to import/collect.
     cmd = ["python", "-m", "pytest", str(tests_dir), "-v", "--continue-on-collection-errors"]
 
+    results: Dict[str, List[str]] = {
+        "PASSED": [], "FAILED": [], "ERROR": [], "SKIPPED": [], "XFAIL": [], "XPASS": [],
+    }
+
     try:
         start_time = time.time()
-        result = subprocess.run(
+        process = subprocess.Popen(
             cmd,
-            capture_output=True,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.STDOUT,
             text=True,
+            bufsize=1,
             cwd=project_root
         )
+
+        stdout_lines = []
+        for line in process.stdout:
+            stdout_lines.append(line)
+            stripped = line.strip()
+
+            match = _RESULT_LINE_RE.match(stripped)
+            if match:
+                outcome = match.group("outcome")
+                node_id = match.group("nodeid")
+                results[outcome].append(node_id)
+                print(f"{_OUTCOME_SYMBOLS.get(outcome, '•')} {outcome} {node_id}")
+                continue
+
+            collect_match = _COLLECT_ERROR_RE.match(stripped)
+            if collect_match:
+                node_id = f"{collect_match.group('nodeid')} (collection error)"
+                results["ERROR"].append(node_id)
+                print(f"{_OUTCOME_SYMBOLS['ERROR']} ERROR {node_id}")
+
+        process.wait()
         end_time = time.time()
 
         return {
-            "success": result.returncode == 0,
-            "returncode": result.returncode,
-            "stdout": result.stdout,
-            "stderr": result.stderr,
+            "success": process.returncode == 0,
+            "returncode": process.returncode,
+            "stdout": "".join(stdout_lines),
+            "stderr": "",
             "duration": end_time - start_time,
-            "results": parse_test_results(result.stdout),
+            "results": results,
         }
     except Exception as e:
         return {
@@ -163,35 +188,19 @@ def run_coverage_tests(tests_dir: Path, verbose: bool = False) -> Dict[str, Any]
         }
 
 def print_results(result: Dict[str, Any]) -> None:
-    """Print a per-test PASSED/FAILED/ERROR breakdown from a pytest run result."""
+    """Print the duration and final summary from a pytest run result.
+
+    Per-test outcomes are already printed live as they complete, so this
+    only needs to report the aggregate counts and how long the run took.
+    """
     results = result.get("results")
     if not results:
         return
 
     print(f"\n⏱  Duration: {result['duration']:.2f}s")
 
-    if results["PASSED"]:
-        print(f"\n✅ PASSED ({len(results['PASSED'])}):")
-        for node_id in results["PASSED"]:
-            print(f"   {node_id}")
-
-    if results["FAILED"]:
-        print(f"\n❌ FAILED ({len(results['FAILED'])}):")
-        for node_id in results["FAILED"]:
-            print(f"   {node_id}")
-
-    if results["ERROR"]:
-        print(f"\n💥 ERROR ({len(results['ERROR'])}):")
-        for node_id in results["ERROR"]:
-            print(f"   {node_id}")
-
-    if results["SKIPPED"]:
-        print(f"\n⏭  SKIPPED ({len(results['SKIPPED'])}):")
-        for node_id in results["SKIPPED"]:
-            print(f"   {node_id}")
-
     total = sum(len(v) for v in results.values())
-    print(f"\n📊 Summary: {total} collected — "
+    print(f"📊 Summary: {total} collected — "
           f"{len(results['PASSED'])} passed, "
           f"{len(results['FAILED'])} failed, "
           f"{len(results['ERROR'])} errors, "
@@ -249,17 +258,8 @@ def main():
         
         return 0 if coverage_result["success"] else 1
     else:
-        # Run standard tests
+        # Run standard tests (per-test outcomes are printed live as they complete)
         result = run_pytest_on_directory(tests_dir, args.verbose)
-
-        # Print output if verbose
-        if args.verbose:
-            if result["stdout"]:
-                print("\nSTDOUT:")
-                print(result["stdout"])
-            if result["stderr"]:
-                print("\nSTDERR:")
-                print(result["stderr"])
 
         print_results(result)
 

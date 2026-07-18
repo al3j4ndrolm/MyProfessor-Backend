@@ -11,10 +11,10 @@ import traceback
 from data_fetchers.school_data.fetch_config import SCHOOL_FOLDERS
 
 # Get the path to the schools directory
-SCHOOLS_DIR = os.path.dirname(os.path.abspath(__file__))
+SCHOOLS_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'schools')
 
 # One error log and one run (start/complete) log per run, under generated/ (gitignored)
-REPO_ROOT = os.path.dirname(os.path.dirname(SCHOOLS_DIR))
+REPO_ROOT = os.path.dirname(os.path.dirname(os.path.dirname(SCHOOLS_DIR)))
 GENERATED_DIR = os.path.join(REPO_ROOT, "generated")
 os.makedirs(GENERATED_DIR, exist_ok=True)
 RUN_TIMESTAMP = datetime.now().strftime("%Y%m%d_%H%M%S")
@@ -81,8 +81,8 @@ for folder in filtered_school_folders:
         # Add the school's folder to sys.path so we can import main
         sys.path.insert(0, os.path.join(SCHOOLS_DIR, folder))
 
-        main_module_name = f'data_fetchers.school_data.{folder}.main'
-        school_config_module_name = f'data_fetchers.school_data.{folder}.school_config'
+        main_module_name = f'data_fetchers.school_data.schools.{folder}.main'
+        school_config_module_name = f'data_fetchers.school_data.schools.{folder}.school_config'
 
         main_module = importlib.import_module(main_module_name)
         school_config = importlib.import_module(school_config_module_name)
