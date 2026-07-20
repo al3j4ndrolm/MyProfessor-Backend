@@ -42,14 +42,8 @@ supabase = create_client(url, key)
 
 logger = logging.getLogger(__name__)
 
-# Argument parsing for target_tables and schools
+# Argument parsing for schools
 parser = argparse.ArgumentParser(description="Fetch and update data for schools.")
-parser.add_argument(
-    "--tables",
-    type=str,
-    default=None,
-    help="Comma-separated list of tables to update (e.g., courses,classes,professors,schools). If omitted, all tables will be updated."
-)
 parser.add_argument(
     "--schools",
     type=str,
@@ -57,13 +51,6 @@ parser.add_argument(
     help="Comma-separated list of school folder names to process (e.g., de_anza_college,sjsu). If omitted, all schools will be processed."
 )
 args = parser.parse_args()
-
-if args.tables:
-    target_tables = set([t.strip() for t in args.tables.split(",") if t.strip()])
-    logger.info(f"Target tables specified: {target_tables}")
-else:
-    target_tables = {"courses", "classes", "professors", "schools"}
-    logger.info("No target tables specified. All tables will be updated.")
 
 if args.schools:
     selected_schools = set([s.strip() for s in args.schools.split(",") if s.strip()])
@@ -91,12 +78,7 @@ for folder in filtered_school_folders:
         logger.info(f'Start fetching data for {school_name}...')
         log_run_event(school_name, "STARTED")
         try:
-            import inspect
-            main_sig = inspect.signature(main_module.main)
-            if len(main_sig.parameters) == 2:
-                main_module.main(supabase, target_tables)
-            else:
-                main_module.main(supabase, {"courses", "classes", "professors", "schools"})
+            main_module.main(supabase)
             logger.info(f'Finished updating data for {school_name}.\n\n')
             log_run_event(school_name, "COMPLETED")
         except Exception as e:

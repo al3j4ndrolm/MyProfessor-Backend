@@ -2,9 +2,10 @@
 # de_anza_college is scraped via Selenium now, so only de_anza_college_selenium is listed here.
 SCHOOL_FOLDERS = [
     # "ccsf",
-    "sjsu",
-    "sfsu",
-    "foothill",
-    "ucsc",
-    "de_anza_college_selenium",
+    # "sjsu",
+    # "sfsu",
+    # "foothill",
+    # "ucsc",
+    "ucb",
+    # "de_anza_college_selenium",
 ]

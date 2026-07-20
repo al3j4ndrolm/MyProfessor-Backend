@@ -17,7 +17,7 @@ from logger import logger
 
 _USER_AGENT = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36"
 
-def main(supabase: Client, target_tables: set[str]) -> None:
+def main(supabase: Client) -> None:
 
     soup = html_url_to_soup(TERMS_BASE_URL)
     terms_data_list = get_terms(soup)
@@ -27,7 +27,7 @@ def main(supabase: Client, target_tables: set[str]) -> None:
         department_data_table = get_department_data_table(soup)
         return get_courses_and_classes(department_data_table, term_codes)
 
-    run_school_fetch(supabase, target_tables, SCHOOL_NAME, RMP_CODE, terms_data_list, get_courses_and_classes_lazy)
+    run_school_fetch(supabase, SCHOOL_NAME, RMP_CODE, terms_data_list, get_courses_and_classes_lazy)
 
 def get_courses_and_classes(department_data_table: dict, term_codes: list) -> tuple[dict, dict]:
     """

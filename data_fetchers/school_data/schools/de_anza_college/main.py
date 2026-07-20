@@ -13,7 +13,7 @@ from data_fetchers.school_data.schools.de_anza_college.school_config import TERM
 from data_fetchers.school_data.common.pipeline import run_school_fetch
 from logger import logger  # Import the configured logger instance
 
-def main(supabase: Client, target_tables: set[str]) -> None:
+def main(supabase: Client) -> None:
 
     soup = html_url_to_soup(TERMS_BASE_URL)
     terms_data_list = get_terms(soup)
@@ -23,7 +23,7 @@ def main(supabase: Client, target_tables: set[str]) -> None:
         departments = sorted(list(get_department_data_table(soup).keys()))
         return get_courses_and_classes(departments, term_codes)
 
-    run_school_fetch(supabase, target_tables, SCHOOL_NAME, RMP_CODE, terms_data_list, get_courses_and_classes_lazy)
+    run_school_fetch(supabase, SCHOOL_NAME, RMP_CODE, terms_data_list, get_courses_and_classes_lazy)
 
 def get_courses_and_classes(departments: list, term_codes: list) -> tuple[dict, dict]:
     courses_data_table = {}

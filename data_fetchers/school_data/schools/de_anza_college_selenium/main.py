@@ -22,7 +22,7 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.remote.webelement import WebElement
 from data_fetchers.school_data.schools.de_anza_college_selenium.selenium_config import SeleniumConfig
 
-def main(supabase: Client, target_tables: set[str]) -> None:
+def main(supabase: Client) -> None:
 
     driver = SeleniumConfig.create_driver(headless=False)
     driver.get(TERMS_BASE_URL)
@@ -38,7 +38,7 @@ def main(supabase: Client, target_tables: set[str]) -> None:
         logger.info("now getting courses and classes ...")
         return get_courses_and_classes(departments, term_codes, driver)
 
-    run_school_fetch(supabase, target_tables, SCHOOL_NAME, RMP_CODE, terms_data_list, get_courses_and_classes_lazy)
+    run_school_fetch(supabase, SCHOOL_NAME, RMP_CODE, terms_data_list, get_courses_and_classes_lazy)
 
 def get_courses_and_classes(departments: list, term_codes: list, driver: webdriver.Chrome) -> tuple[dict, dict]:
     courses_data_table = {}
