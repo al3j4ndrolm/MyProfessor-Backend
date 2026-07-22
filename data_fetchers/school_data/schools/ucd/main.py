@@ -66,7 +66,7 @@ def get_courses_and_classes(department_data_table: dict, term_codes: list, drive
             courses_per_term = update_courses_data_table(department_soup, department_code)
             courses.update(courses_per_term)
 
-            # time.sleep(1)
+            time.sleep(3)
 
         logger.info(f"Overall found {len(courses)} courses for {department_code}.")
         courses_data_table[department_code] = courses

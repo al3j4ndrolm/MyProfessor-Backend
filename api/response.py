@@ -7,8 +7,8 @@ from database.schools_db import SchoolStatus
 from api import configs
 
 _SCHOOL_STATUS_SUFFIXES = {
-    SchoolStatus.FETCHING: " (Updating)",
     SchoolStatus.READY_SOON: " (Upcoming)",
+    SchoolStatus.FETCHING: " (Updating)",
     SchoolStatus.SUPPORTED: "",
     SchoolStatus.MAINTENANCE: " (In maintanence)",
     SchoolStatus.TESTING: " (Test)",

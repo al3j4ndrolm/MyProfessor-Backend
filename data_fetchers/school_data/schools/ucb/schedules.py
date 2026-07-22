@@ -103,7 +103,8 @@ def _get_field_text(meeting: Tag, class_name: str) -> str:
     for icon in field.find_all("span", class_=lambda c: c and "icon" in c):
         icon.decompose()
 
-    return field.get_text(separator=" ").strip()
+    first_line = field.get_text().split("\n")[0]
+    return " ".join(first_line.split()).strip()
 
 def _get_instructor_names(class_element: Tag) -> list[str]:
     instructors_div = class_element.find("div", class_="st--instructors")
