@@ -11,7 +11,7 @@ from data_fetchers.school_data.schools.sfsu.courses import update_courses_set_pe
 from data_fetchers.school_data.schools.sfsu.schedules import get_classes_per_department
 from data_fetchers.school_data.common.pipeline import run_school_fetch
 
-def main(supabase: Client, target_tables: set[str]) -> None:
+def main(supabase: Client) -> None:
 
     soup = html_url_to_soup(TERMS_BASE_URL)
     terms_data_list = get_terms(soup)
@@ -21,7 +21,7 @@ def main(supabase: Client, target_tables: set[str]) -> None:
         departments = sorted(list(get_department_data_table(soup).keys()))
         return get_courses_and_classes(departments, term_codes)
 
-    run_school_fetch(supabase, target_tables, SCHOOL_NAME, RMP_CODE, terms_data_list, get_courses_and_classes_lazy)
+    run_school_fetch(supabase, SCHOOL_NAME, RMP_CODE, terms_data_list, get_courses_and_classes_lazy)
 
 def get_courses_and_classes(departments: list, term_codes: list) -> tuple[dict, dict]:
     courses_data_table = {}

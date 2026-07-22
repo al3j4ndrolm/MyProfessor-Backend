@@ -6,8 +6,8 @@ from database import db_keys
 TABLE_NAME = "schools"
 
 class SchoolStatus(IntEnum):
-    FETCHING = 0
-    READY_SOON = 1
+    READY_SOON = 0
+    FETCHING = 1
     SUPPORTED = 2
     MAINTENANCE = 3
     TESTING = 4
